@@ -23,11 +23,11 @@ class Landing extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned(
+          const Positioned(
             bottom: spacing,
             right: spacing,
             child: Row(
-              children: const [
+              children: [
                 AnimatedIconButton(
                   url: 'https://github.com/appwrite/appwrite',
                   assetName: 'assets/github.svg',

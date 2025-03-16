@@ -2,6 +2,8 @@ import 'package:demo_todo_with_flutter/routes/RegisterPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
+import 'package:demo_todo_with_flutter/services/auth.dart';
+import 'package:appwrite/models.dart' as models;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,6 +20,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final AuthService _authService = AuthService();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -32,18 +35,17 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     try {
-      final UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+      // Call your AuthService for Appwrite
+      models.Account userAccount = await _authService.login(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      if (userCredential.user != null) {
-        GoRouter.of(context).go('/home');
-      }
-    } on FirebaseAuthException catch (e) {
+      // If login succeeds, navigate to home route
+      GoRouter.of(context).go('CHANGE THIS');
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed: ${e.message}')),
+        SnackBar(content: Text('Login failed: $e')),
       );
     }
   }
@@ -123,6 +125,9 @@ class _LoginPageState extends State<LoginPage> {
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 24),
                       ),
+                      onFieldSubmitted: (value) {
+                        _login();
+                      },
                       style: const TextStyle(
                           fontFamily: 'Lexend', color: Colors.black),
                     ),
@@ -208,7 +213,7 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       },
                       child: const Text(
-                        'Don\'t have and account?',
+                        'Don\'t have an account?',
                         style: TextStyle(
                           color: Colors.blue,
                           fontFamily: 'Lexend',
@@ -227,3 +232,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+

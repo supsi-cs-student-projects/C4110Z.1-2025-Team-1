@@ -1,3 +1,4 @@
+import 'package:demo_todo_with_flutter/routes/RegisterPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
@@ -5,11 +6,10 @@ import 'package:go_router/go_router.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
-      body: Center(child: Text('Login Page')),
+      body: const Center(child: Text('Login Page')),
     );
   }
 
@@ -71,12 +71,10 @@ class _LoginPageState extends State<LoginPage> {
                     ClipRRect(
                       child: Image.asset(
                         'assets/images/AB_logo.png',
-                      width: 161.7,
-                      height: 132.9,
-                      fit: BoxFit.fitWidth,
+                        width: 161.7,
+                        height: 132.9,
+                        fit: BoxFit.fitWidth,
                       ),
-
-                      
                     ),
                   ],
                 ),
@@ -125,7 +123,8 @@ class _LoginPageState extends State<LoginPage> {
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 24),
                       ),
-                      style: const TextStyle(fontFamily: 'Lexend', color: Colors.black),
+                      style: const TextStyle(
+                          fontFamily: 'Lexend', color: Colors.black),
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
@@ -156,15 +155,17 @@ class _LoginPageState extends State<LoginPage> {
                           },
                         ),
                       ),
-                      style: const TextStyle(fontFamily: 'Lexend', color: Colors.black),
+                      style: const TextStyle(
+                          fontFamily: 'Lexend', color: Colors.black),
                     ),
                     const SizedBox(height: 24),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
                           onPressed: () {
-                            GoRouter.of(context).go('/forgot-password');
+                            //MaterialPageRoute(builder: (context) => const RegisterPage()); add when done
                           },
                           child: const Text(
                             'Forgot Password?',
@@ -194,33 +195,28 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 24),
-                    const Text(
-                      'Don\'t have an account?',
-                      style: TextStyle(fontFamily: 'Lexend', color: Colors.grey),
-                    ),
-                    const SizedBox(height: 5),
-                    ElevatedButton(
+
+
+                    TextButton(
                       onPressed: () {
-                        GoRouter.of(context).go('/RegisterPage.dart');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RegisterPage()),
+                        );
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          side: const BorderSide(color: Color(0xFF02AF5C)),
-                        ),
-                      ),
                       child: const Text(
-                        'Register',
+                        'Don\'t have and account?',
                         style: TextStyle(
-                          color: Color(0xFF02AF5C),
+                          color: Colors.blue,
                           fontFamily: 'Lexend',
                         ),
                       ),
                     ),
+
+            
                   ],
                 ),
               ),

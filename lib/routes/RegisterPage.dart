@@ -1,3 +1,4 @@
+import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
@@ -125,7 +126,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 24),
                       ),
-                      style: const TextStyle(fontFamily: 'Lexend', color: Colors.black),
+                      style: const TextStyle(
+                          fontFamily: 'Lexend', color: Colors.black),
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
@@ -156,7 +158,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           },
                         ),
                       ),
-                      style: const TextStyle(fontFamily: 'Lexend', color: Colors.black),
+                      style: const TextStyle(
+                          fontFamily: 'Lexend', color: Colors.black),
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
@@ -187,54 +190,54 @@ class _RegisterPageState extends State<RegisterPage> {
                           },
                         ),
                       ),
-                      style: const TextStyle(fontFamily: 'Lexend', color: Colors.black),
+                      style: const TextStyle(
+                          fontFamily: 'Lexend', color: Colors.black),
                     ),
                     const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: _register,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF02AF5C),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: ElevatedButton(
+                        onPressed: _register,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF02AF5C),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
                         ),
-                      ),
-                      child: const Text(
-                        'Create Account',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Lexend',
+                        child: const Text(
+                          'Create Account',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Lexend',
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(height: 24),
-                    const Text(
-                      'Already have an account?',
-                      style: TextStyle(fontFamily: 'Lexend', color: Colors.grey),
-                    ),
-                    const SizedBox(height: 5),
-                    ElevatedButton(
+
+
+
+                    TextButton(
                       onPressed: () {
-                        GoRouter.of(context).go('/LoginPage.dart');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()),
+                        );
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          side: const BorderSide(color: Color(0xFF02AF5C)),
-                        ),
-                      ),
                       child: const Text(
-                        'Go to Login',
+                        'Already have an account?',
                         style: TextStyle(
-                          color: Color(0xFF02AF5C),
+                          color: Colors.blue,
                           fontFamily: 'Lexend',
                         ),
                       ),
                     ),
+
+
+
                   ],
                 ),
               ),

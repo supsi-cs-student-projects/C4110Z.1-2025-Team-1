@@ -5,10 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:appwrite/models.dart' as models;
 
-import 'homepage.dart';
-
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class Games extends StatefulWidget {
+  const Games({super.key});
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,10 +16,10 @@ class LoginPage extends StatefulWidget {
   }
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<Games> createState() => _GamePageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _GamePageState extends State<Games> {
   final AuthService _authService = AuthService();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _emailController = TextEditingController();
@@ -91,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Welcome back to AB!',
+                        'GAMES PAGE!',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -167,75 +165,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 24),
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            //MaterialPageRoute(builder: (context) => const RegisterPage()); add when done
-                          },
-                          child: const Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontFamily: 'Lexend',
-                            ),
-                          ),
-                        ),
-
-                        //LOGIN BUTTON
-                        ElevatedButton(
-
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const HomePage()),
-                            );
-                          },
-
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF02AF5C),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
-                          child: const Text(
-                            'Login',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Lexend',
-                            ),
-                          ),
-                        ),
-
-
-                      ],
-                    ),
-
                     const SizedBox(height: 24),
 
 
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const RegisterPage()),
-                        );
-                      },
-                      child: const Text(
-                        'Don\'t have an account?',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontFamily: 'Lexend',
-                        ),
-                      ),
-                    ),
-
-            
                   ],
                 ),
               ),

@@ -29,7 +29,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_svg: ^1.1.6
+  flutter_svg: ^2.0.0+1
   url_launcher: ^6.1.7
   appwrite: ^8.1.0
 
@@ -40,6 +40,8 @@ dependencies:
   firebase_auth: ^5.2.0
   google_fonts: ^4.0.4
   audioplayers: ^6.4.0
+  just_audio: ^0.9.46
+  lottie: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +69,8 @@ flutter:
 
     - assets/images/AB_logo.png
     - assets/images/plant/plant_happy.png
+    - assets/audio/homepage_music.ogg
+    - assets/Animations/animationTest1.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

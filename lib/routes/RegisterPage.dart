@@ -1,7 +1,8 @@
 import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
+import 'package:demo_todo_with_flutter/services/auth.dart';
+import 'package:appwrite/models.dart' as models;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -11,6 +12,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final AuthService _authService = AuthService();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController1 = TextEditingController();
@@ -27,29 +29,27 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _register() async {
-    if (_passwordController1.text != _passwordController2.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
-      );
-      return;
-    }
-
-    try {
-      final UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController1.text.trim(),
-      );
-
-      if (userCredential.user != null) {
-        GoRouter.of(context).go('/home');
-      }
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registration failed: ${e.message}')),
-      );
-    }
+  if (_passwordController1.text != _passwordController2.text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Passwords do not match')),
+    );
+    return;
   }
+
+  try {
+    final account = await _authService.signUp(
+      name: 'Optional Name', // or pass an actual name if desired
+      email: _emailController.text.trim(),
+      password: _passwordController1.text.trim(),
+    );
+    // If sign-up succeeds, go to the home page
+    GoRouter.of(context).go('CHANGE THIS');
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Registration failed: $e')),
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {

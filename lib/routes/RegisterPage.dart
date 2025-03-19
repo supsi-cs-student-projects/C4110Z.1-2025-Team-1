@@ -17,6 +17,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController1 = TextEditingController();
   final TextEditingController _passwordController2 = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   bool _isPasswordVisible1 = false;
   bool _isPasswordVisible2 = false;
 
@@ -35,10 +36,9 @@ class _RegisterPageState extends State<RegisterPage> {
     );
     return;
   }
-
   try {
     final account = await _authService.signUp(
-      name: 'Optional Name', // or pass an actual name if desired
+      name: _nameController.text.trim(), // or pass an actual name if desired
       email: _emailController.text.trim(),
       password: _passwordController1.text.trim(),
     );
@@ -117,6 +117,24 @@ class _RegisterPageState extends State<RegisterPage> {
                       decoration: InputDecoration(
                         labelText: 'Email Address',
                         hintText: 'Enter your email...',
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 24),
+                      ),
+                      style: const TextStyle(
+                          fontFamily: 'Lexend', color: Colors.black),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        labelText: 'Name',
+                        hintText: 'Enter your name...',
                         filled: true,
                         fillColor: Colors.grey[200],
                         border: OutlineInputBorder(

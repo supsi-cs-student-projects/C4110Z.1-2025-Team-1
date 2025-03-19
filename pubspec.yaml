@@ -71,6 +71,7 @@ flutter:
     - assets/images/plant/plant_happy.png
     - assets/audio/homepage_music.ogg
     - assets/Animations/animationTest1.json
+    - assets/Animations/plant_idle.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

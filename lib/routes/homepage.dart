@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart'; // Import just_audio
+import 'package:just_audio/just_audio.dart';
+import 'package:lottie/lottie.dart';
+import 'package:demo_todo_with_flutter/routes/Games.dart';
+import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import 'Streak.dart';
 import 'Learn.dart';
-import 'package:demo_todo_with_flutter/routes/Games.dart';
-import 'package:demo_todo_with_flutter/routes/LoginPage.dart'; // Import LoginPage
-import 'package:lottie/lottie.dart'; // flutter pub add lottie
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,16 +13,30 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   final AudioPlayer _audioPlayer = AudioPlayer();
-  bool _isMuted = false; // Track mute state
-  bool _showImage = false; // Track whether to show image or animation
+  late AnimationController _animationController;
+  bool _isMuted = false;
+  bool _showIdle = false; // Controlla se mostrare plant_idle
 
   @override
   void initState() {
     super.initState();
     _playMusic();
-    _startAnimation();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2), // Durata iniziale per animationTest1
+    );
+
+    // Quando animationTest1 finisce, cambiamo animazione
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _switchToIdle();
+      }
+    });
+
+    _animationController.forward();
   }
 
   void _playMusic() async {
@@ -49,18 +63,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _startAnimation() {
-    // After 5 seconds (or the duration of your animation), show the image
-    Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        _showImage = true; // Change to show the image after the animation
-      });
+  void _switchToIdle() {
+    setState(() {
+      _showIdle = true;
+      _animationController.duration = const Duration(seconds: 5); // Cambia la durata per plant_idle
     });
+
+    _animationController.reset();
+    _animationController.forward(); // plant_idle deve essere ripetuta
   }
 
   @override
   void dispose() {
     _audioPlayer.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -69,112 +85,93 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Column(
         children: [
+          // Top bar
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.arrow_back, size: 30), // Back arrow
-                  onPressed: _goToLoginPage, // Go back to login
+                  icon: const Icon(Icons.arrow_back, size: 30),
+                  onPressed: _goToLoginPage,
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: const Text(
-                    'Home Page',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
+                const Text(
+                  'Home Page',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        _isMuted ? Icons.volume_off : Icons.volume_up,
-                        size: 30,
-                      ),
-                      onPressed: _toggleMute,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.help_outline, size: 30),
-                      onPressed: () {},
-                    ),
-                  ],
+                IconButton(
+                  icon: Icon(_isMuted ? Icons.volume_off : Icons.volume_up, size: 30),
+                  onPressed: _toggleMute,
                 ),
               ],
             ),
           ),
 
-          // Show animation or image based on _showImage state
+          // Animated Lottie Widget (Smooth Transition)
           Expanded(
-            child: _showImage
-                ? Image.asset(
-              'assets/images/plant/plant_happy.png',
-              alignment: const Alignment(0.0, 0.4),
-              width: 400,
-              height: 400,
-              fit: BoxFit.contain,
-            )
-                : Lottie.asset(
-              'assets/Animations/animationTest1.json',
-              alignment: const Alignment(0.0, 0.4),
-              width: 400,
-              height: 400,
-
-              fit: BoxFit.contain,
-            ),
-          ),
-
-          // Bottom menu
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            color: Colors.green[700],
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            child: Stack(
+              alignment: Alignment.center,
               children: [
-                _bottomMenuButton(context, Icons.videogame_asset, 'Games', const Games()),
-                _bottomMenuButton(context, Icons.add_task, 'Streak', const Streak()),
-                _bottomMenuButton(context, Icons.explore_rounded, 'Learn', const Learn()),
+                // ANIMAZIONE IDLE SEMPRE IN BACKGROUND
+                if (_showIdle)
+                  Lottie.asset(
+                    'assets/Animations/plant_idle.json',
+                    width: 400,
+                    height: 400,
+                    fit: BoxFit.contain,
+                    controller: _animationController,
+                    onLoaded: (composition) {
+                      _animationController.duration = const Duration(seconds: 5); // plant_idle dura 5 sec
+                    },
+                  ),
+
+                // ANIMAZIONE INIZIALE, SPARISCE AUTOMATICAMENTE
+                if (!_showIdle)
+                  Lottie.asset(
+                    'assets/Animations/animationTest1.json',
+                    width: 400,
+                    height: 400,
+                    fit: BoxFit.contain,
+                    controller: _animationController,
+                    onLoaded: (composition) {
+                      _animationController.duration = const Duration(seconds: 2); // animationTest1 dura 2 sec
+                    },
+                  ),
               ],
             ),
           ),
+
+          // Bottom Menu
+          _bottomMenu(),
         ],
       ),
     );
   }
 
-  Widget _bottomMenuButton(BuildContext context, IconData icon, String label, Widget? page) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () {
-          if (page != null) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => page));
-          }
-        },
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: Colors.white, size: 30),
-            Text(label, style: const TextStyle(color: Colors.white)),
-          ],
-        ),
+  Widget _bottomMenu() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 15),
+      color: Colors.green[700],
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _bottomMenuButton(Icons.videogame_asset, 'Games', const Games()),
+          _bottomMenuButton(Icons.add_task, 'Streak', const Streak()),
+          _bottomMenuButton(Icons.explore_rounded, 'Learn', const Learn()),
+        ],
+      ),
+    );
+  }
+
+  Widget _bottomMenuButton(IconData icon, String label, Widget page) {
+    return GestureDetector(
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => page)),
+      child: Column(
+        children: [
+          Icon(icon, color: Colors.white, size: 30),
+          Text(label, style: const TextStyle(color: Colors.white)),
+        ],
       ),
     );
   }

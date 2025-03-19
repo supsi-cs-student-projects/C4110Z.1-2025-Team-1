@@ -13,30 +13,50 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final AudioPlayer _audioPlayer = AudioPlayer();
-  late AnimationController _animationController;
+  late AnimationController _initialAnimationController;
+  late AnimationController _idleAnimationController;
+  late AnimationController _cloudAnimationController; // New controller for clouds
   bool _isMuted = false;
-  bool _showIdle = false; // Controlla se mostrare plant_idle
+  bool _showIdle = false; // Controls when to show plant_idle
 
   @override
   void initState() {
     super.initState();
     _playMusic();
 
-    _animationController = AnimationController(
+    // Animation controller for animationTest1 (Initial animation)
+    _initialAnimationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2), // Durata iniziale per animationTest1
+      duration: const Duration(seconds: 2),
     );
 
-    // Quando animationTest1 finisce, cambiamo animazione
-    _animationController.addStatusListener((status) {
+    // Animation controller for plant_idle (Looped animation)
+    _idleAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 5),
+    );
+
+
+    // When animationTest1 finishes, switch to plant_idle
+    _initialAnimationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _switchToIdle();
       }
     });
 
-    _animationController.forward();
+    // Animation controller for the scrolling clouds
+    _cloudAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 400), // Controls speed of scrolling
+      lowerBound: 0,
+      upperBound: 1,
+    );
+
+    _initialAnimationController.forward(); // Start initial animation
+
+    _cloudAnimationController.repeat(reverse: false); // Start cloud animation
   }
 
   void _playMusic() async {
@@ -66,28 +86,37 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   void _switchToIdle() {
     setState(() {
       _showIdle = true;
-      _animationController.duration = const Duration(seconds: 5); // Cambia la durata per plant_idle
     });
 
-    _animationController.reset();
-    _animationController.forward(); // plant_idle deve essere ripetuta
+    _idleAnimationController.repeat(); // Start looping plant_idle
   }
 
   @override
   void dispose() {
     _audioPlayer.dispose();
-    _animationController.dispose();
+    _initialAnimationController.dispose();
+    _idleAnimationController.dispose();
+    _cloudAnimationController.dispose(); // Dispose cloud animation controller
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height - 200;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final groundHeight = screenHeight * 0.3; // Adjust this to your liking
+    final groundWidth = screenWidth;
+    final imagePosition = -groundHeight; // Adjust the bottom positioning
+    final plantHeight = 500.0;
+    final plantWidth = 500.0;
+    final plantBottomPosition = groundHeight - 110; // Adjust the bottom positioning
+
     return Scaffold(
       body: Column(
         children: [
           // Top bar
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -107,37 +136,83 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             ),
           ),
 
-          // Animated Lottie Widget (Smooth Transition)
           Expanded(
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                // ANIMAZIONE IDLE SEMPRE IN BACKGROUND
-                if (_showIdle)
-                  Lottie.asset(
-                    'assets/Animations/plant_idle.json',
-                    width: 400,
-                    height: 400,
-                    fit: BoxFit.contain,
-                    controller: _animationController,
-                    onLoaded: (composition) {
-                      _animationController.duration = const Duration(seconds: 5); // plant_idle dura 5 sec
-                    },
+            child: SizedBox.expand(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+
+
+                  //animated clouds
+                  Positioned(
+                    top: 0,
+                    child: AnimatedBuilder(
+                      animation: _cloudAnimationController,
+                      builder: (context, child) {
+                        return Transform.translate(
+                          offset: Offset(
+                            //from right to left
+                            (1 - _cloudAnimationController.value * screenWidth),
+                            0,
+                          ),
+                          child: Image.asset(
+                            'assets/images/plant/clouds.png',
+                            fit: BoxFit.cover,
+                            width: screenWidth * 4,
+                            height: screenHeight,
+                          ),
+                        );
+                      },
+                    ),
                   ),
 
-                // ANIMAZIONE INIZIALE, SPARISCE AUTOMATICAMENTE
-                if (!_showIdle)
-                  Lottie.asset(
-                    'assets/Animations/animationTest1.json',
-                    width: 400,
-                    height: 400,
-                    fit: BoxFit.contain,
-                    controller: _animationController,
-                    onLoaded: (composition) {
-                      _animationController.duration = const Duration(seconds: 2); // animationTest1 dura 2 sec
-                    },
+
+
+
+                  // Ground image (still at the bottom)
+                  Positioned(
+                    bottom: 0, // Position at the bottom of the screen
+                    child: Image.asset(
+                      'assets/images/plant/ground.png',
+                      fit: BoxFit.fill, // Ensures the image scales to the width without getting cropped
+                      height: groundHeight, // Use responsive height
+                      width: groundWidth, // Ensure it stretches across the full width
+                    ),
                   ),
-              ],
+
+                  // Idle Animation (if active)
+                  if (_showIdle)
+                    Positioned(
+                      bottom: plantBottomPosition, // Position the animation on top of the ground
+                      child: Lottie.asset(
+                        'assets/Animations/plant_idle.json',
+                        width: plantWidth,
+                        height: plantHeight,
+                        fit: BoxFit.contain,
+                        controller: _idleAnimationController,
+                        onLoaded: (composition) {
+                          _idleAnimationController.duration = const Duration(seconds: 5);
+                        },
+                      ),
+                    ),
+
+                  // Initial Animation (if active)
+                  if (!_showIdle)
+                    Positioned(
+                      bottom: plantBottomPosition, // Position the animation on top of the ground
+                      child: Lottie.asset(
+                        'assets/Animations/animationTest1.json',
+                        width: plantWidth,
+                        height: plantHeight,
+                        fit: BoxFit.contain,
+                        controller: _initialAnimationController,
+                        onLoaded: (composition) {
+                          _initialAnimationController.duration = const Duration(seconds: 2);
+                        },
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
 
@@ -152,7 +227,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 15),
-      color: Colors.green[700],
+      color: Color(0xFF02af5c),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

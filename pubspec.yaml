@@ -70,6 +70,7 @@ flutter:
     - assets/images/AB_logo.png
     - assets/images/plant/plant_happy.png
     - assets/images/plant/ground.png
+    - assets/images/plant/groundWithShadow.png
     - assets/images/plant/clouds.png
     - assets/audio/homepage_music.ogg
     - assets/Animations/animationTest1.json

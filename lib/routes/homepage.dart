@@ -185,6 +185,29 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         controller: _showIdle ? _idleAnimationController : _initialAnimationController,
                       ),
                     ),
+
+
+                  Positioned(
+                    right: 20,
+                    bottom: plantBottomPosition + 100,
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      height: 200,
+                      width: 400,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                      ),
+                      child: const Text(
+                        "This is a random text box!",
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+
+
+
                 ],
               ),
             ),
@@ -194,6 +217,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
+
 
   Widget _bottomMenu() {
     return Container(

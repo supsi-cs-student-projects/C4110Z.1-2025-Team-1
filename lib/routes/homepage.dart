@@ -1,3 +1,4 @@
+import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
@@ -7,7 +8,9 @@ import 'Streak.dart';
 import 'Learn.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String username;
+
+  const HomePage({super.key, required this.username});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -15,6 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final AudioPlayer _audioPlayer = AudioPlayer();
+  final authService = AuthService();
   late AnimationController _initialAnimationController;
   late AnimationController _idleAnimationController;
   late AnimationController _cloudAnimationController;
@@ -185,6 +189,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         controller: _showIdle ? _idleAnimationController : _initialAnimationController,
                       ),
                     ),
+                    Positioned(
+                    bottom: plantBottomPosition + plantHeight - 50, // Adjust position above the plant
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                      ),
+                      child: Text(
+                        'Welcome, ${widget.username}!',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
 
 
                   Positioned(

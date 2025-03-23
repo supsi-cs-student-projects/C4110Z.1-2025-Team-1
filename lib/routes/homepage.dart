@@ -17,12 +17,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final AudioPlayer _audioPlayer = AudioPlayer();
   late AnimationController _initialAnimationController;
   late AnimationController _idleAnimationController;
+  late AnimationController _clickPlantAnimationController;
   late AnimationController _cloudAnimationController;
   bool _isMuted = false;
-  bool _showIdle = false;
+  String _currentAnimation = 'initial';
 
   late LottieComposition _initialComposition;
   late LottieComposition _idleComposition;
+  late LottieComposition _clickPlantComposition;
   bool _isCompositionLoaded = false;
 
   @override
@@ -40,26 +42,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       duration: const Duration(seconds: 5),
     );
 
+    _clickPlantAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+
     _cloudAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 400),
       lowerBound: 0,
       upperBound: 1,
-    );
+    )..repeat(reverse: false);
 
     _loadAnimations();
-    _cloudAnimationController.repeat(reverse: false);
   }
 
   Future<void> _loadAnimations() async {
-    _initialComposition = await _loadLottieComposition('assets/Animations/animationTest1.json');
+    _initialComposition = await _loadLottieComposition('assets/Animations/initial_animation.json');
     _idleComposition = await _loadLottieComposition('assets/Animations/plant_idle.json');
+    _clickPlantComposition = await _loadLottieComposition('assets/Animations/click_plant.json');
 
     setState(() {
       _isCompositionLoaded = true;
     });
 
-    _initialAnimationController.forward().whenComplete(() => _switchToIdle());
+    _initialAnimationController.forward().whenComplete(() {
+      setState(() {
+        _currentAnimation = 'idle';
+      });
+      _idleAnimationController.repeat();
+    });
   }
 
   Future<LottieComposition> _loadLottieComposition(String path) async {
@@ -91,11 +103,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  void _switchToIdle() {
-    setState(() {
-      _showIdle = true;
-    });
-    _idleAnimationController.repeat();
+  void _playClickAnimation() {
+    if (_currentAnimation == 'idle') {
+      setState(() {
+        _currentAnimation = 'click';
+      });
+
+      _clickPlantAnimationController.reset();
+      _clickPlantAnimationController.forward().whenComplete(() {
+        setState(() {
+          _currentAnimation = 'idle';
+        });
+        _idleAnimationController.reset();
+        _idleAnimationController.repeat();
+      });
+    }
   }
 
   @override
@@ -103,6 +125,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _audioPlayer.dispose();
     _initialAnimationController.dispose();
     _idleAnimationController.dispose();
+    _clickPlantAnimationController.dispose();
     _cloudAnimationController.dispose();
     super.dispose();
   }
@@ -112,9 +135,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final screenHeight = MediaQuery.of(context).size.height - 200;
     final screenWidth = MediaQuery.of(context).size.width;
     final groundHeight = screenHeight * 0.3;
-    final groundWidth = screenWidth;
-    final plantHeight = 500.0;
-    final plantWidth = 500.0;
     final plantBottomPosition = groundHeight - 110;
 
     return Scaffold(
@@ -171,20 +191,40 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       'assets/images/plant/groundWithShadow.png',
                       fit: BoxFit.fill,
                       height: groundHeight,
-                      width: groundWidth,
+                      width: screenWidth,
                     ),
                   ),
+
+
+
                   if (_isCompositionLoaded)
                     Positioned(
                       bottom: plantBottomPosition,
-                      child: Lottie(
-                        composition: _showIdle ? _idleComposition : _initialComposition,
-                        width: plantWidth,
-                        height: plantHeight,
-                        fit: BoxFit.contain,
-                        controller: _showIdle ? _idleAnimationController : _initialAnimationController,
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: GestureDetector(
+                          onTap: _playClickAnimation,
+                          child: Lottie(
+                            composition: _currentAnimation == 'initial'
+                                ? _initialComposition
+                                : _currentAnimation == 'click'
+                                ? _clickPlantComposition
+                                : _idleComposition,
+                            width: 500,
+                            height: 500,
+                            fit: BoxFit.contain,
+                            controller: _currentAnimation == 'initial'
+                                ? _initialAnimationController
+                                : _currentAnimation == 'click'
+                                ? _clickPlantAnimationController
+                                : _idleAnimationController,
+                          ),
+                        ),
                       ),
                     ),
+
+
+
 
 
                   Positioned(
@@ -205,9 +245,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-
-
-
                 ],
               ),
             ),
@@ -217,7 +254,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
-
 
   Widget _bottomMenu() {
     return Container(

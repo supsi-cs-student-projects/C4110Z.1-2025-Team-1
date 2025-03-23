@@ -73,8 +73,9 @@ flutter:
     - assets/images/plant/groundWithShadow.png
     - assets/images/plant/clouds.png
     - assets/audio/homepage_music.ogg
-    - assets/Animations/animationTest1.json
+    - assets/Animations/initial_animation.json
     - assets/Animations/plant_idle.json
+    - assets/Animations/click_plant.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -44,7 +44,9 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       // If login succeeds, navigate to home route
-      GoRouter.of(context).go('CHANGE THIS');
+      Navigator.pushReplacement(context, 
+        MaterialPageRoute(builder: (context) => HomePage(username: userAccount.name ?? '')),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Login failed: $e')),
@@ -54,6 +56,33 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<models.Account>(
+      future: _authService.getAccount(), // Fetch the account
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Show a loading indicator while waiting for the result
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasData) {
+          // If the user is logged in, navigate to HomePage
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(username: snapshot.data!.name ?? 'User'),
+              ),
+            );
+          });
+          return const SizedBox(); // Return an empty widget while navigating
+        } else {
+          // If no session exists, show the login page
+          return _buildLoginPage(context);
+        }
+      },
+    );
+  }
+
+  Widget _buildLoginPage(BuildContext context) {
+
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -185,13 +214,8 @@ class _LoginPageState extends State<LoginPage> {
 
                         //LOGIN BUTTON
                         ElevatedButton(
-
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const HomePage()),
-                            );
+                            _login();
                           },
 
                           style: ElevatedButton.styleFrom(

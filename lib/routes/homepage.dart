@@ -226,8 +226,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ),
                       ),
                     ),
+
                     Positioned(
-                    bottom: plantBottomPosition + plantHeight - 50, // Adjust position above the plant
+                    bottom: plantBottomPosition - 50, // Adjust position above the plant
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(

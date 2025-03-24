@@ -4,6 +4,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:demo_todo_with_flutter/routes/Games.dart';
 import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
+import 'package:demo_todo_with_flutter/routes/higher_or_lower.dart';
 import 'Streak.dart';
 import 'Learn.dart';
 
@@ -56,15 +57,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       duration: const Duration(seconds: 400),
       lowerBound: 0,
       upperBound: 1,
-    )..repeat(reverse: false);
+    )
+      ..repeat(reverse: false);
 
     _loadAnimations();
   }
 
   Future<void> _loadAnimations() async {
-    _initialComposition = await _loadLottieComposition('assets/Animations/initial_animation.json');
-    _idleComposition = await _loadLottieComposition('assets/Animations/plant_idle.json');
-    _clickPlantComposition = await _loadLottieComposition('assets/Animations/click_plant.json');
+    _initialComposition =
+    await _loadLottieComposition('assets/Animations/initial_animation.json');
+    _idleComposition =
+    await _loadLottieComposition('assets/Animations/plant_idle.json');
+    _clickPlantComposition =
+    await _loadLottieComposition('assets/Animations/click_plant.json');
 
     setState(() {
       _isCompositionLoaded = true;
@@ -137,8 +142,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height - 200;
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height - 200;
+    final screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
     final groundHeight = screenHeight * 0.3;
     final plantBottomPosition = groundHeight - 110;
 
@@ -153,13 +164,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 IconButton(
                   icon: const Icon(Icons.logout, size: 30),
                   onPressed: _logout,
+                  tooltip: "Logout",
                 ),
                 Text(
                   'Welcome, ${widget.username}!',
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
-                  icon: Icon(_isMuted ? Icons.volume_off : Icons.volume_up, size: 30),
+                  icon: Icon(
+                      _isMuted ? Icons.volume_off : Icons.volume_up, size: 30),
                   onPressed: _toggleMute,
                 ),
               ],
@@ -201,7 +214,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
 
 
-
                   if (_isCompositionLoaded)
                     Positioned(
                       bottom: plantBottomPosition,
@@ -239,11 +251,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
-                        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                        boxShadow: [BoxShadow(color: Colors.black26,
+                            blurRadius: 4)
+                        ],
                       ),
                       child: const Text(
                         "This is a random text box!",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -265,7 +280,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _bottomMenuButton(Icons.videogame_asset, 'Games', const Games()),
+
+          Column(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.videogame_asset, size: 30),
+                color: Colors.white,
+                onPressed: () =>
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const GamePage()),
+                    ),
+              ),
+              const Text('Games', style: TextStyle(color: Colors.white)),
+            ],
+          ),
+
+
           _bottomMenuButton(Icons.add_task, 'Streak', const Streak()),
           _bottomMenuButton(Icons.explore_rounded, 'Learn', const Learn()),
         ],
@@ -275,7 +306,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget _bottomMenuButton(IconData icon, String label, Widget page) {
     return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => page)),
+      onTap: () =>
+          Navigator.push(context, MaterialPageRoute(builder: (_) => page)),
       child: Column(
         children: [
           Icon(icon, color: Colors.white, size: 30),
@@ -284,4 +316,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
+
+
 }

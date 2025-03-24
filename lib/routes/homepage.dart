@@ -151,11 +151,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.arrow_back, size: 30),
+                  icon: const Icon(Icons.logout, size: 30),
                   onPressed: _logout,
                 ),
-                const Text(
-                  'Home Page',
+                Text(
+                  'Welcome, ${widget.username}!',
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   Positioned(
                     bottom: 0,
                     child: Image.asset(
-                      'assets/images/plant/groundWithShadow.png',
+                      'assets/images/plant/ground.png',
                       fit: BoxFit.fill,
                       height: groundHeight,
                       width: screenWidth,
@@ -227,25 +227,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ),
                       ),
                     ),
-
-                    Positioned(
-                    bottom: plantBottomPosition - 50, // Adjust position above the plant
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
-                      ),
-                      child: Text(
-                        'Welcome, ${widget.username}!',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-
-
-
 
 
                   Positioned(

@@ -100,7 +100,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  void _goToLoginPage() {
+  void _logout() async {
+    await authService.logout();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const LoginPage()),
@@ -151,7 +152,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               children: [
                 IconButton(
                   icon: const Icon(Icons.arrow_back, size: 30),
-                  onPressed: _goToLoginPage,
+                  onPressed: _logout,
                 ),
                 const Text(
                   'Home Page',

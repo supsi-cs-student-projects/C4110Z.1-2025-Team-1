@@ -1,6 +1,7 @@
 import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import 'package:demo_todo_with_flutter/routes/Game1/higher_or_lower.dart';
 import 'Streak.dart';
@@ -135,12 +136,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     bottom: plantBottomPosition,
                     child: GestureDetector(
                       onTap: () {},
+
+
+                      //loop this animation
                       child: Image.asset(
                         'assets/Animations/pixelart_test.gif',
+
                         width: 500,
                         height: 500,
                         fit: BoxFit.contain,
-                      ),
+                      )
+
                     ),
                   ),
                 ],

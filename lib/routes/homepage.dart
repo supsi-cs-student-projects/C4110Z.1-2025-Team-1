@@ -1,7 +1,6 @@
 import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:lottie/lottie.dart';
 import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import 'package:demo_todo_with_flutter/routes/Game1/higher_or_lower.dart';
 import 'Streak.dart';
@@ -19,72 +18,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final AudioPlayer _audioPlayer = AudioPlayer();
   final authService = AuthService();
-  late AnimationController _initialAnimationController;
-  late AnimationController _idleAnimationController;
-  late AnimationController _clickPlantAnimationController;
   late AnimationController _cloudAnimationController;
   bool _isMuted = false;
-  String _currentAnimation = 'initial';
-
-  late LottieComposition _initialComposition;
-  late LottieComposition _idleComposition;
-  late LottieComposition _clickPlantComposition;
-  bool _isCompositionLoaded = false;
 
   @override
   void initState() {
     super.initState();
     _playMusic();
 
-    _initialAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    );
-
-    _idleAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 5),
-    );
-
-    _clickPlantAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    );
-
     _cloudAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 400),
       lowerBound: 0,
       upperBound: 1,
-    )
-      ..repeat(reverse: false);
-
-    _loadAnimations();
-  }
-
-  Future<void> _loadAnimations() async {
-    _initialComposition =
-    await _loadLottieComposition('assets/Animations/initial_animation.json');
-    _idleComposition =
-    await _loadLottieComposition('assets/Animations/plant_idle.json');
-    _clickPlantComposition =
-    await _loadLottieComposition('assets/Animations/click_plant.json');
-
-    setState(() {
-      _isCompositionLoaded = true;
-    });
-
-    _initialAnimationController.forward().whenComplete(() {
-      setState(() {
-        _currentAnimation = 'idle';
-      });
-      _idleAnimationController.repeat();
-    });
-  }
-
-  Future<LottieComposition> _loadLottieComposition(String path) async {
-    final composition = await AssetLottie(path).load();
-    return composition;
+    )..repeat(reverse: false);
   }
 
   void _playMusic() async {
@@ -112,43 +59,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  void _playClickAnimation() {
-    if (_currentAnimation == 'idle') {
-      setState(() {
-        _currentAnimation = 'click';
-      });
-
-      _clickPlantAnimationController.reset();
-      _clickPlantAnimationController.forward().whenComplete(() {
-        setState(() {
-          _currentAnimation = 'idle';
-        });
-        _idleAnimationController.reset();
-        _idleAnimationController.repeat();
-      });
-    }
-  }
-
   @override
   void dispose() {
     _audioPlayer.dispose();
-    _initialAnimationController.dispose();
-    _idleAnimationController.dispose();
-    _clickPlantAnimationController.dispose();
     _cloudAnimationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height - 200;
-    final screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final screenHeight = MediaQuery.of(context).size.height - 200;
+    final screenWidth = MediaQuery.of(context).size.width;
     final groundHeight = screenHeight * 0.3;
     final plantBottomPosition = groundHeight - 110;
 
@@ -170,8 +91,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
-                  icon: Icon(
-                      _isMuted ? Icons.volume_off : Icons.volume_up, size: 30),
+                  icon: Icon(_isMuted ? Icons.volume_off : Icons.volume_up, size: 30),
                   onPressed: _toggleMute,
                 ),
               ],
@@ -211,53 +131,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       width: screenWidth,
                     ),
                   ),
-
-
-                  if (_isCompositionLoaded)
-                    Positioned(
-                      bottom: plantBottomPosition,
-                      child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: GestureDetector(
-                          onTap: _playClickAnimation,
-                          child: Lottie(
-                            composition: _currentAnimation == 'initial'
-                                ? _initialComposition
-                                : _currentAnimation == 'click'
-                                ? _clickPlantComposition
-                                : _idleComposition,
-                            width: 500,
-                            height: 500,
-                            fit: BoxFit.contain,
-                            controller: _currentAnimation == 'initial'
-                                ? _initialAnimationController
-                                : _currentAnimation == 'click'
-                                ? _clickPlantAnimationController
-                                : _idleAnimationController,
-                          ),
-                        ),
-                      ),
-                    ),
-
-
                   Positioned(
-                    right: 20,
-                    bottom: plantBottomPosition + 100,
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      height: 200,
-                      width: 400,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [BoxShadow(color: Colors.black26,
-                            blurRadius: 4)
-                        ],
-                      ),
-                      child: const Text(
-                        "This is a random text box!",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                    bottom: plantBottomPosition,
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: Image.asset(
+                        'assets/Animations/pixelart_test.gif',
+                        width: 500,
+                        height: 500,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
@@ -279,23 +161,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-
-          Column(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.videogame_asset, size: 30),
-                color: Colors.white,
-                onPressed: () =>
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const GamePage()),
-                    ),
-              ),
-              const Text('Games', style: TextStyle(color: Colors.white)),
-            ],
-          ),
-
-
+          _bottomMenuButton(Icons.videogame_asset, 'Games', const GamePage()),
           _bottomMenuButton(Icons.add_task, 'Streak', const Streak()),
           _bottomMenuButton(Icons.explore_rounded, 'Learn', const Learn()),
         ],
@@ -305,8 +171,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget _bottomMenuButton(IconData icon, String label, Widget page) {
     return GestureDetector(
-      onTap: () =>
-          Navigator.push(context, MaterialPageRoute(builder: (_) => page)),
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => page)),
       child: Column(
         children: [
           Icon(icon, color: Colors.white, size: 30),
@@ -315,6 +180,4 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
-
-
 }

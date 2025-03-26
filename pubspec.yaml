@@ -77,6 +77,7 @@ flutter:
     - assets/Animations/initial_animation.json
     - assets/Animations/plant_idle.json
     - assets/Animations/click_plant.json
+    - assets/Animations/pixelart_test.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

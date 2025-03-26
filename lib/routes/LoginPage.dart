@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       // If login succeeds, navigate to home route
-      Navigator.pushReplacement(context, 
+      Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (context) => HomePage(username: userAccount.name ?? '')),
       );
     } catch (e) {
@@ -56,6 +56,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return FutureBuilder<models.Account>(
       future: _authService.getAccount(), // Fetch the account
       builder: (context, snapshot) {
@@ -82,6 +83,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildLoginPage(BuildContext context) {
+
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -212,12 +214,15 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
 
+
+
+
+
                         //LOGIN BUTTON
                         ElevatedButton(
                           onPressed: () {
                             _login();
                           },
-
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF02AF5C),
                             padding: const EdgeInsets.symmetric(
@@ -241,7 +246,6 @@ class _LoginPageState extends State<LoginPage> {
 
                     const SizedBox(height: 24),
 
-
                     TextButton(
                       onPressed: () {
                         Navigator.push(
@@ -259,7 +263,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
 
-            
                   ],
                 ),
               ),
@@ -270,4 +273,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-

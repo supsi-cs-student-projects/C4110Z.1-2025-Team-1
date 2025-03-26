@@ -2,9 +2,8 @@ import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
-import 'package:demo_todo_with_flutter/routes/Games.dart';
 import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
-import 'package:demo_todo_with_flutter/routes/higher_or_lower.dart';
+import 'package:demo_todo_with_flutter/routes/Game1/higher_or_lower.dart';
 import 'Streak.dart';
 import 'Learn.dart';
 

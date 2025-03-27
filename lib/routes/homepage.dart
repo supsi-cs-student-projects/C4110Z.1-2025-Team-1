@@ -4,6 +4,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import 'package:demo_todo_with_flutter/routes/Game1/higher_or_lower.dart';
+import 'package:lottie/lottie.dart';
 import 'Streak.dart';
 import 'Learn.dart';
 
@@ -20,6 +21,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final AudioPlayer _audioPlayer = AudioPlayer();
   final authService = AuthService();
   late AnimationController _cloudAnimationController;
+  late Future<LottieComposition> _plantAnimation;
   bool _isMuted = false;
 
   @override
@@ -33,6 +35,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       lowerBound: 0,
       upperBound: 1,
     )..repeat(reverse: false);
+
+    _plantAnimation = _loadLottieAnimation();
+  }
+
+  Future<LottieComposition> _loadLottieAnimation() async {
+    return await AssetLottie('assets/Animations/plant_idle.json').load();
   }
 
   void _playMusic() async {
@@ -71,8 +79,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height - 200;
     final screenWidth = MediaQuery.of(context).size.width;
-    final groundHeight = screenHeight * 0.3;
-    final plantBottomPosition = groundHeight - 110;
+    final groundHeight = screenHeight * 0.5;
+    final plantBottomPosition = groundHeight - 280;
 
     return Scaffold(
       body: Column(
@@ -132,23 +140,28 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       width: screenWidth,
                     ),
                   ),
+
+
+
                   Positioned(
                     bottom: plantBottomPosition,
                     child: GestureDetector(
                       onTap: () {},
-
-
-                      //loop this animation
-                      child: Image.asset(
-                        'assets/Animations/pixelart_test.gif',
-
-                        width: 500,
-                        height: 500,
-                        fit: BoxFit.contain,
-                      )
-
+                      child: FutureBuilder<LottieComposition>(
+                        future: _plantAnimation,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                            return Lottie(composition: snapshot.data!, width: 500, height: 500);
+                          } else {
+                            return CircularProgressIndicator();
+                          }
+                        },
+                      ),
                     ),
                   ),
+
+
+
                 ],
               ),
             ),
@@ -163,7 +176,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 15),
-      color: const Color(0xFF02af5c),
+      color: const Color(0xff46871a),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

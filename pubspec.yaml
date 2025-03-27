@@ -46,6 +46,7 @@ dependencies:
   lottie: ^3.0.0
   flame: ^1.26.1
   gif: ^2.2.0
+  flame_texturepacker: ^4.1.8
 
 dev_dependencies:
   flutter_test:
@@ -81,6 +82,10 @@ flutter:
     - assets/Animations/plant_idle.json
     - assets/Animations/click_plant.json
     - assets/Animations/pixelart_test.gif
+    - assets/images/pixel_animations/plant_idle.png
+    - assets/Animations/pixel_plant_idle.json
+    - assets/Animations/idle_plant.webp
+    - assets/Animations/idle_plant.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

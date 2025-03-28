@@ -47,6 +47,7 @@ dependencies:
   flame: ^1.26.1
   gif: ^2.2.0
   flame_texturepacker: ^4.1.8
+  video_player: ^2.2.14
 
 dev_dependencies:
   flutter_test:
@@ -86,6 +87,7 @@ flutter:
     - assets/Animations/pixel_plant_idle.json
     - assets/Animations/idle_plant.webp
     - assets/Animations/idle_plant.gif
+    - assets/Animations/plant_idle.mp4
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

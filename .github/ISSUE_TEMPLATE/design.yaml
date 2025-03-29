@@ -1,14 +1,14 @@
-name: 🚀 Feature_custom
-description: "Submit a proposal for a new feature"
-title: "🚀 Feature: "
-labels: [feature]
+name: ✏️ Design
+description: "Submit a proposal for a new design"
+title: "✏️ Design: "
+labels: [design]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out our feature request form 🙏
+        Thanks for taking the time to fill out our design request form 🙏
   - type: textarea
-    id: feature-description
+    id: design-description
     validations:
       required: true
     attributes:

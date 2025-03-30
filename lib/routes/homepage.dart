@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     _cloudAnimationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 400),
+      duration: const Duration(seconds: 600),
       lowerBound: 0,
       upperBound: 1,
     )..repeat(reverse: false);
@@ -77,10 +77,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height - 200;
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width + 300;
     final groundHeight = screenHeight * 0.5;
-    final plantBottomPosition = groundHeight - 280;
+    final plantBottomPosition = groundHeight * 0.28;
 
     return Scaffold(
       body: Column(
@@ -122,9 +122,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             0,
                           ),
                           child: Image.asset(
-                            'assets/images/plant/clouds.png',
+                            'assets/images/background/background3.jpg',
                             fit: BoxFit.cover,
-                            width: screenWidth * 4,
+                            width: screenWidth * 2.5,
                             height: screenHeight,
                           ),
                         );
@@ -134,13 +134,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   Positioned(
                     bottom: 0,
                     child: Image.asset(
-                      'assets/images/plant/ground.png',
+                      'assets/images/pixel_animations/ground_pixel.png',
                       fit: BoxFit.fill,
-                      height: groundHeight,
+                      height: groundHeight * 0.8,
                       width: screenWidth,
                     ),
                   ),
-
 
 
                   Positioned(
@@ -151,7 +150,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         future: _plantAnimation,
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-                            return Lottie(composition: snapshot.data!, width: 500, height: 500);
+                            return Lottie(composition: snapshot.data!, width: 400, height: 400);
                           } else {
                             return CircularProgressIndicator();
                           }
@@ -166,17 +165,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
           ),
-          _bottomMenu(),
+          //_bottomMenu(),
         ],
       ),
     );
   }
 
-  Widget _bottomMenu() {
+  /*Widget _bottomMenu() {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 15),
-      color: const Color(0xff46871a),
+      color: const Color(0xff00aa4e),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -186,7 +185,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ],
       ),
     );
-  }
+  }*/
 
   Widget _bottomMenuButton(IconData icon, String label, Widget page) {
     return GestureDetector(

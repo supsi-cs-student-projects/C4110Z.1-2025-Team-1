@@ -1,12 +1,11 @@
+import 'package:demo_todo_with_flutter/routes/Game1/higher_or_lower.dart';
+import 'package:demo_todo_with_flutter/routes/Learn.dart';
+import 'package:demo_todo_with_flutter/routes/Streak.dart';
 import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
-import 'package:demo_todo_with_flutter/routes/Game1/higher_or_lower.dart';
 import 'package:lottie/lottie.dart';
-import 'Streak.dart';
-import 'Learn.dart';
 
 class HomePage extends StatefulWidget {
   final String username;
@@ -23,6 +22,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late AnimationController _cloudAnimationController;
   late Future<LottieComposition> _plantAnimation;
   bool _isMuted = false;
+  bool _isWindowOpen = true; // Stato della finestra (aperta o chiusa)
 
   @override
   void initState() {
@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width + 300;
+    final screenWidth = MediaQuery.of(context).size.width;
     final groundHeight = screenHeight * 0.5;
     final plantBottomPosition = groundHeight * 0.28;
 
@@ -86,7 +86,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            padding: EdgeInsets.symmetric(
+              horizontal:
+                  screenWidth * 0.05, // Padding orizzontale proporzionale
+              vertical: screenHeight * 0.02, // Padding verticale proporzionale
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -97,10 +101,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
                 Text(
                   'Welcome, ${widget.username}!',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
-                  icon: Icon(_isMuted ? Icons.volume_off : Icons.volume_up, size: 30),
+                  icon: Icon(_isMuted ? Icons.volume_off : Icons.volume_up,
+                      size: 30),
                   onPressed: _toggleMute,
                 ),
               ],
@@ -140,8 +146,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       width: screenWidth,
                     ),
                   ),
-
-
                   Positioned(
                     bottom: plantBottomPosition,
                     child: GestureDetector(
@@ -149,33 +153,141 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       child: FutureBuilder<LottieComposition>(
                         future: _plantAnimation,
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-                            return Lottie(composition: snapshot.data!, width: 400, height: 400);
+                          if (snapshot.connectionState ==
+                                  ConnectionState.done &&
+                              snapshot.hasData) {
+                            return Lottie(
+                                composition: snapshot.data!,
+                                width: 400,
+                                height: 400);
                           } else {
-                            return CircularProgressIndicator();
+                            return const CircularProgressIndicator();
                           }
                         },
                       ),
                     ),
                   ),
-
-
-
+                  Positioned(
+                    top: screenHeight * 0.1, // Posiziona la finestra in alto
+                    left: _isWindowOpen
+                        ? screenWidth * 0.15 // Posizione normale quando aperta
+                        : screenWidth -
+                            50, // Sposta la finestra quasi fuori dallo schermo
+                    right: _isWindowOpen
+                        ? screenWidth * 0.15 // Margine destro quando aperta
+                        : null, // Rimuovi margine destro quando chiusa
+                    child: GestureDetector(
+                      onTap: () {
+                        if (!_isWindowOpen) {
+                          setState(() {
+                            _isWindowOpen = true; // Riapre la finestra
+                          });
+                        }
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(
+                            milliseconds: 300), // Animazione fluida
+                        height: _isWindowOpen
+                            ? screenHeight *
+                                0.4 // Altezza normale quando aperta
+                            : 150, // Altezza sufficiente per visualizzare la scritta verticale
+                        width: _isWindowOpen
+                            ? screenWidth *
+                                0.7 // Larghezza normale quando aperta
+                            : 50, // Larghezza ridotta quando chiusa
+                        padding: _isWindowOpen
+                            ? const EdgeInsets.all(
+                                20) // Padding normale quando aperta
+                            : const EdgeInsets.symmetric(
+                                vertical:
+                                    10), // Padding verticale quando chiusa
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.8),
+                          borderRadius: BorderRadius.circular(0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.green.withOpacity(0.2),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: _isWindowOpen
+                            ? SingleChildScrollView(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      'Curiosities',
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    const Text(
+                                      'Here is the curiosities window.',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    const SizedBox(height: 40),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _isWindowOpen =
+                                              false; // Chiude la finestra
+                                        });
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius
+                                              .zero, // Rimuove i bordi stondati
+                                        ),
+                                        backgroundColor: const Color(
+                                            0xFF18a663), // Colore di sfondo (opzionale)
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                            vertical:
+                                                10), // Padding (opzionale)
+                                      ),
+                                      child: const Text('Close'),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : const Center(
+                                // Centra la scritta verticalmente e orizzontalmente
+                                child: RotatedBox(
+                                  quarterTurns:
+                                      3, // Ruota il testo di 90° in senso antiorario
+                                  child: const Text(
+                                    'Curiosities',
+                                    style: TextStyle(
+                                      fontSize:
+                                          20, // Aumenta la dimensione del testo
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
-          //_bottomMenu(),
+          _bottomMenu(),
         ],
       ),
     );
   }
 
-  /*Widget _bottomMenu() {
+  Widget _bottomMenu() {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 15),
-      color: const Color(0xff00aa4e),
+      color: const Color(0xFF18a663),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -185,11 +297,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ],
       ),
     );
-  }*/
+  }
 
   Widget _bottomMenuButton(IconData icon, String label, Widget page) {
     return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => page)),
+      onTap: () =>
+          Navigator.push(context, MaterialPageRoute(builder: (_) => page)),
       child: Column(
         children: [
           Icon(icon, color: Colors.white, size: 30),

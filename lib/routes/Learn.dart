@@ -1,6 +1,4 @@
-import 'package:demo_todo_with_flutter/routes/RegisterPage.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:appwrite/models.dart' as models;
@@ -164,10 +162,7 @@ class _LearnPageState extends State<Learn> {
                           fontFamily: 'Lexend', color: Colors.black),
                     ),
                     const SizedBox(height: 24),
-
                     const SizedBox(height: 24),
-
-
                   ],
                 ),
               ),
@@ -178,4 +173,3 @@ class _LearnPageState extends State<Learn> {
     );
   }
 }
-

@@ -2,7 +2,6 @@ import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:demo_todo_with_flutter/services/auth.dart';
-import 'package:appwrite/models.dart' as models;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -30,26 +29,26 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _register() async {
-  if (_passwordController1.text != _passwordController2.text) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Passwords do not match')),
-    );
-    return;
+    if (_passwordController1.text != _passwordController2.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Passwords do not match')),
+      );
+      return;
+    }
+    try {
+      final account = await _authService.signUp(
+        name: _nameController.text.trim(), // or pass an actual name if desired
+        email: _emailController.text.trim(),
+        password: _passwordController1.text.trim(),
+      );
+      // If sign-up succeeds, go to the home page
+      GoRouter.of(context).go('CHANGE THIS');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Registration failed: $e')),
+      );
+    }
   }
-  try {
-    final account = await _authService.signUp(
-      name: _nameController.text.trim(), // or pass an actual name if desired
-      email: _emailController.text.trim(),
-      password: _passwordController1.text.trim(),
-    );
-    // If sign-up succeeds, go to the home page
-    GoRouter.of(context).go('CHANGE THIS');
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Registration failed: $e')),
-    );
-  }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -234,9 +233,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-
-
-
                     TextButton(
                       onPressed: () {
                         Navigator.push(
@@ -253,9 +249,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                     ),
-
-
-
                   ],
                 ),
               ),

@@ -1,7 +1,5 @@
 import 'package:demo_todo_with_flutter/routes/RegisterPage.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:go_router/go_router.dart';
 import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:appwrite/models.dart' as models;
 
@@ -44,8 +42,10 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       // If login succeeds, navigate to home route
-      Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => HomePage(username: userAccount.name ?? '')),
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomePage(username: userAccount.name ?? '')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -56,7 +56,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return FutureBuilder<models.Account>(
       future: _authService.getAccount(), // Fetch the account
       builder: (context, snapshot) {
@@ -69,7 +68,8 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage(username: snapshot.data!.name ?? 'User'),
+                builder: (context) =>
+                    HomePage(username: snapshot.data!.name ?? 'User'),
               ),
             );
           });
@@ -83,8 +83,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildLoginPage(BuildContext context) {
-
-
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -197,7 +195,6 @@ class _LoginPageState extends State<LoginPage> {
                           fontFamily: 'Lexend', color: Colors.black),
                     ),
                     const SizedBox(height: 24),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -213,10 +210,6 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         ),
-
-
-
-
 
                         //LOGIN BUTTON
                         ElevatedButton(
@@ -239,13 +232,9 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         ),
-
-
                       ],
                     ),
-
                     const SizedBox(height: 24),
-
                     TextButton(
                       onPressed: () {
                         Navigator.push(
@@ -262,7 +251,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-
                   ],
                 ),
               ),

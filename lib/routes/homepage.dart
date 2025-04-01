@@ -1,12 +1,13 @@
+import 'package:demo_todo_with_flutter/routes/Game1/higher_or_lower.dart';
 import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
-import 'package:demo_todo_with_flutter/routes/Game1/higher_or_lower.dart';
 import 'package:lottie/lottie.dart';
 import 'Streak.dart';
 import 'Learn.dart';
+import '/services/CustomButton.dart';
 
 class HomePage extends StatefulWidget {
   final String username;
@@ -68,6 +69,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
+  void _games() async {
+    //await authService.logout();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const GamePage()),
+    );
+  }
+
   @override
   void dispose() {
     _audioPlayer.dispose();
@@ -97,7 +106,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
                 Text(
                   'Welcome, ${widget.username}!',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'RetroGaming',
+                  ),
                 ),
                 IconButton(
                   icon: Icon(_isMuted ? Icons.volume_off : Icons.volume_up, size: 30),
@@ -140,8 +153,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       width: screenWidth,
                     ),
                   ),
-
-
                   Positioned(
                     bottom: plantBottomPosition,
                     child: GestureDetector(
@@ -159,41 +170,54 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   ),
 
+                  Positioned(
+                    bottom: groundHeight * 0.06,
+                    left: screenWidth * 0.05,
+                    child: CustomButton(
+                      text: 'GAMES',
+                      imagePath: 'assets/images/buttons/games_button.png',
+                      onPressed: _games,
+
+                      textAlignment: Alignment.bottomRight,
+                      textPadding: const EdgeInsets.only(bottom: 10),
+                      fontFamily: 'RetroGaming', // Specify your custom font family here
+                    ),
+                  ),
+
+
+                  Positioned(
+                    bottom: groundHeight * 0.06,
+
+                    child: CustomButton(
+                      text: 'STREAK',
+                      imagePath: 'assets/images/buttons/games_button.png',
+                      onPressed: _games,
+                      textAlignment: Alignment.bottomRight,
+                      textPadding: const EdgeInsets.only(bottom: 10),
+                      fontFamily: 'RetroGaming', // Specify your custom font family here
+                    ),
+                  ),
+
+
+                  Positioned(
+                    bottom: groundHeight * 0.06,
+                    right: screenWidth * 0.05,
+                    child: CustomButton(
+                      text: 'ACCOUNT',
+                      imagePath: 'assets/images/buttons/games_button.png',
+                      onPressed: _games,
+                      textAlignment: Alignment.bottomRight,
+                      textPadding: const EdgeInsets.only(bottom: 10),
+                      fontFamily: 'RetroGaming', // Specify your custom font family here
+                    ),
+                  ),
+
 
 
                 ],
               ),
             ),
           ),
-          //_bottomMenu(),
-        ],
-      ),
-    );
-  }
-
-  /*Widget _bottomMenu() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 15),
-      color: const Color(0xff00aa4e),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _bottomMenuButton(Icons.videogame_asset, 'Games', const GamePage()),
-          _bottomMenuButton(Icons.add_task, 'Streak', const Streak()),
-          _bottomMenuButton(Icons.explore_rounded, 'Learn', const Learn()),
-        ],
-      ),
-    );
-  }*/
-
-  Widget _bottomMenuButton(IconData icon, String label, Widget page) {
-    return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => page)),
-      child: Column(
-        children: [
-          Icon(icon, color: Colors.white, size: 30),
-          Text(label, style: const TextStyle(color: Colors.white)),
         ],
       ),
     );

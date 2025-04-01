@@ -126,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          fontFamily: 'Lexend',
+                          fontFamily: 'RetroGaming',
                           color: Colors.black,
                         ),
                       ),
@@ -138,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                         'Login to access your account below.',
                         style: TextStyle(
                           fontSize: 16,
-                          fontFamily: 'Lexend',
+                          fontFamily: 'RetroGaming',
                           color: Colors.grey,
                         ),
                       ),
@@ -149,6 +149,12 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: InputDecoration(
                         labelText: 'Email Address',
                         hintText: 'Enter your email...',
+                        labelStyle: const TextStyle(
+                          fontFamily: 'RetroGaming',
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+
                         filled: true,
                         fillColor: Colors.grey[200],
                         border: OutlineInputBorder(
@@ -162,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                         _login();
                       },
                       style: const TextStyle(
-                          fontFamily: 'Lexend', color: Colors.black),
+                          fontFamily: 'RetroGaming', color: Colors.black),
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
@@ -171,6 +177,11 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: InputDecoration(
                         labelText: 'Password',
                         hintText: 'Enter your password...',
+                        labelStyle: const TextStyle(
+                          fontFamily: 'RetroGaming',
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
                         filled: true,
                         fillColor: Colors.grey[200],
                         border: OutlineInputBorder(
@@ -194,7 +205,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       style: const TextStyle(
-                          fontFamily: 'Lexend', color: Colors.black),
+                          fontFamily: 'RetroGaming', color: Colors.black),
                     ),
                     const SizedBox(height: 24),
 
@@ -209,7 +220,7 @@ class _LoginPageState extends State<LoginPage> {
                             'Forgot Password?',
                             style: TextStyle(
                               color: Colors.blue,
-                              fontFamily: 'Lexend',
+                              fontFamily: 'RetroGaming',
                             ),
                           ),
                         ),
@@ -228,14 +239,14 @@ class _LoginPageState extends State<LoginPage> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 24, vertical: 12),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: BorderRadius.circular(0),
                             ),
                           ),
                           child: const Text(
                             'Login',
                             style: TextStyle(
                               color: Colors.white,
-                              fontFamily: 'Lexend',
+                              fontFamily: 'RetroGaming',
                             ),
                           ),
                         ),
@@ -248,17 +259,19 @@ class _LoginPageState extends State<LoginPage> {
 
                     TextButton(
                       onPressed: () {
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const RegisterPage()),
                         );
                       },
+
                       child: const Text(
                         'Don\'t have an account?',
                         style: TextStyle(
                           color: Colors.blue,
-                          fontFamily: 'Lexend',
+                          fontFamily: 'RetroGaming',
                         ),
                       ),
                     ),

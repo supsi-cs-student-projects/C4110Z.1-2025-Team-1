@@ -94,7 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          fontFamily: 'Lexend',
+                          fontFamily: 'RetroGaming',
                           color: Colors.black,
                         ),
                       ),
@@ -106,7 +106,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         'Create your account',
                         style: TextStyle(
                           fontSize: 16,
-                          fontFamily: 'Lexend',
+                          fontFamily: 'RetroGaming',
                           color: Colors.grey,
                         ),
                       ),
@@ -119,6 +119,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: 'Enter your email...',
                         filled: true,
                         fillColor: Colors.grey[200],
+                        labelStyle: const TextStyle(
+                          fontFamily: 'RetroGaming',
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide.none,
@@ -127,7 +132,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             horizontal: 20, vertical: 24),
                       ),
                       style: const TextStyle(
-                          fontFamily: 'Lexend', color: Colors.black),
+                          fontFamily: 'RetroGaming', color: Colors.black),
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
@@ -137,6 +142,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: 'Enter your name...',
                         filled: true,
                         fillColor: Colors.grey[200],
+                        labelStyle: const TextStyle(
+                          fontFamily: 'RetroGaming',
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide.none,
@@ -145,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             horizontal: 20, vertical: 24),
                       ),
                       style: const TextStyle(
-                          fontFamily: 'Lexend', color: Colors.black),
+                          fontFamily: 'RetroGaming', color: Colors.black),
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
@@ -156,6 +166,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: 'Enter your password...',
                         filled: true,
                         fillColor: Colors.grey[200],
+                        labelStyle: const TextStyle(
+                          fontFamily: 'RetroGaming',
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide.none,
@@ -177,7 +192,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       style: const TextStyle(
-                          fontFamily: 'Lexend', color: Colors.black),
+                          fontFamily: 'RetroGaming', color: Colors.black),
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
@@ -188,6 +203,11 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: 'Repeat your password...',
                         filled: true,
                         fillColor: Colors.grey[200],
+                        labelStyle: const TextStyle(
+                          fontFamily: 'RetroGaming',
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide.none,
@@ -209,7 +229,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       style: const TextStyle(
-                          fontFamily: 'Lexend', color: Colors.black),
+                          fontFamily: 'RetroGaming', color: Colors.black),
                     ),
                     const SizedBox(height: 24),
                     Align(
@@ -221,14 +241,14 @@ class _RegisterPageState extends State<RegisterPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 24, vertical: 12),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
+                            borderRadius: BorderRadius.circular(0),
                           ),
                         ),
                         child: const Text(
                           'Create Account',
                           style: TextStyle(
                             color: Colors.white,
-                            fontFamily: 'Lexend',
+                            fontFamily: 'RetroGaming',
                           ),
                         ),
                       ),
@@ -249,12 +269,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         'Already have an account?',
                         style: TextStyle(
                           color: Colors.blue,
-                          fontFamily: 'Lexend',
+                          fontFamily: 'RetroGaming',
                         ),
                       ),
                     ),
-
-
 
                   ],
                 ),

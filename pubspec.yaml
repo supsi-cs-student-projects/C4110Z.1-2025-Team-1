@@ -82,6 +82,7 @@ flutter:
     - assets/images/background/background3.png
     - assets/images/background/background3.jpg
     - assets/images/plant/groundWithShadow.png
+    - assets/images/buttons/games_button.png
     - assets/images/plant/shadow_plant.png
     - assets/images/plant/clouds.png
     - assets/audio/homepage_music.ogg
@@ -122,3 +123,12 @@ flutter:
     - family: Avenir
       fonts:
         - asset: fonts/AvenirLTStd-Roman.otf
+
+    - family: PixelFont
+      fonts:
+        - asset: fonts/PixelFont.otf
+
+    - family: RetroGaming
+      fonts:
+        - asset: fonts/RetroGaming.ttf
+

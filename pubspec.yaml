@@ -93,6 +93,7 @@ flutter:
     - assets/images/pixel_animations/plant_idle.png
     - assets/Animations/pixel_plant_idle.json
     - assets/Animations/idle_plant.webp
+    - assets/higher_or_lower/higher_or_lower_back.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

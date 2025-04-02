@@ -74,8 +74,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ClipRRect(
                       child: Image.asset(
                         'assets/images/AB_logo.png',
-                        width: 161.7,
-                        height: 132.9,
+                        width: 220,
+                        height: 200,
                         fit: BoxFit.fitWidth,
                       ),
                     ),

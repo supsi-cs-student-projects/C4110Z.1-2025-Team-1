@@ -1,116 +1,179 @@
-import 'package:flame/game.dart';
+import 'package:demo_todo_with_flutter/routes/Game1/higher_or_lower.dart';
+import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flame/components.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
+import 'package:lottie/lottie.dart';
+import '../Homepage.dart';
+import '/services/CustomButton.dart';
 
-class HigherOrLowerGame extends FlameGame {
-  RectangleComponent? _leftRectangle;
-  RectangleComponent? _rightRectangle;
-  late TextComponent _scoreText;
-  int _score = 0;
-
-  @override
-  Future<void> onLoad() async {
-    await super.onLoad();
-    _setupGame();
-  }
-
-  void _setupGame() {
-    final size = this.size;
-    final halfWidth = size.x / 2;
-    final screenHeight = size.y;
-
-    _leftRectangle = RectangleComponent(
-      position: Vector2(0, 0),
-      size: Vector2(halfWidth, screenHeight),
-      paint: Paint()..color = Colors.blue,
-    );
-    add(_leftRectangle!);
-
-    _rightRectangle = RectangleComponent(
-      position: Vector2(halfWidth, 0),
-      size: Vector2(halfWidth, screenHeight),
-      paint: Paint()..color = Colors.red,
-    );
-    add(_rightRectangle!);
-
-    _scoreText = TextComponent(
-      text: 'Score: $_score',
-      position: Vector2(10, 10),
-      textRenderer: TextPaint(
-        style: const TextStyle(
-          fontSize: 24,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-    add(_scoreText);
-  }
+class HigherOrLower extends StatefulWidget {
+  final String username;
+  const HigherOrLower({super.key, required this.username});
 
   @override
-  void onGameResize(Vector2 newSize) {
-    super.onGameResize(newSize);
-    _updateLayout(newSize);
-  }
-
-  void _updateLayout(Vector2 newSize) {
-    if (_leftRectangle == null || _rightRectangle == null) return;
-
-    final double halfWidth = newSize.x / 2;
-    final double screenHeight = newSize.y;
-
-    _leftRectangle!.size = Vector2(halfWidth, screenHeight);
-    _rightRectangle!.position = Vector2(halfWidth, 0);
-    _rightRectangle!.size = Vector2(halfWidth, screenHeight);
-  }
-
-  void increaseScore() {
-    _score++;
-    _scoreText.text = 'Score: $_score';
-  }
+  _HigherOrLowerState createState() => _HigherOrLowerState();
 }
 
-class GamePage extends StatelessWidget {
-  const GamePage({super.key});
+class _HigherOrLowerState extends State<HigherOrLower>
+    with TickerProviderStateMixin {
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  final authService = AuthService();
+  late AnimationController _cloudAnimationController;
+  late Future<LottieComposition> _plantAnimation;
+  bool _isMuted = false;
+  bool _isWindowOpen = false; // Stato della finestra (aperta o chiusa)
+
+  @override
+  void initState() {
+    super.initState();
+    _playMusic();
+
+    _cloudAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 600),
+      lowerBound: 0,
+      upperBound: 1,
+    )..repeat(reverse: false);
+
+    _plantAnimation = _loadLottieAnimation();
+  }
+
+  Future<LottieComposition> _loadLottieAnimation() async {
+    return await AssetLottie('assets/Animations/plant_idle.json').load();
+  }
+
+  void _playMusic() async {
+    try {
+      await _audioPlayer.setAsset('assets/audio/homepage_music.ogg');
+      _audioPlayer.setLoopMode(LoopMode.one);
+      _audioPlayer.play();
+    } catch (e) {
+      print("Error loading audio: $e");
+    }
+  }
+
+  void _toggleMute() {
+    setState(() {
+      _isMuted = !_isMuted;
+      _isMuted ? _audioPlayer.pause() : _audioPlayer.play();
+    });
+  }
+
+  void _logout() async {
+    await authService.logout();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => HomePage(username: widget.username)),
+    );
+  }
+
+  void _games() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HigherOrLower(username: widget.username),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    _cloudAnimationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final game = HigherOrLowerGame();
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width + 300;
+    final groundHeight = screenHeight * 0.5;
+    final plantBottomPosition = groundHeight * 0.28;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Higher or Lower'),
-        centerTitle: true,
-      ),
-      body: Stack(
+      body: Column(
         children: [
-          GameWidget(
-            game: game,
-            mouseCursor: SystemMouseCursors.basic,
-          ),
-          Positioned(
-            top: 20,
-            right: 20,
-            child: TextButton(
-              onPressed: game.increaseScore,
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-              ),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Text(
-                  'Tap me',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+          _buildTopBar(), // Function for the top bar
+          Expanded(
+            child: SizedBox.expand(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+
+                  _buildBackground(screenWidth, screenHeight),
+
+
+                  _buildGamesButton(screenWidth, groundHeight),
+
+
+                ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// Function for the background
+  Widget _buildBackground(double screenWidth, double screenHeight) {
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: Image.asset(
+        'assets/higher_or_lower/higher_or_lower_back.png',
+        fit: BoxFit.fill,
+
+        width: screenWidth,
+        height: screenHeight,
+
+
+        
+      ),
+    );
+  }
+
+
+
+
+// Function for the "GAMES" button
+  Widget _buildGamesButton(double screenWidth, double groundHeight) {
+    return Positioned(
+      /*bottom: groundHeight * 0.06,
+      left: screenWidth * 0.05,*/
+      child: CustomButton(
+        text: 'GAMES',
+        imagePath: 'assets/images/buttons/games_button.png',
+        onPressed: _games,
+        textAlignment: Alignment.bottomRight,
+        textPadding: const EdgeInsets.only(bottom: 10),
+        fontFamily: 'RetroGaming',
+      ),
+    );
+  }
+
+
+
+
+// Function for the top bar
+  Widget _buildTopBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.logout, size: 30),
+            onPressed: _logout,
+            tooltip: "Logout",
+          ),
+          IconButton(
+            icon: Icon(_isMuted ? Icons.volume_off : Icons.volume_up, size: 30),
+            onPressed: _toggleMute,
           ),
         ],
       ),

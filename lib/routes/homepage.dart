@@ -1,4 +1,4 @@
-import 'package:demo_todo_with_flutter/routes/Game1/higher_or_lower.dart';
+import 'package:demo_todo_with_flutter/routes/Game/higher_or_lower.dart';
 import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _playMusic();
+    _isMuted = true;
 
     _cloudAnimationController = AnimationController(
       vsync: this,
@@ -39,6 +39,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     )..repeat(reverse: false);
 
     _plantAnimation = _loadLottieAnimation();
+
+    if (!_isMuted) {
+      _playMusic();
+    }
   }
 
   Future<LottieComposition> _loadLottieAnimation() async {
@@ -89,9 +93,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width + 300;
+    final screenWidth = MediaQuery.of(context).size.width;
     final groundHeight = screenHeight * 0.5;
-    final plantBottomPosition = groundHeight * 0.28;
+    final plantBottomPosition = groundHeight * 0.18;
 
     return Scaffold(
       body: Column(
@@ -103,11 +107,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 alignment: Alignment.center,
                 children: [
                   _buildBackground(screenWidth, screenHeight),
-                  _buildGround(screenWidth, groundHeight),
+                  _buildGround(screenWidth, screenHeight),
                   _buildPlant(plantBottomPosition),
-                  _buildGamesButton(screenWidth, groundHeight),
-                  _buildStreakButton(screenWidth, groundHeight),
-                  _buildAccountButton(screenWidth, groundHeight),
+
+                  _buildHomeButton(
+                    text: 'GAMES',
+                    left: screenWidth * 0.05,
+                    right: null,
+                    bottom: groundHeight * 0.02,
+                    onPressed: _games,
+                  ),
+                  _buildHomeButton(
+                    text: 'STREAK',
+                    left: null,
+                    right: null,
+                    bottom: groundHeight * 0.02,
+                    onPressed: _games,
+                  ),
+                  _buildHomeButton(
+                    text: 'ACCOUNT',
+                    left: null,
+                    right: screenWidth * 0.05,
+                    bottom: groundHeight * 0.02,
+                    onPressed: _games,
+                  ),
+
                   _buildCuriositiesWindow(screenWidth, screenHeight),
                 ],
               ),
@@ -131,9 +155,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               0,
             ),
             child: Opacity(
-              opacity: 0.5, // Set the desired opacity value (0.0 to 1.0)
+              opacity: 1, // Set the desired opacity value (0.0 to 1.0)
               child: Image.asset(
-                'assets/images/background/background3.png',
+                'assets/images/background/background3.jpg',
                 fit: BoxFit.cover,
                 width: screenWidth * 2.5,
                 height: screenHeight,
@@ -146,13 +170,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
 // Function for the ground
-  Widget _buildGround(double screenWidth, double groundHeight) {
+  Widget _buildGround(double screenWidth, double screenHeight) {
     return Positioned(
       bottom: 0,
       child: Image.asset(
         'assets/images/background/new_background.png',
         fit: BoxFit.fill,
-        height: groundHeight * 0.8,
+        height: screenHeight,
         width: screenWidth,
       ),
     );
@@ -178,30 +202,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-// Function for the "GAMES" button
-  Widget _buildGamesButton(double screenWidth, double groundHeight) {
-    return Positioned(
-      bottom: groundHeight * 0.06,
-      left: screenWidth * 0.05,
-      child: CustomButton(
-        text: 'GAMES',
-        imagePath: 'assets/images/buttons/games_button.png',
-        onPressed: _games,
-        textAlignment: Alignment.bottomRight,
-        textPadding: const EdgeInsets.only(bottom: 10),
-        fontFamily: 'RetroGaming',
-      ),
-    );
-  }
 
-// Function for the "STREAK" button
-  Widget _buildStreakButton(double screenWidth, double groundHeight) {
+  Widget _buildHomeButton({
+    required String text,
+    double? left,    // make nullable
+    double? right,   // make nullable
+    required double bottom,
+    required VoidCallback onPressed,
+  }) {
     return Positioned(
-      bottom: groundHeight * 0.06,
+      bottom: bottom,
+      left: left,
+      right: right,
       child: CustomButton(
-        text: 'STREAK',
+        text: text,
         imagePath: 'assets/images/buttons/games_button.png',
-        onPressed: _games,
+        onPressed: onPressed,
         textAlignment: Alignment.bottomRight,
         textPadding: const EdgeInsets.only(bottom: 10),
         fontFamily: 'RetroGaming',
@@ -210,21 +226,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
 
-// Function for the "ACCOUNT" button
-  Widget _buildAccountButton(double screenWidth, double groundHeight) {
-    return Positioned(
-      bottom: groundHeight * 0.06,
-      right: screenWidth * 0.05,
-      child: CustomButton(
-        text: 'ACCOUNT',
-        imagePath: 'assets/images/buttons/games_button.png',
-        onPressed: _games,
-        textAlignment: Alignment.bottomRight,
-        textPadding: const EdgeInsets.only(bottom: 10),
-        fontFamily: 'RetroGaming',
-      ),
-    );
-  }
 
 
 // Function for the "Curiosities" window

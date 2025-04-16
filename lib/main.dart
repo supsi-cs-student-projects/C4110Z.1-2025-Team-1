@@ -1,16 +1,17 @@
+import 'dart:io';
 import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import 'package:flutter/material.dart';
+import 'package:window_size/window_size.dart';
 
 void main() {
-  runApp(const ToDoApp());
-    
-}
+  WidgetsFlutterBinding.ensureInitialized();
 
+  runApp(const ToDoApp());
+}
 
 class ToDoApp extends StatelessWidget {
   const ToDoApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

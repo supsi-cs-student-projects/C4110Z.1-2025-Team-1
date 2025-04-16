@@ -48,6 +48,8 @@ dependencies:
   gif: ^2.2.0
   flame_texturepacker: ^4.1.8
   video_player: ^2.2.14
+  window_size: ^0.1.0
+  window_manager: ^0.2.7
 
 dev_dependencies:
   flutter_test:
@@ -95,6 +97,19 @@ flutter:
     - assets/Animations/idle_plant.webp
     - assets/higher_or_lower/higher_or_lower_back.png
     - assets/images/background/new_background.png
+    - assets/images/background/new_background.jpg
+    - assets/infos/alcohols.txt
+    - assets/images/sprites/
+    - assets/images/sprites/beer.png
+    - assets/images/sprites/vodka.png
+    - assets/images/sprites/wine.png
+    - assets/images/sprites/rum.png
+    - assets/images/sprites/whiskey.png
+    - assets/images/sprites/gin.png
+    - assets/images/sprites/tequila.png
+    - assets/images/sprites/champagne.png
+    - assets/images/sprites/cider.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

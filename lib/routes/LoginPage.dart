@@ -85,20 +85,20 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildLoginPage(BuildContext context) {
 
 
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    const screenWidth = 1920;
+    const screenHeight = 1080;
 
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: SizedBox(
-          height: screenHeight,
+
           child: Column(
             children: [
-              SizedBox(height: screenHeight * 0.05), // 5% of screen height
+              const SizedBox(height: screenHeight * 0.05), // 5% of screen height
               Padding(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                     horizontal: screenWidth * 0.06), // 6% of screen width
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -115,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                     horizontal: screenWidth * 0.06), // 6% of screen width
                 child: Column(
                   children: [

@@ -4,7 +4,10 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_linux
+  screen_retriever
   url_launcher_linux
+  window_manager
+  window_size
   window_to_front
 )
 

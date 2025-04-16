@@ -130,11 +130,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               (1 - _cloudAnimationController.value * screenWidth),
               0,
             ),
-            child: Image.asset(
-              'assets/images/background/background3.jpg',
-              fit: BoxFit.cover,
-              width: screenWidth * 2.5,
-              height: screenHeight,
+            child: Opacity(
+              opacity: 0.5, // Set the desired opacity value (0.0 to 1.0)
+              child: Image.asset(
+                'assets/images/background/background3.png',
+                fit: BoxFit.cover,
+                width: screenWidth * 2.5,
+                height: screenHeight,
+              ),
             ),
           );
         },
@@ -147,7 +150,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Positioned(
       bottom: 0,
       child: Image.asset(
-        'assets/images/pixel_animations/ground_pixel.png',
+        'assets/images/background/new_background.png',
         fit: BoxFit.fill,
         height: groundHeight * 0.8,
         width: screenWidth,

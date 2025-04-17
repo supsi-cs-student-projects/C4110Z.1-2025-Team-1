@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           future: _plantAnimation,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-              return Lottie(composition: snapshot.data!, width: 400, height: 400);
+              return Lottie(composition: snapshot.data!, width: 350, height: 350);
             } else {
               return const CircularProgressIndicator();
             }

@@ -2,7 +2,6 @@ import 'package:demo_todo_with_flutter/routes/Game/higher_or_lower.dart';
 import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import 'package:lottie/lottie.dart';
 import 'Streak.dart';
@@ -25,6 +24,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late Future<LottieComposition> _plantAnimation;
   bool _isMuted = false;
   bool _isWindowOpen = false; // Stato della finestra (aperta o chiusa)
+  bool _isCuriositiesWidgetVisible = false; // Stato del widget delle curiosità
 
   @override
   void initState() {
@@ -75,11 +75,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _games() async {
-
     //await authService.logout();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HigherOrLower(username: widget.username ?? '')),
+      MaterialPageRoute(
+          builder: (context) => HigherOrLower(username: widget.username ?? '')),
     );
   }
 
@@ -109,7 +109,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   _buildBackground(screenWidth, screenHeight),
                   _buildGround(screenWidth, screenHeight),
                   _buildPlant(plantBottomPosition),
-
+                  // Bottone "GAMES"
                   _buildHomeButton(
                     text: 'GAMES',
                     left: screenWidth * 0.05,
@@ -117,22 +117,35 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     bottom: groundHeight * 0.02,
                     onPressed: _games,
                   ),
+                  // Bottone "STREAK"
                   _buildHomeButton(
                     text: 'STREAK',
                     left: null,
                     right: null,
                     bottom: groundHeight * 0.02,
-                    onPressed: _games,
+                    onPressed: () {
+                      // Azione per il bottone STREAK
+                      print("Naviga a STREAK");
+                    },
                   ),
+                  // Bottone "ACCOUNT"
                   _buildHomeButton(
                     text: 'ACCOUNT',
                     left: null,
                     right: screenWidth * 0.05,
                     bottom: groundHeight * 0.02,
-                    onPressed: _games,
+                    onPressed: () {
+                      // Azione per il bottone ACCOUNT
+                      print("Naviga a ACCOUNT");
+                    },
                   ),
-
-                  _buildCuriositiesWindow(screenWidth, screenHeight),
+                  _buildRectangle(screenWidth, screenHeight),
+                  _buildCuriositiesWidget(
+                    text: 'Curiosities',
+                    imagePath: 'assets/images/curiosities/CuriosityText.png',
+                    screenWidth: screenWidth,
+                    screenHeight: screenHeight,
+                  ),
                 ],
               ),
             ),
@@ -191,8 +204,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: FutureBuilder<LottieComposition>(
           future: _plantAnimation,
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-              return Lottie(composition: snapshot.data!, width: 350, height: 350);
+            if (snapshot.connectionState == ConnectionState.done &&
+                snapshot.hasData) {
+              return Lottie(
+                  composition: snapshot.data!, width: 350, height: 350);
             } else {
               return const CircularProgressIndicator();
             }
@@ -202,11 +217,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-
   Widget _buildHomeButton({
     required String text,
-    double? left,    // make nullable
-    double? right,   // make nullable
+    double? left, // make nullable
+    double? right, // make nullable
     required double bottom,
     required VoidCallback onPressed,
   }) {
@@ -225,90 +239,99 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-
-
-
 // Function for the "Curiosities" window
   Widget _buildCuriositiesWindow(double screenWidth, double screenHeight) {
-    return Positioned(
-      top: screenHeight * 0.1,
-      left: _isWindowOpen ? screenWidth * 0.55 : null,
-      right: _isWindowOpen ? screenWidth * 0 : 0,
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 300), // Aggiunta animazione
+      top: screenHeight * 0.1, // Posizionata più in alto (10% dall'alto)
+      left: _isWindowOpen
+          ? screenWidth * 0.2
+          : -screenWidth, // Scorre da sinistra verso destra
       child: GestureDetector(
         onTap: () {
-          if (!_isWindowOpen) {
-            setState(() {
-              _isWindowOpen = true;
-            });
-          }
+          setState(() {
+            _isWindowOpen = false; // Chiudi la finestra quando cliccata
+          });
         },
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 0),
-          height: _isWindowOpen ? screenHeight * 0.60 : screenHeight * 0.20,
-          width: _isWindowOpen ? screenWidth * 0.7 : screenWidth * 0.025,
-          padding: _isWindowOpen ? const EdgeInsets.all(20) : const EdgeInsets.symmetric(vertical: 10),
+          duration: const Duration(milliseconds: 300),
+          height: screenHeight * 0.4, // Altezza ridotta (40% dello schermo)
+          width: screenWidth * 0.6, // Larghezza ridotta (60% dello schermo)
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.8),
-            borderRadius: BorderRadius.circular(0),
+            color: Colors.white.withOpacity(0.9),
+            borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
-                color: Colors.green.withOpacity(0.2),
+                color: Colors.black.withOpacity(0.2),
                 blurRadius: 10,
                 offset: const Offset(0, 5),
               ),
             ],
           ),
-          child: _isWindowOpen
-              ? SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Curiosities',
-                  style: TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold, fontFamily: 'RetroGaming',
-                  ),
-
+          child: Stack(
+            children: [
+              // Immagine di sfondo
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10), // Angoli arrotondati
+                child: Image.asset(
+                  'assets/images/curiosities/CuriosityText.png', // Percorso dell'immagine
+                  fit: BoxFit.cover, // Adatta l'immagine all'area disponibile
+                  width: double.infinity,
+                  height: double.infinity,
                 ),
-                const SizedBox(height: 10),
-                const Text(
-                  'Here is the curiosities window.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, fontFamily: 'RetroGaming',),
-                ),
-                const SizedBox(height: 40),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _isWindowOpen = false;
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
-                    backgroundColor: const Color(0xFF18a663),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  ),
-                  child: const Text('Close'),
-                ),
-              ],
-            ),
-          )
-              : const Center(
-            child: RotatedBox(
-              quarterTurns: 3,
-              child: Text(
-                'Curiosities',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black, fontFamily: 'RetroGaming',),
               ),
-            ),
+              // Testo sovrapposto
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Curiosity',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black, // Testo nero
+                        fontFamily: 'RetroGaming',
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Here is the curiosities window with an image background.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black, // Testo nero
+                        fontFamily: 'RetroGaming',
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _isWindowOpen = false; // Chiudi la finestra
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                        backgroundColor: const Color(0xFF18a663),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                      ),
+                      child: const Text('Close'),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
-
 
 // Function for the top bar
   Widget _buildTopBar() {
@@ -339,4 +362,93 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
+  Widget _buildRectangle(double screenWidth, double screenHeight) {
+    return Positioned(
+      top: screenHeight / 3 - 85, // Posizione verticale invariata
+      left: 10, // Vicino al bordo sinistro
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click, // Cambia il cursore in una manina
+        child: GestureDetector(
+          onTap: () {
+            // Mostra il widget delle curiosità
+            setState(() {
+              _isCuriositiesWidgetVisible = true;
+            });
+          },
+          child: Container(
+            width:
+                screenWidth * 0.35, // Larghezza aumentata (quasi metà pagina)
+            height: screenHeight * 0.5, // Altezza invariata
+            decoration: BoxDecoration(
+              color: Colors.yellow.withOpacity(0), // Colore trasparente
+              borderRadius: BorderRadius.circular(10), // Angoli arrotondati
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCuriositiesWidget({
+    required String text,
+    required String imagePath,
+    required double screenWidth,
+    required double screenHeight,
+  }) {
+    if (!_isCuriositiesWidgetVisible) {
+      return const SizedBox.shrink(); // Nascondi il widget se non visibile
+    }
+
+    return Stack(
+      children: [
+        // Rileva clic al di fuori del widget
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _isCuriositiesWidgetVisible = false; // Nascondi il widget
+            });
+          },
+          child: Container(
+            color: Colors.transparent, // Sfondo trasparente per rilevare i clic
+            width: screenWidth,
+            height: screenHeight,
+          ),
+        ),
+        // Widget delle curiosità
+        Positioned(
+          top: screenHeight * 0.02, // Posizionato più in alto
+          left: screenWidth * 0.2, // Posizionato al centro orizzontale
+          child: Stack(
+            alignment: Alignment.topLeft,
+            children: [
+              // Immagine di sfondo
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10), // Angoli arrotondati
+                child: Image.asset(
+                  imagePath, // Percorso dell'immagine
+                  fit: BoxFit.fill, // Mostra l'intera immagine senza tagliarla
+                  width: screenWidth * 0.6, // Larghezza del widget
+                  height: screenHeight * 0.5, // Altezza del widget
+                ),
+              ),
+              // Testo "Curiosities" in alto a sinistra
+              Positioned(
+                top: screenHeight * 0.04,
+                left: screenWidth * 0.1,
+                child: Text(
+                  text,
+                  style: const TextStyle(
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black, // Colore del testo nero
+                    fontFamily: 'RetroGaming',
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }

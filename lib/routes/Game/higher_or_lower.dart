@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import 'package:lottie/lottie.dart';
 import '../Homepage.dart';
 import '/services/CustomButton.dart';
@@ -93,12 +92,8 @@ class _HigherOrLowerState extends State<HigherOrLower>
     });
   }
 
-  void _logout() async {
-    await authService.logout();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage(username: widget.username)),
-    );
+  void _goBackToHomePage() {
+    Navigator.pop(context);
   }
 
   //Initialize the first round by choosing a left alcohol and then a different right alcohol
@@ -257,12 +252,12 @@ class _HigherOrLowerState extends State<HigherOrLower>
   Widget _buildAlcoholDisplay(Alcohol alcohol, {bool hideAbv = false}) {
     return Column(
       children: [
-        Image.asset(alcohol.imagePath, width: 200, height: 200),
+        Image.asset(alcohol.imagePath, width: 300, height: 300),
         const SizedBox(height: 8),
         Text(
           alcohol.name,
           style: const TextStyle(
-            fontSize: 20,
+            fontSize: 35,
             fontFamily: 'RetroGaming',
             color: Colors.white,
           ),
@@ -270,7 +265,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
         Text(
           hideAbv ? "???" : "${alcohol.abv.toStringAsFixed(1)}%",
           style: const TextStyle(
-            fontSize: 16,
+            fontSize: 25,
             fontFamily: 'RetroGaming',
             color: Colors.white70,
           ),
@@ -300,9 +295,9 @@ class _HigherOrLowerState extends State<HigherOrLower>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            icon: const Icon(Icons.logout, size: 30),
-            onPressed: _logout,
-            tooltip: "Logout",
+            icon: const Icon(Icons.arrow_back, size: 30),
+            onPressed: _goBackToHomePage,
+            tooltip: "Back to Home",
           ),
           IconButton(
             icon: Icon(

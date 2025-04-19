@@ -1,9 +1,12 @@
-import 'package:demo_todo_with_flutter/routes/Game/higher_or_lower.dart';
-import 'package:demo_todo_with_flutter/services/auth.dart';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import 'package:lottie/lottie.dart';
+import 'package:flutter/services.dart' show rootBundle;
+
+import 'package:demo_todo_with_flutter/routes/Game/higher_or_lower.dart';
+import 'package:demo_todo_with_flutter/services/auth.dart';
+import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import 'Streak.dart';
 import 'Learn.dart';
 import '/services/CustomButton.dart';
@@ -23,8 +26,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late AnimationController _cloudAnimationController;
   late Future<LottieComposition> _plantAnimation;
   bool _isMuted = false;
-  bool _isWindowOpen = false; // Stato della finestra (aperta o chiusa)
-  bool _isCuriositiesWidgetVisible = false; // Stato del widget delle curiosità
+  bool _isWindowOpen = false;
+  bool _isCuriositiesWidgetVisible = false;
+  String? _randomCuriosity;
 
   @override
   void initState() {
@@ -75,12 +79,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _games() async {
-    //await authService.logout();
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => HigherOrLower(username: widget.username ?? '')),
+          builder: (context) => HigherOrLower(username: widget.username)),
     );
+  }
+
+  Future<void> _loadRandomCuriosity() async {
+    final String fileContent =
+    await rootBundle.loadString('assets/infos/curiosities.txt');
+    final List<String> curiosities =
+    fileContent.split('\n').where((line) => line.trim().isNotEmpty).toList();
+
+    final random = Random();
+    setState(() {
+      _randomCuriosity = curiosities[random.nextInt(curiosities.length)];
+    });
   }
 
   @override
@@ -100,7 +115,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       body: Column(
         children: [
-          _buildTopBar(), // Function for the top bar
+          _buildTopBar(),
           Expanded(
             child: SizedBox.expand(
               child: Stack(
@@ -109,7 +124,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   _buildBackground(screenWidth, screenHeight),
                   _buildGround(screenWidth, screenHeight),
                   _buildPlant(plantBottomPosition),
-                  // Bottone "GAMES"
                   _buildHomeButton(
                     text: 'GAMES',
                     left: screenWidth * 0.05,
@@ -117,31 +131,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     bottom: groundHeight * 0.02,
                     onPressed: _games,
                   ),
-                  // Bottone "STREAK"
                   _buildHomeButton(
                     text: 'STREAK',
                     left: null,
                     right: null,
                     bottom: groundHeight * 0.02,
                     onPressed: () {
-                      // Azione per il bottone STREAK
-                      print("Naviga a STREAK");
+                      print("Go to STREAK");
                     },
                   ),
-                  // Bottone "ACCOUNT"
                   _buildHomeButton(
                     text: 'ACCOUNT',
                     left: null,
                     right: screenWidth * 0.05,
                     bottom: groundHeight * 0.02,
                     onPressed: () {
-                      // Azione per il bottone ACCOUNT
-                      print("Naviga a ACCOUNT");
+                      print("Go to ACCOUNT");
                     },
                   ),
                   _buildRectangle(screenWidth, screenHeight),
                   _buildCuriositiesWidget(
-                    text: 'Curiosities',
+                    text: 'Did you know that...',
                     imagePath: 'assets/images/curiosities/CuriosityText.png',
                     screenWidth: screenWidth,
                     screenHeight: screenHeight,
@@ -155,7 +165,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-// Function for the background
   Widget _buildBackground(double screenWidth, double screenHeight) {
     return Positioned(
       top: 0,
@@ -168,7 +177,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               0,
             ),
             child: Opacity(
-              opacity: 1, // Set the desired opacity value (0.0 to 1.0)
+              opacity: 1,
               child: Image.asset(
                 'assets/images/background/background3.jpg',
                 fit: BoxFit.cover,
@@ -182,7 +191,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-// Function for the ground
   Widget _buildGround(double screenWidth, double screenHeight) {
     return Positioned(
       bottom: 0,
@@ -195,7 +203,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-// Function for the plant
   Widget _buildPlant(double plantBottomPosition) {
     return Positioned(
       bottom: plantBottomPosition,
@@ -219,8 +226,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget _buildHomeButton({
     required String text,
-    double? left, // make nullable
-    double? right, // make nullable
+    double? left,
+    double? right,
     required double bottom,
     required VoidCallback onPressed,
   }) {
@@ -239,101 +246,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-// Function for the "Curiosities" window
-  Widget _buildCuriositiesWindow(double screenWidth, double screenHeight) {
-    return AnimatedPositioned(
-      duration: const Duration(milliseconds: 300), // Aggiunta animazione
-      top: screenHeight * 0.1, // Posizionata più in alto (10% dall'alto)
-      left: _isWindowOpen
-          ? screenWidth * 0.2
-          : -screenWidth, // Scorre da sinistra verso destra
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _isWindowOpen = false; // Chiudi la finestra quando cliccata
-          });
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          height: screenHeight * 0.4, // Altezza ridotta (40% dello schermo)
-          width: screenWidth * 0.6, // Larghezza ridotta (60% dello schermo)
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.9),
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 10,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Stack(
-            children: [
-              // Immagine di sfondo
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10), // Angoli arrotondati
-                child: Image.asset(
-                  'assets/images/curiosities/CuriosityText.png', // Percorso dell'immagine
-                  fit: BoxFit.cover, // Adatta l'immagine all'area disponibile
-                  width: double.infinity,
-                  height: double.infinity,
-                ),
-              ),
-              // Testo sovrapposto
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Curiosity',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black, // Testo nero
-                        fontFamily: 'RetroGaming',
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Here is the curiosities window with an image background.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black, // Testo nero
-                        fontFamily: 'RetroGaming',
-                      ),
-                    ),
-                    const SizedBox(height: 40),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _isWindowOpen = false; // Chiudi la finestra
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero,
-                        ),
-                        backgroundColor: const Color(0xFF18a663),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                      ),
-                      child: const Text('Close'),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-// Function for the top bar
   Widget _buildTopBar() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -364,24 +276,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget _buildRectangle(double screenWidth, double screenHeight) {
     return Positioned(
-      top: screenHeight / 3 - 85, // Posizione verticale invariata
-      left: 10, // Vicino al bordo sinistro
+      top: screenHeight / 3 - 85,
+      left: 10,
       child: MouseRegion(
-        cursor: SystemMouseCursors.click, // Cambia il cursore in una manina
+        cursor: SystemMouseCursors.click,
         child: GestureDetector(
-          onTap: () {
-            // Mostra il widget delle curiosità
+          onTap: () async {
+            await _loadRandomCuriosity(); // Load new curiosity
             setState(() {
               _isCuriositiesWidgetVisible = true;
             });
           },
           child: Container(
-            width:
-                screenWidth * 0.35, // Larghezza aumentata (quasi metà pagina)
-            height: screenHeight * 0.5, // Altezza invariata
+            width: screenWidth * 0.35,
+            height: screenHeight * 0.5,
             decoration: BoxDecoration(
-              color: Colors.yellow.withOpacity(0), // Colore trasparente
-              borderRadius: BorderRadius.circular(10), // Angoli arrotondati
+              color: Colors.yellow.withOpacity(0),
+              borderRadius: BorderRadius.circular(10),
             ),
           ),
         ),
@@ -396,55 +307,71 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     required double screenHeight,
   }) {
     if (!_isCuriositiesWidgetVisible) {
-      return const SizedBox.shrink(); // Nascondi il widget se non visibile
+      return const SizedBox.shrink();
     }
 
     return Stack(
+
       children: [
-        // Rileva clic al di fuori del widget
         GestureDetector(
           onTap: () {
             setState(() {
-              _isCuriositiesWidgetVisible = false; // Nascondi il widget
+              _isCuriositiesWidgetVisible = false;
             });
           },
           child: Container(
-            color: Colors.transparent, // Sfondo trasparente per rilevare i clic
+            color: Colors.transparent,
             width: screenWidth,
             height: screenHeight,
           ),
         ),
-        // Widget delle curiosità
         Positioned(
-          top: screenHeight * 0.02, // Posizionato più in alto
-          left: screenWidth * 0.2, // Posizionato al centro orizzontale
+          top: screenHeight * 0.02,
+          left: screenWidth * 0.17,
           child: Stack(
             alignment: Alignment.topLeft,
             children: [
-              // Immagine di sfondo
               ClipRRect(
-                borderRadius: BorderRadius.circular(10), // Angoli arrotondati
+                borderRadius: BorderRadius.circular(10),
                 child: Image.asset(
-                  imagePath, // Percorso dell'immagine
-                  fit: BoxFit.fill, // Mostra l'intera immagine senza tagliarla
-                  width: screenWidth * 0.6, // Larghezza del widget
-                  height: screenHeight * 0.5, // Altezza del widget
+                  imagePath,
+                  fit: BoxFit.fill,
+                  width: screenWidth * 0.6,
+                  height: screenHeight * 0.5,
                 ),
               ),
-              // Testo "Curiosities" in alto a sinistra
               Positioned(
                 top: screenHeight * 0.04,
                 left: screenWidth * 0.1,
                 child: Text(
                   text,
-                  style: const TextStyle(
-                    fontSize: 35,
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.03, // responsive font size
                     fontWeight: FontWeight.bold,
-                    color: Colors.black, // Colore del testo nero
+                    color: Colors.black,
                     fontFamily: 'RetroGaming',
                   ),
                 ),
               ),
+              Positioned(
+                top: screenHeight * 0.18,
+                left: screenWidth * 0.15,
+                right: screenWidth * 0.1,
+                child: SizedBox(
+                  width: screenWidth * 0.5,
+                  child: Text(
+                    _randomCuriosity ?? '',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      //fontSize: screenWidth * 0.015, // responsive font size
+                      fontSize: 25,
+                      color: Colors.black,
+                      fontFamily: 'RetroGaming',
+                    ),
+                  ),
+                ),
+              ),
+
             ],
           ),
         ),

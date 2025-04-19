@@ -186,18 +186,20 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
                           ),
                         ),
                       ),
+
                       Positioned(
                         top: screenHeight * 0.26,
-                        left: screenWidth * 0.083,
+                        left: screenWidth * 0.081,
                         child: Text(
                           "Leaderboard",
-                          style: const TextStyle(
-                            fontSize: 22,
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.012, // Responsive font size based on screen width
                             fontFamily: 'RetroGaming',
                             color: Colors.black,
                           ),
                         ),
                       ),
+
                     ],
                   ),
                 ),

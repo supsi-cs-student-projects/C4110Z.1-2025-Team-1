@@ -111,6 +111,7 @@ flutter:
     - assets/images/sprites/cider.png
     - assets/images/curiosities/CuriosityText.png
     - assets/infos/curiosities.txt
+    - assets/higher_or_lower/game_over_box.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

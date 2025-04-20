@@ -204,6 +204,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildPlant(double plantBottomPosition) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // Dynamically calculate plant dimensions
+    final plantWidth = screenWidth * 0.4; // 40% of screen width
+    final plantHeight = screenHeight * 0.4; // 40% of screen height
+
     return Positioned(
       bottom: plantBottomPosition,
       child: GestureDetector(
@@ -214,7 +221,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             if (snapshot.connectionState == ConnectionState.done &&
                 snapshot.hasData) {
               return Lottie(
-                  composition: snapshot.data!, width: 350, height: 350);
+                composition: snapshot.data!,
+                width: plantWidth,
+                height: plantHeight,
+              );
             } else {
               return const CircularProgressIndicator();
             }

@@ -329,7 +329,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           textAlignment: Alignment.center,
           textPadding: EdgeInsets.only(bottom: screenHeight * 0.015), // Responsive padding
           textStyle: TextStyle(
-            fontSize: screenHeight / screenWidth * 35, // Font size is 4% of screen width
+            fontSize: screenHeight * 0.02, // Font size is 4% of screen width
             color: Colors.white,
             fontFamily: 'RetroGaming',
             fontWeight: FontWeight.bold,
@@ -476,9 +476,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   child: Text(
                     _randomCuriosity ?? '',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      //fontSize: screenWidth * 0.015, // responsive font size
-                      fontSize: 25,
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.015, // responsive font size
+                      //fontSize: 25,
                       color: Colors.black,
                       fontFamily: 'RetroGaming',
                     ),

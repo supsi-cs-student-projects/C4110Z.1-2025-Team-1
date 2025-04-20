@@ -113,7 +113,10 @@ flutter:
     - assets/infos/curiosities.txt
     - assets/higher_or_lower/game_over_box.png
     - assets/images/faces/happy_face.png
+    - assets/images/faces/normal_face.png
     - assets/images/faces/sad_face.png
+    - assets/images/buttons/logout_button.png
+    - assets/images/buttons/back_button.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

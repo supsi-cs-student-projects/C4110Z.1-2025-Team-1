@@ -148,11 +148,10 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
 
     return Scaffold(
       body: Stack(
-        alignment: Alignment.center,
         children: [
           Column(
             children: [
-              _buildTopBar(),
+
               Expanded(
                 child: SizedBox.expand(
                   child: Stack(
@@ -160,6 +159,7 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
                     children: [
                       _buildBackground(screenWidth, screenHeight),
                       _buildAlcoholDisplays(screenWidth, screenHeight),
+                      _buildTopBar(),
                       if (!_isGameOver) ...[
                         _buildGameButton(
                           bottom: groundHeight * 0.95,
@@ -175,12 +175,12 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
                         ),
                       ],
                       Positioned(
-                        top: screenHeight * 0.02,
+                        top: screenHeight * 0.025,
                         child: Text(
                           "Score: $score\nBest: $bestScore",
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 22,
+                          style: TextStyle(
+                            fontSize: screenHeight * 0.025,
                             fontFamily: 'RetroGaming',
                             color: Colors.white,
                           ),
@@ -188,7 +188,7 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
                       ),
 
                       Positioned(
-                        top: screenHeight * 0.26,
+                        top: screenHeight * 0.28,
                         left: screenWidth * 0.081,
                         child: Text(
                           "Leaderboard",
@@ -213,59 +213,61 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
   }
 
   Widget _buildGameOverBox(double screenWidth, double screenHeight) {
-    return Container(
-      width: screenWidth * 0.3,
-      height: screenHeight * 0.3,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/higher_or_lower/game_over_box.png'),
-          fit: BoxFit.fill,
+    return Center(
+      child: Container(
+        width: screenWidth * 0.3,
+        height: screenHeight * 0.3,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/higher_or_lower/game_over_box.png'),
+            fit: BoxFit.fill,
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 60),
-          Text(
-            "Score: $score\nBest: $bestScore",
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 20,
-              fontFamily: 'RetroGaming',
-              color: Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: screenHeight * 0.06),
+            Text(
+              "Score: $score\nBest: $bestScore",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: screenHeight * 0.02,
+                fontFamily: 'RetroGaming',
+                color: Colors.white,
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          GestureDetector(
-            onTap: _playAgain,
-            child: const MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: Text(
-                "PLAY AGAIN",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontFamily: 'RetroGaming',
-                  color: Colors.red,
+            SizedBox(height:screenHeight * 0.01),
+            GestureDetector(
+              onTap: _playAgain,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: Text(
+                  "PLAY AGAIN",
+                  style: TextStyle(
+                    fontSize: screenHeight * 0.02,
+                    fontFamily: 'RetroGaming',
+                    color: Colors.red,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 10),
-          GestureDetector(
-            onTap: _goBackToHomePage,
-            child: const MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: Text(
-                "RETURN TO HOME",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontFamily: 'RetroGaming',
-                  color: Colors.red,
+            SizedBox(height: screenHeight * 0.01),
+            GestureDetector(
+              onTap: _goBackToHomePage,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: Text(
+                  "RETURN TO HOME",
+                  style: TextStyle(
+                    fontSize: screenHeight * 0.02,
+                    fontFamily: 'RetroGaming',
+                    color: Colors.red,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -277,6 +279,8 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
     required String text,
     required VoidCallback onPressed,
   }) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Positioned(
       bottom: bottom,
       left: left,
@@ -286,18 +290,20 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
         imagePath: 'assets/images/buttons/games_button.png',
         onPressed: onPressed,
         textAlignment: Alignment.center,
-        textStyle: const TextStyle(
-          fontSize: 40,
+        textStyle: TextStyle(
+          fontSize: screenHeight * 0.05,
           color: Colors.white,
           fontFamily: 'RetroGaming',
           fontWeight: FontWeight.bold,
         ),
-        textPadding: const EdgeInsets.only(bottom: 23),
+        textPadding: EdgeInsets.only(bottom: screenHeight * 0.03),
       ),
     );
   }
 
   Widget _buildAlcoholDisplays(double screenWidth, double screenHeight) {
+
+
     return Positioned(
       top: screenHeight * 0.3,
       left: screenWidth * 0.2,
@@ -313,22 +319,24 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
   }
 
   Widget _buildAlcoholDisplay(Alcohol alcohol, {bool hideAbv = false}) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Column(
       children: [
-        Image.asset(alcohol.imagePath, width: 300, height: 300),
+        Image.asset(alcohol.imagePath, width: screenWidth * 0.2, height: screenHeight * 0.35),
         const SizedBox(height: 8),
         Text(
           alcohol.name,
-          style: const TextStyle(
-            fontSize: 35,
+          style: TextStyle(
+            fontSize: screenHeight * 0.025,
             fontFamily: 'RetroGaming',
             color: Colors.white,
           ),
         ),
         Text(
           hideAbv ? "???" : "${alcohol.abv.toStringAsFixed(1)}%",
-          style: const TextStyle(
-            fontSize: 25,
+          style: TextStyle(
+            fontSize: screenHeight * 0.02,
             fontFamily: 'RetroGaming',
             color: Colors.white70,
           ),
@@ -349,25 +357,42 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
   }
 
   Widget _buildTopBar() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back, size: 30),
-            onPressed: _goBackToHomePage,
-            tooltip: "Back to Home",
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return Positioned(
+      top: screenHeight * 0.02,
+      left: 0,
+      right: 0,
+      child: SizedBox(
+        width: screenWidth,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.01),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                hoverColor: Colors.transparent,
+                icon: Image.asset(
+                  'assets/images/buttons/back_button.png',
+                  width: screenWidth * 0.1,
+                  height: screenHeight * 0.1,
+                ),
+                onPressed: _goBackToHomePage,
+                tooltip: "Back to Home",
+              ),
+              IconButton(
+                icon: Icon(
+                  _isMuted ? Icons.volume_off : Icons.volume_up,
+                  size: 30,
+                ),
+                onPressed: _toggleMute,
+              ),
+            ],
           ),
-          IconButton(
-            icon: Icon(
-              _isMuted ? Icons.volume_off : Icons.volume_up,
-              size: 30,
-            ),
-            onPressed: _toggleMute,
-          ),
-        ],
+        ),
       ),
     );
   }
+
 }

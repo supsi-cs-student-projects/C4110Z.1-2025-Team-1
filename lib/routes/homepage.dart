@@ -89,9 +89,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Future<void> _loadRandomCuriosity() async {
     final String fileContent =
-    await rootBundle.loadString('assets/infos/curiosities.txt');
-    final List<String> curiosities =
-    fileContent.split('\n').where((line) => line.trim().isNotEmpty).toList();
+        await rootBundle.loadString('assets/infos/curiosities.txt');
+    final List<String> curiosities = fileContent
+        .split('\n')
+        .where((line) => line.trim().isNotEmpty)
+        .toList();
 
     final random = Random();
     setState(() {
@@ -116,20 +118,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       body: Column(
         children: [
+          _buildTopBar(), // Function for the top bar
           Expanded(
             child: SizedBox.expand(
               child: Stack(
-
                 alignment: Alignment.center,
                 children: [
                   _buildBackground(screenWidth, screenHeight),
                   _buildGround(screenWidth, screenHeight),
                   _buildPlant(plantBottomPosition),
                   _buildSlider(screenWidth, screenHeight),
-
-                  _buildTopBar(),
-
-
                   _buildHomeButton(
                     text: 'GAMES',
                     left: screenWidth * 0.05,
@@ -162,6 +160,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   _buildCuriositiesWidget(
                     text: 'Did you know that...',
                     imagePath: 'assets/images/curiosities/CuriosityText.png',
+                    screenWidth: screenWidth,
+                    screenHeight: screenHeight,
+                  ),
+                  _buildInfoRectangle(
+                    text: 'Statistics',
+                    imagePath: 'assets/images/statistics/stats_box.png',
                     screenWidth: screenWidth,
                     screenHeight: screenHeight,
                   ),
@@ -215,7 +219,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget _buildPlant(double plantBottomPosition) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final plantWidth  = screenWidth * 0.4; // 40% of width
+    final plantWidth = screenWidth * 0.4; // 40% of width
     final plantHeight = screenHeight * 0.4; // 40% of height
 
     return Positioned(
@@ -246,18 +250,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             // Overlayed face image:
             Positioned.fill(
               child:
-                // adjust padding so the face sits on the plant’s head
+                  // adjust padding so the face sits on the plant’s head
 
-              Image.asset(
+                  Image.asset(
                 _faceMood == 0
                     ? 'assets/images/faces/sad_face.png'
                     : _faceMood == 0.5
-                    ? 'assets/images/faces/normal_face.png'
-                    : 'assets/images/faces/happy_face.png',
+                        ? 'assets/images/faces/normal_face.png'
+                        : 'assets/images/faces/happy_face.png',
                 fit: BoxFit.contain,
               ),
-
-
             ),
           ],
         ),
@@ -292,8 +294,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               label: _faceMood == 0
                   ? 'Sad'
                   : _faceMood == 0.5
-                  ? 'Neutral'
-                  : 'Happy',
+                      ? 'Neutral'
+                      : 'Happy',
               onChanged: (value) {
                 setState(() {
                   _faceMood = value;
@@ -305,8 +307,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
-
-
 
   Widget _buildHomeButton({
     required String text,
@@ -330,7 +330,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           imagePath: 'assets/images/buttons/games_button.png',
           onPressed: onPressed,
           textAlignment: Alignment.center,
-          textPadding: EdgeInsets.only(bottom: screenHeight * 0.015), // Responsive padding
+          textPadding: EdgeInsets.only(
+              bottom: screenHeight * 0.015), // Responsive padding
           textStyle: TextStyle(
             fontSize: screenHeight * 0.02, // Font size is 4% of screen width
             color: Colors.white,
@@ -390,7 +391,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-
   Widget _buildRectangle(double screenWidth, double screenHeight) {
     return Positioned(
       top: screenHeight / 3 - 85,
@@ -428,7 +428,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
 
     return Stack(
-
       children: [
         GestureDetector(
           onTap: () {
@@ -488,11 +487,53 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildInfoRectangle({
+    required String text,
+    required String imagePath,
+    required double screenWidth,
+    required double screenHeight,
+  }) {
+    return Positioned(
+      top: screenHeight *
+          0.1, // Posizionato leggermente sopra la metà orizzontale
+      right: screenWidth * 0.05, // Posizionato sulla destra
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Immagine di sfondo
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10), // Angoli arrotondati
+            child: Image.asset(
+              imagePath, // Percorso dell'immagine
+              fit: BoxFit.fill, // Adatta l'immagine all'area disponibile
+              width: screenWidth * 0.35, // Larghezza del rettangolo
+              height: screenHeight * 0.4, // Altezza del rettangolo
+            ),
+          ),
+          // Testo sovrapposto
+          Positioned(
+            top: screenHeight * 0.02, // Margine dall'alto rispetto all'immagine
+            left:
+                screenWidth * 0.02, // Margine da sinistra rispetto all'immagine
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: screenWidth * 0.03, // Dimensione del font responsiva
+                fontWeight: FontWeight.bold,
+                color: Colors.black, // Colore del testo
+                fontFamily: 'RetroGaming',
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

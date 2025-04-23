@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:demo_todo_with_flutter/routes/Game/higher_or_lower.dart';
 import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
+import '../services/GameService.dart';
 import 'Streak.dart';
 import 'Learn.dart';
 import '/services/CustomButton.dart';
@@ -23,13 +25,21 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final AudioPlayer _audioPlayer = AudioPlayer();
   final authService = AuthService();
+  final _gameService = GameService();
+
   late AnimationController _cloudAnimationController;
   late Future<LottieComposition> _plantAnimation;
   bool _isMuted = false;
   bool _isWindowOpen = false;
   bool _isCuriositiesWidgetVisible = false;
   String? _randomCuriosity;
-  double _faceMood = 1; //0 sad 0.5 normal 1 happy
+
+  //USER DATAS
+  String? userName;
+  int? streakDays;
+  int? bestScore;
+
+  double _faceMood = 1;
 
   @override
   void initState() {
@@ -44,9 +54,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     )..repeat(reverse: false);
 
     _plantAnimation = _loadLottieAnimation();
+    _loadUser();
 
     if (!_isMuted) {
       _playMusic();
+    }
+  }
+
+  /// Load the current user's info from AuthService and GameService
+  Future<void> _loadUser() async {
+    try {
+      final account = await authService.getAccount();
+      final currentStreak = await authService.getStreakCount();
+      final currentBest  = await _gameService.getBestScore();
+
+      setState(() {
+        userName   = account.name;
+        streakDays = currentStreak;
+        bestScore  = currentBest;
+      });
+    } catch (e) {
+      print("Failed to fetch user info: $e");
     }
   }
 
@@ -79,17 +107,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  void _games() async {
+  void _games() {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => HigherOrLower(username: widget.username)),
-    );
+        builder: (context) => HigherOrLower(username: widget.username),
+      ),
+    ).then((_) {
+      // Refresh user info when returning
+      _loadUser();
+    });
   }
 
   Future<void> _loadRandomCuriosity() async {
     final String fileContent =
-        await rootBundle.loadString('assets/infos/curiosities.txt');
+    await rootBundle.loadString('assets/infos/curiosities.txt');
     final List<String> curiosities = fileContent
         .split('\n')
         .where((line) => line.trim().isNotEmpty)
@@ -118,7 +150,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       body: Column(
         children: [
-          _buildTopBar(), // Function for the top bar
           Expanded(
             child: SizedBox.expand(
               child: Stack(
@@ -142,9 +173,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     bottom: groundHeight * 0.02,
                     onPressed: () {
                       Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const StreakPage()),
-    );
+                        context,
+                        MaterialPageRoute(builder: (context) => const StreakPage()),
+                      ).then((_) => _loadUser());
                     },
                   ),
                   _buildHomeButton(
@@ -164,7 +195,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     screenHeight: screenHeight,
                   ),
                   _buildInfoRectangle(
-                    text: 'Statistics',
+                    text: userName ?? '',
                     imagePath: 'assets/images/statistics/stats_box.png',
                     screenWidth: screenWidth,
                     screenHeight: screenHeight,
@@ -219,8 +250,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget _buildPlant(double plantBottomPosition) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final plantWidth = screenWidth * 0.4; // 40% of width
-    final plantHeight = screenHeight * 0.4; // 40% of height
+    final plantWidth = screenWidth * 0.4;
+    final plantHeight = screenHeight * 0.4;
 
     return Positioned(
       bottom: plantBottomPosition,
@@ -230,7 +261,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Your existing Lottie plant:
             FutureBuilder<LottieComposition>(
               future: _plantAnimation,
               builder: (context, snapshot) {
@@ -246,18 +276,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 }
               },
             ),
-
-            // Overlayed face image:
             Positioned.fill(
-              child:
-                  // adjust padding so the face sits on the plant’s head
-
-                  Image.asset(
+              child: Image.asset(
                 _faceMood == 0
                     ? 'assets/images/faces/sad_face.png'
                     : _faceMood == 0.5
-                        ? 'assets/images/faces/normal_face.png'
-                        : 'assets/images/faces/happy_face.png',
+                    ? 'assets/images/faces/normal_face.png'
+                    : 'assets/images/faces/happy_face.png',
                 fit: BoxFit.contain,
               ),
             ),
@@ -272,14 +297,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       right: screenWidth * 0.1,
       bottom: screenHeight * 0.32,
       child: SizedBox(
-        width: screenWidth * 0.25, // Slightly wider for text
+        width: screenWidth * 0.25,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               "How's your mood today?",
               style: TextStyle(
-                fontSize: screenWidth * 0.012, // Responsive font size
+                fontSize: screenWidth * 0.012,
                 fontFamily: 'RetroGaming',
                 color: Colors.black,
               ),
@@ -294,8 +319,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               label: _faceMood == 0
                   ? 'Sad'
                   : _faceMood == 0.5
-                      ? 'Neutral'
-                      : 'Happy',
+                  ? 'Neutral'
+                  : 'Happy',
               onChanged: (value) {
                 setState(() {
                   _faceMood = value;
@@ -323,68 +348,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       left: left,
       right: right,
       child: SizedBox(
-        width: screenWidth * 0.2, // Button width is 20% of screen width
-        height: screenHeight * 0.08, // Button height is 8% of screen height
+        width: screenWidth * 0.2,
+        height: screenHeight * 0.08,
         child: CustomButton(
           text: text,
           imagePath: 'assets/images/buttons/games_button.png',
           onPressed: onPressed,
           textAlignment: Alignment.center,
-          textPadding: EdgeInsets.only(
-              bottom: screenHeight * 0.015), // Responsive padding
+          textPadding: EdgeInsets.only(bottom: screenHeight * 0.015),
           textStyle: TextStyle(
-            fontSize: screenHeight * 0.02, // Font size is 4% of screen width
+            fontSize: screenHeight * 0.02,
             color: Colors.white,
             fontFamily: 'RetroGaming',
             fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTopBar() {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    return Positioned(
-      top: screenHeight * 0.02,
-      left: 0,
-      right: 0,
-      child: SizedBox(
-        width: screenWidth,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.01),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                //hex
-                hoverColor: const Color(0x3825799F),
-                icon: Image.asset(
-                  'assets/images/buttons/logout_button.png',
-                  width: screenWidth * 0.05,
-                  height: screenHeight * 0.06,
-                ),
-                onPressed: _logout,
-                tooltip: "Logout",
-              ),
-              Text(
-                'Welcome, ${widget.username}!',
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'RetroGaming',
-                ),
-              ),
-              IconButton(
-                icon: Icon(
-                  _isMuted ? Icons.volume_off : Icons.volume_up,
-                  size: 30,
-                ),
-                onPressed: _toggleMute,
-              ),
-            ],
           ),
         ),
       ),
@@ -399,7 +375,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           onTap: () async {
-            await _loadRandomCuriosity(); // Load new curiosity
+            await _loadRandomCuriosity();
             setState(() {
               _isCuriositiesWidgetVisible = true;
             });
@@ -423,9 +399,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     required double screenWidth,
     required double screenHeight,
   }) {
-    if (!_isCuriositiesWidgetVisible) {
-      return const SizedBox.shrink();
-    }
+    if (!_isCuriositiesWidgetVisible) return const SizedBox.shrink();
 
     return Stack(
       children: [
@@ -462,7 +436,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: Text(
                   text,
                   style: TextStyle(
-                    fontSize: screenWidth * 0.03, // responsive font size
+                    fontSize: screenWidth * 0.03,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                     fontFamily: 'RetroGaming',
@@ -479,8 +453,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     _randomCuriosity ?? '',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: screenWidth * 0.015, // responsive font size
-                      //fontSize: 25,
+                      fontSize: screenWidth * 0.015,
                       color: Colors.black,
                       fontFamily: 'RetroGaming',
                     ),
@@ -501,34 +474,64 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     required double screenHeight,
   }) {
     return Positioned(
-      top: screenHeight *
-          0.1, // Posizionato leggermente sopra la metà orizzontale
-      right: screenWidth * 0.05, // Posizionato sulla destra
+      top: screenHeight * 0.1,
+      right: screenWidth * 0.05,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Immagine di sfondo
           ClipRRect(
-            borderRadius: BorderRadius.circular(10), // Angoli arrotondati
             child: Image.asset(
-              imagePath, // Percorso dell'immagine
-              fit: BoxFit.fill, // Adatta l'immagine all'area disponibile
-              width: screenWidth * 0.35, // Larghezza del rettangolo
-              height: screenHeight * 0.4, // Altezza del rettangolo
+              imagePath,
+              fit: BoxFit.fill,
+              width: screenWidth * 0.2,
+              height: screenHeight * 0.4,
             ),
           ),
-          // Testo sovrapposto
           Positioned(
-            top: screenHeight * 0.02, // Margine dall'alto rispetto all'immagine
-            left:
-                screenWidth * 0.02, // Margine da sinistra rispetto all'immagine
+            top: screenHeight * 0.02,
+            left: screenWidth * 0.02,
             child: Text(
               text,
               style: TextStyle(
-                fontSize: screenWidth * 0.03, // Dimensione del font responsiva
+                fontSize: screenWidth * 0.015,
                 fontWeight: FontWeight.bold,
-                color: Colors.black, // Colore del testo
+                color: Colors.black,
                 fontFamily: 'RetroGaming',
+              ),
+            ),
+          ),
+          Positioned(
+            top: screenHeight * 0.08,
+            left: screenWidth * 0.02,
+            child: RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  fontSize: screenWidth * 0.010,
+                  color: Colors.black,
+                  fontFamily: 'RetroGaming',
+                ),
+
+                children: [
+
+                  const TextSpan(
+                    text: '\nStreak: ',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: '$streakDays days',
+                    style: const TextStyle(fontWeight: FontWeight.normal),
+                  ),
+
+                  const TextSpan(
+                    text: '\n\nHoL best score: ',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: '$bestScore',
+                    style: const TextStyle(fontWeight: FontWeight.normal),
+                  ),
+
+                ],
               ),
             ),
           ),

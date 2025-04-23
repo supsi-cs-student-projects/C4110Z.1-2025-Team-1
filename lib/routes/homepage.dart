@@ -7,7 +7,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:demo_todo_with_flutter/routes/Game/higher_or_lower.dart';
 import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
-import 'Streak.dart';
+import 'package:demo_todo_with_flutter/routes/Streak.dart';
 import 'Learn.dart';
 import '/services/CustomButton.dart';
 
@@ -143,7 +143,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     right: null,
                     bottom: groundHeight * 0.02,
                     onPressed: () {
-                      print("Go to STREAK");
+                      Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const StreakPage()),
+    );
                     },
                   ),
                   _buildHomeButton(

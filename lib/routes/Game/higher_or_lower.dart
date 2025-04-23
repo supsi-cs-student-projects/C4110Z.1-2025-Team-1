@@ -7,6 +7,9 @@ import '../Homepage.dart';
 import '/services/CustomButton.dart';
 import 'Alcohol.dart';
 import '../../services/auth.dart';
+import '../../services/Streak.dart';
+import '../../services/appwrite.dart';
+import '../../services/GameService.dart';
 
 Future<List<Alcohol>> loadAlcohols() async {
   final rawData = await rootBundle.loadString('assets/infos/alcohols.txt');
@@ -40,6 +43,7 @@ class HigherOrLower extends StatefulWidget {
 class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateMixin {
   final AudioPlayer _audioPlayer = AudioPlayer();
   final authService = AuthService();
+  final _gameService = GameService();
   final Random _random = Random();
 
   List<Alcohol> allAlcohols = [];
@@ -60,6 +64,12 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
     if (!_isMuted) {
       _playMusic();
     }
+
+    _gameService.getBestScore().then((fetchedBestScore) {
+    setState(() {
+      bestScore = fetchedBestScore;
+    });
+  });
 
     loadAlcohols().then((alcohols) {
       setState(() {
@@ -213,6 +223,16 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
   }
 
   Widget _buildGameOverBox(double screenWidth, double screenHeight) {
+    final streakService = StreakService();
+    streakService.incrementStreak();
+
+    print('score: $score, bestScore: $bestScore');
+    if (score >= bestScore) {
+      bestScore = score;
+      print('UPDATING BEST SCORE TO: $bestScore');
+      _gameService.updateBestScore(bestScore); // Update the best score in the database
+    }
+
     return Center(
       child: Container(
         width: screenWidth * 0.3,

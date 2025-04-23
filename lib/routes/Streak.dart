@@ -1,181 +1,90 @@
-import 'package:demo_todo_with_flutter/routes/RegisterPage.dart';
+import 'package:demo_todo_with_flutter/services/appwrite.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:go_router/go_router.dart';
-import 'package:demo_todo_with_flutter/services/auth.dart';
-import 'package:appwrite/models.dart' as models;
+import 'package:demo_todo_with_flutter/services/streak.dart';
 
-class Streak extends StatefulWidget {
-  const Streak({super.key});
-
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
-      body: const Center(child: Text('Login Page')),
-    );
-  }
+class StreakPage extends StatefulWidget {
+  const StreakPage({Key? key}) : super(key: key);
 
   @override
-  State<Streak> createState() => _LearnPageState();
+  State<StreakPage> createState() => _StreakPageState();
 }
 
-class _LearnPageState extends State<Streak> {
-  final AuthService _authService = AuthService();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  bool _isPasswordVisible = false;
+class _StreakPageState extends State<StreakPage> {
+  final StreakService _streakService = StreakService(); // Initialize your service
+  int _streakCount = 0;
+  bool _isLoading = true;
 
   @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _loadStreak();
   }
 
-  Future<void> _login() async {
+  Future<void> _loadStreak() async {
     try {
-      // Call your AuthService for Appwrite
-      models.Account userAccount = await _authService.login(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-
-      // If login succeeds, navigate to home route
-      GoRouter.of(context).go('CHANGE THIS');
+      final streak = await _streakService.loadStreak();
+      setState(() {
+        _streakCount = streak.streakCount;
+        _isLoading = false;
+      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed: $e')),
+        SnackBar(content: Text('Error loading streak: $e')),
+      );
+    }
+  }
+
+  Future<void> _incrementStreak() async {
+    try {
+      final streak = await _streakService.incrementStreak();
+      setState(() {
+        _streakCount = streak.streakCount;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error incrementing streak: $e')),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: screenHeight,
-          child: Column(
-            children: [
-              SizedBox(height: screenHeight * 0.05), // 5% of screen height
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.06), // 6% of screen width
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      child: Image.asset(
-                        'assets/images/AB_logo.png',
-                        width: 161.7,
-                        height: 132.9,
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.06), // 6% of screen width
-                child: Column(
-                  children: [
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'GAMES PAGE!',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Lexend',
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Login to access your account below.',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: 'Lexend',
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: 'Email Address',
-                        hintText: 'Enter your email...',
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 24),
-                      ),
-                      onFieldSubmitted: (value) {
-                        _login();
-                      },
-                      style: const TextStyle(
-                          fontFamily: 'Lexend', color: Colors.black),
-                    ),
-                    const SizedBox(height: 12),
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: !_isPasswordVisible,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        hintText: 'Enter your password...',
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 24),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _isPasswordVisible
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                            color: Colors.grey,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _isPasswordVisible = !_isPasswordVisible;
-                            });
-                          },
-                        ),
-                      ),
-                      style: const TextStyle(
-                          fontFamily: 'Lexend', color: Colors.black),
-                    ),
-                    const SizedBox(height: 24),
-
-                    const SizedBox(height: 24),
-
-
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+      appBar: AppBar(
+        title: const Text('Streak Page'),
       ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Your Current Streak:',
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  '$_streakCount Days',
+                  style: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  onPressed: _incrementStreak,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    backgroundColor: Colors.green,
+                  ),
+                  child: const Text(
+                    'Increase Streak',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }
-

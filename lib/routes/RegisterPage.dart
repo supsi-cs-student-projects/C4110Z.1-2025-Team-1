@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:appwrite/models.dart' as models;
+import 'Homepage.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -27,6 +28,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _emailController.dispose();
     _passwordController1.dispose();
     _passwordController2.dispose();
+    _nameController.dispose();
     super.dispose();
   }
 
@@ -38,12 +40,14 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
     try {
-      final account = await _authService.signUp(
+      final userAccount = await _authService.signUp(
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController1.text.trim(),
       );
-      GoRouter.of(context).go('CHANGE THIS');
+      Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => HomePage(username: userAccount.name)),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Registration failed: $e')),

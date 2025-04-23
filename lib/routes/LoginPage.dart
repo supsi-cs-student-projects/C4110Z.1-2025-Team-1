@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
 
       // If login succeeds, navigate to home route
       Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => HomePage(username: userAccount.name ?? '')),
+        MaterialPageRoute(builder: (context) => HomePage(username: userAccount.name)),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage(username: snapshot.data!.name ?? 'User'),
+                builder: (context) => HomePage(username: snapshot.data!.name),
               ),
             );
           });

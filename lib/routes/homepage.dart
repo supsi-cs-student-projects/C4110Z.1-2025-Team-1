@@ -7,7 +7,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:demo_todo_with_flutter/routes/Game/higher_or_lower.dart';
 import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
-import 'package:demo_todo_with_flutter/routes/Streak.dart';
+import 'Streak.dart';
 import 'Learn.dart';
 import '/services/CustomButton.dart';
 

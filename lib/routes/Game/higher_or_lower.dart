@@ -97,6 +97,12 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
   }
 
   void _goBackToHomePage() {
+    print('score: $score, bestScore: $bestScore');
+    if (score >= bestScore) {
+      bestScore = score;
+      print('UPDATING BEST SCORE TO: $bestScore');
+      _gameService.updateBestScore(bestScore); // Update the best score in the database
+    }
     Navigator.pop(context);
   }
 
@@ -273,7 +279,8 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
             ),
             SizedBox(height: screenHeight * 0.01),
             GestureDetector(
-              onTap: _goBackToHomePage,
+              onTap: _goBackToHomePage
+              ,
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: Text(

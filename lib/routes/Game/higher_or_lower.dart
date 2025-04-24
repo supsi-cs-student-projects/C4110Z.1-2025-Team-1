@@ -229,8 +229,8 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
   }
 
   Widget _buildGameOverBox(double screenWidth, double screenHeight) {
-    final streakService = StreakService();
-    streakService.incrementStreak();
+    /*final streakService = StreakService();
+    streakService.incrementStreak();*/
 
     print('score: $score, bestScore: $bestScore');
     if (score >= bestScore) {

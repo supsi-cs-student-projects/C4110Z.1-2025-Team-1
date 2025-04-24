@@ -30,7 +30,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late AnimationController _cloudAnimationController;
   late Future<LottieComposition> _plantAnimation;
   bool _isMuted = false;
-  bool _isWindowOpen = false;
   bool _isCuriositiesWidgetVisible = false;
   String? _randomCuriosity;
 
@@ -39,7 +38,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int? streakDays;
   int? bestScore;
 
-  double _faceMood = 1;
+  //map slider values to face image asset paths
+  final Map<double, String> _faceMap = {
+    0.0: 'assets/images/faces/sad_face.png',
+    0.5: 'assets/images/faces/normal_face.png',
+    1.0: 'assets/images/faces/happy_face.png',
+  };
+
+  double _faceMood = 1.0;
 
   @override
   void initState() {
@@ -148,7 +154,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final plantBottomPosition = groundHeight * 0.18;
 
     return Scaffold(
-
       body: Column(
         children: [
           Expanded(
@@ -159,10 +164,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   _buildBackground(screenWidth, screenHeight),
                   _buildGround(screenWidth, screenHeight),
                   _buildPlant(plantBottomPosition),
-                  _buildSlider(screenWidth, screenHeight),
-                  _buildLogOutButton(
-                    onPressed: _logout,
-                  ),
+                  _buildLogOutButton(onPressed: _logout),
                   _buildHomeButton(
                     text: 'GAMES',
                     left: screenWidth * 0.05,
@@ -257,6 +259,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final plantWidth = screenWidth * 0.4;
     final plantHeight = screenHeight * 0.4;
 
+    //look up the correct face image from the map
+    final faceAsset = _faceMap[_faceMood]!;
+
     return Positioned(
       bottom: plantBottomPosition,
       child: SizedBox(
@@ -282,11 +287,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
             Positioned.fill(
               child: Image.asset(
-                _faceMood == 0
-                    ? 'assets/images/faces/sad_face.png'
-                    : _faceMood == 0.5
-                    ? 'assets/images/faces/normal_face.png'
-                    : 'assets/images/faces/happy_face.png',
+                faceAsset,
                 fit: BoxFit.contain,
               ),
             ),
@@ -296,43 +297,35 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildSlider(double screenWidth, double screenHeight) {
-    return Positioned(
-      right: screenWidth * 0.1,
-      bottom: screenHeight * 0.32,
-      child: SizedBox(
-        width: screenWidth * 0.25,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "How's your mood today?",
-              style: TextStyle(
-                fontSize: screenWidth * 0.012,
-                fontFamily: 'RetroGaming',
-                color: Colors.black,
-              ),
+  Widget _buildSlider(double width) {
+    return SizedBox(
+      width: width,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "How's your mood today?",
+            style: TextStyle(
+              fontSize: width * 0.06,
+              fontFamily: 'RetroGaming',
+              color: Colors.black,
             ),
-            Slider(
-              activeColor: const Color(0xFFDCAB00),
-              inactiveColor: const Color(0xFF8C5261),
-              value: _faceMood,
-              min: 0,
-              max: 1,
-              divisions: 2,
-              label: _faceMood == 0
-                  ? 'Sad'
-                  : _faceMood == 0.5
-                  ? 'Neutral'
-                  : 'Happy',
-              onChanged: (value) {
-                setState(() {
-                  _faceMood = value;
-                });
-              },
-            ),
-          ],
-        ),
+          ),
+          Slider(
+            activeColor: const Color(0xFFDCAB00),
+            inactiveColor: const Color(0xFF8C5261),
+            value: _faceMood,
+            min: 0,
+            max: 1,
+            divisions: 2,
+            label: _faceMood == 0
+                ? 'Sad'
+                : _faceMood == 0.5
+                ? 'Neutral'
+                : 'Happy',
+            onChanged: (value) => setState(() => _faceMood = value),
+          ),
+        ],
       ),
     );
   }
@@ -394,11 +387,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-
-
   Widget _buildRectangle(double screenWidth, double screenHeight) {
     return Positioned(
-      top: screenHeight / 3 - 85,
+      top: screenHeight / 3 - 20,
       left: 10,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
@@ -445,7 +436,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ),
         Positioned(
-          top: screenHeight * 0.02,
+          top: screenHeight * 0.08,
           left: screenWidth * 0.17,
           child: Stack(
             alignment: Alignment.topLeft,
@@ -455,7 +446,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: Image.asset(
                   imagePath,
                   fit: BoxFit.fill,
-                  width: screenWidth * 0.6,
+                  width: screenWidth * 0.55,
                   height: screenHeight * 0.5,
                 ),
               ),
@@ -465,7 +456,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: Text(
                   text,
                   style: TextStyle(
-                    fontSize: screenWidth * 0.03,
+                    fontSize: screenWidth * 0.025,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                     fontFamily: 'RetroGaming',
@@ -482,7 +473,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     _randomCuriosity ?? '',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: screenWidth * 0.015,
+                      fontSize: screenWidth * 0.013,
                       color: Colors.black,
                       fontFamily: 'RetroGaming',
                     ),
@@ -502,69 +493,79 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     required double screenWidth,
     required double screenHeight,
   }) {
+    final boxWidth  = screenWidth * 0.2;
+    final boxHeight = screenHeight * 0.4;
     return Positioned(
       top: screenHeight * 0.1,
       right: screenWidth * 0.05,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          ClipRRect(
-            child: Image.asset(
-              imagePath,
-              fit: BoxFit.fill,
-              width: screenWidth * 0.2,
-              height: screenHeight * 0.4,
-            ),
-          ),
-          Positioned(
-            top: screenHeight * 0.02,
-            left: screenWidth * 0.02,
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: screenWidth * 0.015,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                fontFamily: 'RetroGaming',
+      child: SizedBox(
+        width: boxWidth,
+        height: boxHeight,
+        child: Stack(
+          children: [
+            // --- your background image ---
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.fill,
+                width: boxWidth,
+                height: boxHeight,
               ),
             ),
-          ),
-          Positioned(
-            top: screenHeight * 0.08,
-            left: screenWidth * 0.02,
-            child: RichText(
-              text: TextSpan(
+
+            // --- title / name at top ---
+            Positioned(
+              top: boxHeight * 0.05,
+              left: boxWidth * 0.05,
+              child: Text(
+                text,
                 style: TextStyle(
-                  fontSize: screenWidth * 0.010,
-                  color: Colors.black,
+                  fontSize: boxWidth * 0.075,
+                  fontWeight: FontWeight.bold,
                   fontFamily: 'RetroGaming',
+                  color: Colors.black,
                 ),
-
-                children: [
-
-                  const TextSpan(
-                    text: '\nStreak: ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text: '$streakDays days',
-                    style: const TextStyle(fontWeight: FontWeight.normal),
-                  ),
-
-                  const TextSpan(
-                    text: '\n\nHoL best score: ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text: '$bestScore',
-                    style: const TextStyle(fontWeight: FontWeight.normal),
-                  ),
-
-                ],
               ),
             ),
-          ),
-        ],
+
+            // --- stats in the middle ---
+            Positioned(
+              top: boxHeight * 0.2,
+              left: boxWidth * 0.05,
+              right: boxWidth * 0.05,
+              child: RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    fontSize: boxWidth * 0.055,
+                    fontFamily: 'RetroGaming',
+                    color: Colors.black,
+                  ),
+                  children: [
+                    const TextSpan(
+                      text: 'Streak: ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(text: '$streakDays days\n'),
+                    const TextSpan(
+                      text: 'HoL best score: ',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(text: '$bestScore'),
+                  ],
+                ),
+              ),
+            ),
+
+            // --- slider at the bottom of the info box ---
+            Positioned(
+              bottom: boxHeight * 0.05,
+              left: boxWidth * 0.05,
+              right: boxWidth * 0.05,
+              child: _buildSlider(boxWidth * 0.9),
+            ),
+          ],
+        ),
       ),
     );
   }

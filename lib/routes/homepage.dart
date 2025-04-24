@@ -148,6 +148,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final plantBottomPosition = groundHeight * 0.18;
 
     return Scaffold(
+
       body: Column(
         children: [
           Expanded(
@@ -159,6 +160,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   _buildGround(screenWidth, screenHeight),
                   _buildPlant(plantBottomPosition),
                   _buildSlider(screenWidth, screenHeight),
+                  _buildLogOutButton(
+                    onPressed: _logout,
+                  ),
                   _buildHomeButton(
                     text: 'GAMES',
                     left: screenWidth * 0.05,
@@ -366,6 +370,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
+
+  Widget _buildLogOutButton({
+    required VoidCallback onPressed,
+  }) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return Positioned(
+      top: 0.02 * screenHeight,
+      left: 0,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: onPressed,
+          child: Image.asset(
+            'assets/images/buttons/logout_button.png',
+            width: screenWidth * 0.1,
+            height: screenHeight * 0.1,
+          ),
+        ),
+      ),
+    );
+  }
+
+
 
   Widget _buildRectangle(double screenWidth, double screenHeight) {
     return Positioned(

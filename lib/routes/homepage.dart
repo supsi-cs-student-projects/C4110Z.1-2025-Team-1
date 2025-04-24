@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:appwrite/appwrite.dart';
+import 'package:demo_todo_with_flutter/routes/account_page.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
@@ -72,12 +73,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     try {
       final account = await authService.getAccount();
       final currentStreak = await authService.getStreakCount();
-      final currentBest  = await _gameService.getBestScore();
+      final currentBest = await _gameService.getBestScore();
 
       setState(() {
-        userName   = account.name;
+        userName = account.name;
         streakDays = currentStreak;
-        bestScore  = currentBest;
+        bestScore = currentBest;
       });
     } catch (e) {
       print("Failed to fetch user info: $e");
@@ -127,7 +128,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Future<void> _loadRandomCuriosity() async {
     final String fileContent =
-    await rootBundle.loadString('assets/infos/curiosities.txt');
+        await rootBundle.loadString('assets/infos/curiosities.txt');
     final List<String> curiosities = fileContent
         .split('\n')
         .where((line) => line.trim().isNotEmpty)
@@ -180,7 +181,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const StreakPage()),
+                        MaterialPageRoute(
+                            builder: (context) => const StreakPage()),
                       ).then((_) => _loadUser());
                     },
                   ),
@@ -190,7 +192,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     right: screenWidth * 0.05,
                     bottom: groundHeight * 0.02,
                     onPressed: () {
-                      print("Go to ACCOUNT");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AccountPage(),
+                        ),
+                      );
                     },
                   ),
                   _buildRectangle(screenWidth, screenHeight),
@@ -321,8 +328,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             label: _faceMood == 0
                 ? 'Sad'
                 : _faceMood == 0.5
-                ? 'Neutral'
-                : 'Happy',
+                    ? 'Neutral'
+                    : 'Happy',
             onChanged: (value) => setState(() => _faceMood = value),
           ),
         ],
@@ -493,7 +500,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     required double screenWidth,
     required double screenHeight,
   }) {
-    final boxWidth  = screenWidth * 0.2;
+    final boxWidth = screenWidth * 0.2;
     final boxHeight = screenHeight * 0.4;
     return Positioned(
       top: screenHeight * 0.1,

@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Future<void> _loadUser() async {
     try {
       final account = await authService.getAccount();
-      final currentStreak = await authService.getStreakCount();
+      final currentStreak = await streak.getStreakCount();
       final currentBest = await _gameService.getBestScore();
 
 

@@ -40,14 +40,5 @@ class AuthService {
     return _account.get().then((value) => value.name);
   }
 
-  // Streak-related methods
-  Future<int> getStreakCount() async {
-    final streak = await _streakService.loadStreak();
-    return streak.streakCount;
-  }
-
-  Future<void> incrementStreak() async {
-    await _streakService.incrementStreak();
-  }
 
 }

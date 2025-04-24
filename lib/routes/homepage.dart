@@ -9,6 +9,7 @@ import 'package:demo_todo_with_flutter/routes/Game/higher_or_lower.dart';
 import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import '../services/GameService.dart';
+import '../services/Streak.dart';
 import 'Streak.dart';
 import 'Learn.dart';
 import '/services/CustomButton.dart';
@@ -25,6 +26,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final AudioPlayer _audioPlayer = AudioPlayer();
   final authService = AuthService();
+  final streak = StreakService();
   final _gameService = GameService();
 
   late AnimationController _cloudAnimationController;
@@ -71,7 +73,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Future<void> _loadUser() async {
     try {
       final account = await authService.getAccount();
-      final currentStreak = await authService.getStreakCount();
+      final currentStreak = await streak.getStreakCount();
       final currentBest  = await _gameService.getBestScore();
 
       setState(() {

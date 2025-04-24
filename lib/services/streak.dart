@@ -33,6 +33,11 @@ class StreakService {
     }
   }
 
+  Future<int> getStreakCount() async {
+    final streak = await loadStreak();
+    return streak.streakCount;
+  }
+
   Future<Streak> initializeStreak() async {
     final document = await _databases.createDocument(
       databaseId: _databaseId,
@@ -67,7 +72,8 @@ class StreakService {
         'updated_at': streak.lastUpdated.toIso8601String(),
       },
     );
-
     return Streak.fromJson(document.data);
   }
+
+
 }

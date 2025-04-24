@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../services/Streak.dart';
 import '../services/auth.dart';
 import '../utilities.dart';
 import 'todos.dart';
@@ -16,6 +17,7 @@ class _AuthState extends State<Auth> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final streak = StreakService();
   bool isSignUp = false;
 
   void toggleSignUp() {

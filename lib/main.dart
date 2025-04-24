@@ -1,19 +1,21 @@
+import 'dart:io';
+import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import 'package:flutter/material.dart';
-
-import 'routes/landing.dart';
+import 'package:window_size/window_size.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const ToDoApp());
 }
 
 class ToDoApp extends StatelessWidget {
   const ToDoApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Todo with Flutter',
+      title: 'AB',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.black,
@@ -21,7 +23,7 @@ class ToDoApp extends StatelessWidget {
         ),
         fontFamily: 'Avenir',
       ),
-      home: const Landing(),
+      home: const LoginPage(),
     );
   }
 }

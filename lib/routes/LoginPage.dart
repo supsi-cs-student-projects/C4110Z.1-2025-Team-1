@@ -36,12 +36,12 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => HomePage(username: userAccount.name),
+          builder: (context) => const HomePage(),
         ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed: \$e')),
+        SnackBar(content: Text('Login failed: $e')),
       );
     }
   }
@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage(username: snapshot.data!.name),
+                builder: (context) => const HomePage(),
               ),
             );
           });

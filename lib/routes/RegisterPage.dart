@@ -48,12 +48,13 @@ class _RegisterPageState extends State<RegisterPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => HomePage(username: userAccount.name),
+          builder: (context) => const HomePage(),
+
         ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registration failed: \$e')),
+        SnackBar(content: Text('Registration failed: $e')),
       );
     }
   }

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
+import '../../entities/user.dart';
 import '/services/CustomButton.dart';
 import 'Alcohol.dart';
 import '../../services/auth.dart';
@@ -29,9 +30,8 @@ Future<List<Alcohol>> loadAlcohols() async {
 }
 
 class HigherOrLower extends StatefulWidget {
-  final String username;
 
-  const HigherOrLower({super.key, required this.username});
+  const HigherOrLower({super.key});
 
   @override
   _HigherOrLowerState createState() => _HigherOrLowerState();
@@ -47,6 +47,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
   List<Alcohol> allAlcohols = [];
   late Alcohol leftAlcohol;
   late Alcohol rightAlcohol;
+  User? user;
 
   bool _isMuted = false;
   bool _isGameOver = false;
@@ -56,6 +57,8 @@ class _HigherOrLowerState extends State<HigherOrLower>
 
   @override
   void initState() {
+    _loadUser();
+
     super.initState();
     _isMuted = true;
 
@@ -77,6 +80,14 @@ class _HigherOrLowerState extends State<HigherOrLower>
     });
   }
 
+  Future<void> _loadUser() async {
+    try {
+      user = await User.fetchUser();
+    } catch (e) {
+      print("Failed to fetch user info: $e");
+    }
+  }
+
   void _playMusic() async {
     try {
       await _audioPlayer.setAsset('assets/audio/homepage_music.ogg');
@@ -96,6 +107,8 @@ class _HigherOrLowerState extends State<HigherOrLower>
 
   void _goBackToHomePage() {
     print('score: $score, bestScore: $bestScore');
+
+
     if (score >= bestScore) {
       bestScore = score;
       print('UPDATING BEST SCORE TO: $bestScore');
@@ -131,6 +144,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
         leftAlcohol = rightAlcohol;
         _updateRound();
       } else {
+        user?.addXP(score);
         _isGameOver = true;
       }
     });
@@ -447,7 +461,11 @@ class _HigherOrLowerState extends State<HigherOrLower>
                   width: screenWidth * 0.1,
                   height: screenHeight * 0.1,
                 ),
-                onPressed: _goBackToHomePage,
+                //add xp and go back to homepage
+                onPressed: () {
+                  user?.addXP(score);
+                  _goBackToHomePage();
+                },
                 tooltip: "Back to Home",
               ),
               IconButton(

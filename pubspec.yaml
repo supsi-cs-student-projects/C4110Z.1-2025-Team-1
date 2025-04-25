@@ -118,6 +118,8 @@ flutter:
     - assets/images/buttons/logout_button.png
     - assets/images/buttons/back_button.png
     - assets/images/statistics/stats_box.png
+    - assets/Animations/plant_lv1.json
+    - assets/Animations/plant_lv2.json
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

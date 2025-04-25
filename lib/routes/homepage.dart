@@ -189,8 +189,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       await _loadRandomCuriosity();
                       setState(() => _isCuriositiesWidgetVisible = true);
                     }),
-                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth, screenHeight: screenHeight, text: 'Did you know that...', imagePath: 'assets/images/curiosities/CuriosityText.png', curiosity: _randomCuriosity, top: groundHeight * 0.3, fontSize: 10),
-                    _buildInfoRectangle(username: userName ?? '', streakDays: streakDays ?? 0, bestScore: bestScore ?? 0, screenWidth: screenWidth, screenHeight: screenHeight, scaleFactor: scaleFactor * 0.8, top: screenHeight * 0.2),
+                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.3, screenHeight: screenHeight * 0.5, text: 'Did you know that...', imagePath: 'assets/images/curiosities/CuriosityText.png', curiosity: _randomCuriosity, top: groundHeight * 0.4, fontSize: 10, left: screenWidth * 0.2),
+                    _buildInfoRectangle(username: userName ?? '', streakDays: streakDays ?? 0, bestScore: bestScore ?? 0, screenWidth: screenWidth * 3, screenHeight: screenHeight * 0.5, scaleFactor: scaleFactor * 0.8, top: screenHeight * 0.2, left: screenWidth * 0.2),
+
                   ],
                 ),
               ),
@@ -198,8 +199,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ],
         ),
       );
-
     }
+
+
     //NOT PORTRAIT
     else{
       return Scaffold(
@@ -227,8 +229,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       await _loadRandomCuriosity();
                       setState(() => _isCuriositiesWidgetVisible = true);
                     }),
-                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth, screenHeight: screenHeight, text: 'Did you know that...', imagePath: 'assets/images/curiosities/CuriosityText.png', curiosity: _randomCuriosity, top: groundHeight*0.1, fontSize: 20),
-                    _buildInfoRectangle(username: userName ?? '', streakDays: streakDays ?? 0, bestScore: bestScore ?? 0, screenWidth: screenWidth, screenHeight: screenHeight, scaleFactor: scaleFactor, top: screenHeight * 0.1),
+                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.3, screenHeight: screenHeight, text: 'Did you know that...', imagePath: 'assets/images/curiosities/CuriosityText.png', curiosity: _randomCuriosity, top: groundHeight*0.1, fontSize: 20, left: screenWidth * 0.15),
+                    !_isCuriositiesWidgetVisible?
+                    _buildInfoRectangle(username: userName ?? '', streakDays: streakDays ?? 0, bestScore: bestScore ?? 0, screenWidth: screenWidth, screenHeight: screenHeight, scaleFactor: scaleFactor, top: screenHeight * 0.1, left: screenWidth * 0.75): const SizedBox.shrink(),
                   ],
                 ),
               ),
@@ -397,6 +400,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     required double screenWidth,
     required double screenHeight, required bool isVisible, String? curiosity,
     required double fontSize,
+    required double left,
   }) {
     if (!_isCuriositiesWidgetVisible) return const SizedBox.shrink();
 
@@ -416,7 +420,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
         Positioned(
           top: top,
-          left: screenWidth * 0.17,
+          left: left,
           child: Stack(
             alignment: Alignment.topLeft,
             children: [
@@ -474,12 +478,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     required double screenHeight,
     required double scaleFactor,
     required double top,
+    required double left,
   }) {
     final boxW = screenWidth * 0.20;
     final boxH = screenHeight * 0.4;
     return Positioned(
       top: top,
-      right: screenWidth * 0.05,
+      left: left,
       child: SizedBox(
         width: boxW,
         height: boxH,

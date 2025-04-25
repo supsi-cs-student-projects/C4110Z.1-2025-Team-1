@@ -9,13 +9,6 @@ import 'Homepage.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
-      body: const Center(child: Text('Login Page')),
-    );
-  }
-
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -36,34 +29,31 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     try {
-      // Call your AuthService for Appwrite
       models.Account userAccount = await _authService.login(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-
-      // If login succeeds, navigate to home route
-      Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => HomePage(username: userAccount.name)),
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(username: userAccount.name),
+        ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed: $e')),
+        SnackBar(content: Text('Login failed: \$e')),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     return FutureBuilder<models.Account>(
-      future: _authService.getAccount(), // Fetch the account
+      future: _authService.getAccount(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          // Show a loading indicator while waiting for the result
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasData) {
-          // If the user is logged in, navigate to HomePage
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pushReplacement(
               context,
@@ -72,9 +62,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
             );
           });
-          return const SizedBox(); // Return an empty widget while navigating
+          return const SizedBox();
         } else {
-          // If no session exists, show the login page
           return _buildLoginPage(context);
         }
       },
@@ -82,71 +71,60 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildLoginPage(BuildContext context) {
-    const screenWidth = 1920;
-    const screenHeight = 1080;
-
     return RawKeyboardListener(
       focusNode: FocusNode(),
       onKey: (RawKeyEvent event) {
         if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
-          _login(); // Trigger the login function when "Enter" is pressed
+          _login();
         }
       },
-      child: Scaffold(
-        key: _scaffoldKey,
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: SizedBox(
-            child: Column(
-              children: [
-                const SizedBox(height: screenHeight * 0.05),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.06),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // Constrain width for desktop, full width on mobile
+          final maxWidth = constraints.maxWidth > 600 ? 600.0 : constraints.maxWidth * 0.9;
+          return Scaffold(
+            key: _scaffoldKey,
+            backgroundColor: Colors.white,
+            body: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: maxWidth),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(vertical: 24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      ClipRRect(
+                      // Logo
+                      Center(
                         child: Image.asset(
                           'assets/images/AB_logo.png',
-                          width: 220,
-                          height: 200,
-                          fit: BoxFit.fitWidth,
+                          width: maxWidth * 0.5,
+                          fit: BoxFit.contain,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.06),
-                  child: Column(
-                    children: [
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Welcome back to AB!',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'RetroGaming',
-                            color: Colors.black,
-                          ),
+                      const SizedBox(height: 24),
+                      // Titles
+                      const Text(
+                        'Welcome back to AB!',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'RetroGaming',
+                          color: Colors.black,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 12),
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Login to access your account below.',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'RetroGaming',
-                            color: Colors.grey,
-                          ),
+                      const Text(
+                        'Login to access your account below.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: 'RetroGaming',
+                          color: Colors.grey,
                         ),
+                        textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 24),
+                      // Email
                       TextFormField(
                         controller: _emailController,
                         decoration: InputDecoration(
@@ -163,13 +141,12 @@ class _LoginPageState extends State<LoginPage> {
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 24),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                         ),
-                        style: const TextStyle(
-                            fontFamily: 'RetroGaming', color: Colors.black),
+                        style: const TextStyle(fontFamily: 'RetroGaming', color: Colors.black),
                       ),
                       const SizedBox(height: 12),
+                      // Password
                       TextFormField(
                         controller: _passwordController,
                         obscureText: !_isPasswordVisible,
@@ -187,13 +164,10 @@ class _LoginPageState extends State<LoginPage> {
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 24),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _isPasswordVisible
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
+                              _isPasswordVisible ? Icons.visibility_outlined : Icons.visibility_off_outlined,
                               color: Colors.grey,
                             ),
                             onPressed: () {
@@ -203,69 +177,55 @@ class _LoginPageState extends State<LoginPage> {
                             },
                           ),
                         ),
-                        style: const TextStyle(
-                            fontFamily: 'RetroGaming', color: Colors.black),
+                        style: const TextStyle(fontFamily: 'RetroGaming', color: Colors.black),
                       ),
                       const SizedBox(height: 24),
+                      // Actions
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextButton(
                             onPressed: () {
-                              // Add forgot password functionality here
+                              // TODO: Forgot password
                             },
                             child: const Text(
                               'Forgot Password?',
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontFamily: 'RetroGaming',
-                              ),
+                              style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming'),
                             ),
                           ),
                           ElevatedButton(
                             onPressed: _login,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF02AF5C),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(0),
-                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
                             ),
-                            child: const Text(
-                              'Login',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'RetroGaming',
-                              ),
-                            ),
+                            child: const Text('Login', style: TextStyle(color: Colors.white, fontFamily: 'RetroGaming')),
                           ),
                         ],
                       ),
                       const SizedBox(height: 24),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const RegisterPage()),
-                          );
-                        },
-                        child: const Text(
-                          'Don\'t have an account?',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontFamily: 'RetroGaming',
+                      Center(
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const RegisterPage()),
+                            );
+                          },
+                          child: const Text(
+                            "Don't have an account?",
+                            style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming'),
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

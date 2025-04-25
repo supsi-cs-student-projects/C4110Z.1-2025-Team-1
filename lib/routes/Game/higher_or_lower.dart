@@ -3,12 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
-import '../Homepage.dart';
 import '/services/CustomButton.dart';
 import 'Alcohol.dart';
 import '../../services/auth.dart';
-import '../../services/Streak.dart';
-import '../../services/appwrite.dart';
 import '../../services/GameService.dart';
 
 Future<List<Alcohol>> loadAlcohols() async {
@@ -203,18 +200,6 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
                         ),
                       ),
 
-                      Positioned(
-                        top: screenHeight * 0.28,
-                        left: screenWidth * 0.081,
-                        child: Text(
-                          "Leaderboard",
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.012, // Responsive font size based on screen width
-                            fontFamily: 'RetroGaming',
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
 
                     ],
                   ),

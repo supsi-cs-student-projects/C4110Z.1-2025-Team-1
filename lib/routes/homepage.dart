@@ -36,18 +36,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool _isCuriositiesWidgetVisible = false;
   String? _randomCuriosity;
 
-  //USER DATAS
+  // USER DATA
   String? userName;
   int? streakDays;
   int? bestScore;
 
-  //map slider values to face image asset paths
+  // face mood mapping
   final Map<double, String> _faceMap = {
     0.0: 'assets/images/faces/sad_face.png',
     0.5: 'assets/images/faces/normal_face.png',
     1.0: 'assets/images/faces/happy_face.png',
   };
-
   double _faceMood = 1.0;
 
   @override
@@ -70,21 +69,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
   }
 
-  /// Load the current user's info from AuthService and GameService
   Future<void> _loadUser() async {
     try {
       final account = await authService.getAccount();
       final currentStreak = await streak.getStreakCount();
       final currentBest = await _gameService.getBestScore();
-
-
       setState(() {
         userName = account.name;
         streakDays = currentStreak;
         bestScore = currentBest;
       });
     } catch (e) {
-      print("Failed to fetch user info: $e");
+      print("Failed to fetch user info: \$e");
     }
   }
 
@@ -98,7 +94,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       _audioPlayer.setLoopMode(LoopMode.one);
       _audioPlayer.play();
     } catch (e) {
-      print("Error loading audio: $e");
+      print("Error loading audio: \$e");
     }
   }
 
@@ -124,19 +120,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         builder: (context) => HigherOrLower(username: widget.username),
       ),
     ).then((_) {
-      // Refresh user info when returning
       _loadUser();
     });
   }
 
   Future<void> _loadRandomCuriosity() async {
     final String fileContent =
-        await rootBundle.loadString('assets/infos/curiosities.txt');
+    await rootBundle.loadString('assets/infos/curiosities.txt');
     final List<String> curiosities = fileContent
         .split('\n')
         .where((line) => line.trim().isNotEmpty)
         .toList();
-
     final random = Random();
     setState(() {
       _randomCuriosity = curiosities[random.nextInt(curiosities.length)];
@@ -152,77 +146,99 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
+    final media = MediaQuery.of(context);
+    final screenWidth = media.size.width;
+    final screenHeight = media.size.height;
+    final isPortrait = media.orientation == Orientation.portrait;
+
+    // scale based on orientation: base landscape width 1920, portrait height 1080
+    final scaleFactor = isPortrait
+        ? (screenHeight / 1080)
+        : (screenWidth / 1920);
+
+    double fontSize(double base) => base * scaleFactor;
+
     final groundHeight = screenHeight * 0.5;
     final plantBottomPosition = groundHeight * 0.18;
 
-    return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: SizedBox.expand(
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  _buildBackground(screenWidth, screenHeight),
-                  _buildGround(screenWidth, screenHeight),
-                  _buildPlant(plantBottomPosition),
-                  _buildLogOutButton(onPressed: _logout),
-                  _buildHomeButton(
-                    text: 'GAMES',
-                    left: screenWidth * 0.05,
-                    right: null,
-                    bottom: groundHeight * 0.02,
-                    onPressed: _games,
-                  ),
-                  _buildHomeButton(
-                    text: 'STREAK',
-                    left: null,
-                    right: null,
-                    bottom: groundHeight * 0.02,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const StreakPage()),
+    //PORTRAIT
+    if(isPortrait){
+
+      return Scaffold(
+        body: Column(
+          children: [
+            Expanded(
+              child: SizedBox.expand(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    _buildBackground(screenWidth, screenHeight),
+                    _buildGround(screenWidth, screenHeight, isPortrait),
+                    _buildPlant(plantBottomPosition, screenWidth * 0.4),
+                    _buildLogOutButton(onPressed: _logout, screenWidth: screenWidth, screenHeight: screenHeight),
+                    _buildHomeButton(text: 'GAMES', left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor * 0.7),
+                    _buildHomeButton(text: 'STREAK', bottom: groundHeight * 0.02, onPressed: () {
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const StreakPage()),
                       ).then((_) => _loadUser());
-                    },
-                  ),
-                  _buildHomeButton(
-                    text: 'ACCOUNT',
-                    left: null,
-                    right: screenWidth * 0.05,
-                    bottom: groundHeight * 0.02,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AccountPage(),
-                        ),
-                      );
-                    },
-                  ),
-                  _buildRectangle(screenWidth, screenHeight),
-                  _buildCuriositiesWidget(
-                    text: 'Did you know that...',
-                    imagePath: 'assets/images/curiosities/CuriosityText.png',
-                    screenWidth: screenWidth,
-                    screenHeight: screenHeight,
-                  ),
-                  _buildInfoRectangle(
-                    text: userName ?? '',
-                    imagePath: 'assets/images/statistics/stats_box.png',
-                    screenWidth: screenWidth,
-                    screenHeight: screenHeight,
-                  ),
-                ],
+                    }, scaleFactor: scaleFactor * 0.7),
+                    _buildHomeButton(text: 'ACCOUNT', right: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AccountPage()));
+                    }, scaleFactor: scaleFactor * 0.7),
+                    _buildRectangle(screenWidth, screenHeight, onTap: () async {
+                      await _loadRandomCuriosity();
+                      setState(() => _isCuriositiesWidgetVisible = true);
+                    }),
+                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth, screenHeight: screenHeight, text: 'Did you know that...', imagePath: 'assets/images/curiosities/CuriosityText.png', curiosity: _randomCuriosity, top: groundHeight * 0.3, fontSize: 10),
+                    _buildInfoRectangle(username: userName ?? '', streakDays: streakDays ?? 0, bestScore: bestScore ?? 0, screenWidth: screenWidth, screenHeight: screenHeight, scaleFactor: scaleFactor * 0.8, top: screenHeight * 0.2),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+
+    }
+    //NOT PORTRAIT
+    else{
+      return Scaffold(
+        body: Column(
+          children: [
+            Expanded(
+              child: SizedBox.expand(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    _buildBackground(screenWidth, screenHeight),
+                    _buildGround(screenWidth, screenHeight, isPortrait),
+                    _buildPlant(plantBottomPosition, screenHeight * 0.4),
+                    _buildLogOutButton(onPressed: _logout, screenWidth: screenWidth, screenHeight: screenHeight),
+                    _buildHomeButton(text: 'GAMES', left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor),
+                    _buildHomeButton(text: 'STREAK', bottom: groundHeight * 0.02, onPressed: () {
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const StreakPage()),
+                      ).then((_) => _loadUser());
+                    }, scaleFactor: scaleFactor),
+                    _buildHomeButton(text: 'ACCOUNT', right: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AccountPage()));
+                    }, scaleFactor: scaleFactor),
+                    _buildRectangle(screenWidth, screenHeight, onTap: () async {
+                      await _loadRandomCuriosity();
+                      setState(() => _isCuriositiesWidgetVisible = true);
+                    }),
+                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth, screenHeight: screenHeight, text: 'Did you know that...', imagePath: 'assets/images/curiosities/CuriosityText.png', curiosity: _randomCuriosity, top: groundHeight*0.1, fontSize: 20),
+                    _buildInfoRectangle(username: userName ?? '', streakDays: streakDays ?? 0, bestScore: bestScore ?? 0, screenWidth: screenWidth, screenHeight: screenHeight, scaleFactor: scaleFactor, top: screenHeight * 0.1),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+
   }
 
   Widget _buildBackground(double screenWidth, double screenHeight) {
@@ -239,7 +255,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: Opacity(
               opacity: 1,
               child: Image.asset(
-                'assets/images/background/background3.jpg',
+                'assets/images/background/clouds.jpg',
                 fit: BoxFit.cover,
                 width: screenWidth * 2.5,
                 height: screenHeight,
@@ -251,76 +267,56 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildGround(double screenWidth, double screenHeight) {
+  Widget _buildGround(double w, double h, bool isPortrait) {
     return Positioned(
       bottom: 0,
       child: Image.asset(
-        'assets/images/background/new_background.png',
+        isPortrait
+            ? 'assets/images/background/ground_vertical.png'
+            : 'assets/images/background/ground_horizontal.png',
         fit: BoxFit.fill,
-        height: screenHeight,
-        width: screenWidth,
+        width: w,
+        height: h,
       ),
     );
   }
 
-  Widget _buildPlant(double plantBottomPosition) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final plantWidth = screenWidth * 0.4;
-    final plantHeight = screenHeight * 0.4;
-
-    //look up the correct face image from the map
+  Widget _buildPlant(double bottomPos, double plantSize) {
+    final w = MediaQuery.of(context).size.width * 0.4;
+    final h = MediaQuery.of(context).size.height * 0.4;
     final faceAsset = _faceMap[_faceMood]!;
 
     return Positioned(
-      bottom: plantBottomPosition,
+      bottom: bottomPos,
       child: SizedBox(
-        width: plantWidth,
-        height: plantHeight,
+        width:  plantSize,
+        height: plantSize,
         child: Stack(
           alignment: Alignment.center,
           children: [
             FutureBuilder<LottieComposition>(
               future: _plantAnimation,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done &&
-                    snapshot.hasData) {
-                  return Lottie(
-                    composition: snapshot.data!,
-                    width: plantWidth,
-                    height: plantHeight,
-                  );
-                } else {
-                  return const CircularProgressIndicator();
+              builder: (ctx, snap) {
+                if (snap.connectionState == ConnectionState.done && snap.hasData) {
+                  return Lottie(composition: snap.data!, width: plantSize, height: plantSize);
                 }
+                return const CircularProgressIndicator();
               },
             ),
-            Positioned.fill(
-              child: Image.asset(
-                faceAsset,
-                fit: BoxFit.contain,
-              ),
-            ),
+            Positioned.fill(child: Image.asset(faceAsset, fit: BoxFit.contain)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSlider(double width) {
+  Widget _buildSlider(double width, {required double scaleFactor}) {
     return SizedBox(
       width: width,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            "How's your mood today?",
-            style: TextStyle(
-              fontSize: width * 0.06,
-              fontFamily: 'RetroGaming',
-              color: Colors.black,
-            ),
-          ),
+          Text("How's your mood today?", style: TextStyle(fontSize: 20*scaleFactor, fontFamily: 'RetroGaming')),
           Slider(
             activeColor: const Color(0xFFDCAB00),
             inactiveColor: const Color(0xFF8C5261),
@@ -328,12 +324,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             min: 0,
             max: 1,
             divisions: 2,
-            label: _faceMood == 0
-                ? 'Sad'
-                : _faceMood == 0.5
-                    ? 'Neutral'
-                    : 'Happy',
-            onChanged: (value) => setState(() => _faceMood = value),
+            label: _faceMood == 0 ? 'Sad' : _faceMood == 0.5 ? 'Neutral' : 'Happy',
+            onChanged: (v) => setState(() => _faceMood = v),
           ),
         ],
       ),
@@ -346,25 +338,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     double? right,
     required double bottom,
     required VoidCallback onPressed,
+    required double scaleFactor,
   }) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
+    final w = MediaQuery.of(context).size.width;
+    final h = MediaQuery.of(context).size.height;
     return Positioned(
       bottom: bottom,
       left: left,
       right: right,
       child: SizedBox(
-        width: screenWidth * 0.2,
-        height: screenHeight * 0.08,
+        width: w * 0.2,
+        height: h * 0.08,
         child: CustomButton(
           text: text,
           imagePath: 'assets/images/buttons/games_button.png',
           onPressed: onPressed,
           textAlignment: Alignment.center,
-          textPadding: EdgeInsets.only(bottom: screenHeight * 0.015),
+          textPadding: EdgeInsets.only(bottom: h * 0.015),
           textStyle: TextStyle(
-            fontSize: screenHeight * 0.02,
+            fontSize: 22 * scaleFactor,
             color: Colors.white,
             fontFamily: 'RetroGaming',
             fontWeight: FontWeight.bold,
@@ -374,12 +366,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildLogOutButton({
-    required VoidCallback onPressed,
-  }) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
+  Widget _buildLogOutButton({required VoidCallback onPressed, required double screenWidth, required double screenHeight}) {
     return Positioned(
       top: 0.02 * screenHeight,
       left: 0,
@@ -387,47 +374,29 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           onTap: onPressed,
-          child: Image.asset(
-            'assets/images/buttons/logout_button.png',
-            width: screenWidth * 0.1,
-            height: screenHeight * 0.1,
-          ),
+          child: Image.asset('assets/images/buttons/logout_button.png', width: screenWidth * 0.1, height: screenHeight * 0.1),
         ),
       ),
     );
   }
 
-  Widget _buildRectangle(double screenWidth, double screenHeight) {
+  Widget _buildRectangle(double w, double h, {required VoidCallback onTap}) {
     return Positioned(
-      top: screenHeight / 3 - 20,
-      left: 10,
-      child: MouseRegion(
+        top: h / 3 - 20,
+        left: 10,
+        child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: () async {
-            await _loadRandomCuriosity();
-            setState(() {
-              _isCuriositiesWidgetVisible = true;
-            });
-          },
-          child: Container(
-            width: screenWidth * 0.35,
-            height: screenHeight * 0.5,
-            decoration: BoxDecoration(
-              color: Colors.yellow.withOpacity(0),
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-      ),
-    );
+        child: GestureDetector(onTap: onTap, child: Container(width: w * 0.35, height: h * 0.5, decoration: BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.circular(10)))),
+    ));
   }
 
   Widget _buildCuriositiesWidget({
     required String text,
     required String imagePath,
+    required double top,
     required double screenWidth,
-    required double screenHeight,
+    required double screenHeight, required bool isVisible, String? curiosity,
+    required double fontSize,
   }) {
     if (!_isCuriositiesWidgetVisible) return const SizedBox.shrink();
 
@@ -446,7 +415,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ),
         Positioned(
-          top: screenHeight * 0.08,
+          top: top,
           left: screenWidth * 0.17,
           child: Stack(
             alignment: Alignment.topLeft,
@@ -466,7 +435,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: Text(
                   text,
                   style: TextStyle(
-                    fontSize: screenWidth * 0.025,
+                    fontSize: fontSize,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                     fontFamily: 'RetroGaming',
@@ -480,10 +449,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: SizedBox(
                   width: screenWidth * 0.5,
                   child: Text(
-                    _randomCuriosity ?? '',
+                    curiosity ?? '',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: screenWidth * 0.013,
+                      fontSize: fontSize,
                       color: Colors.black,
                       fontFamily: 'RetroGaming',
                     ),
@@ -498,82 +467,53 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildInfoRectangle({
-    required String text,
-    required String imagePath,
+    required String username,
+    required int streakDays,
+    required int bestScore,
     required double screenWidth,
     required double screenHeight,
+    required double scaleFactor,
+    required double top,
   }) {
-    final boxWidth = screenWidth * 0.2;
-    final boxHeight = screenHeight * 0.4;
+    final boxW = screenWidth * 0.20;
+    final boxH = screenHeight * 0.4;
     return Positioned(
-      top: screenHeight * 0.1,
+      top: top,
       right: screenWidth * 0.05,
       child: SizedBox(
-        width: boxWidth,
-        height: boxHeight,
+        width: boxW,
+        height: boxH,
         child: Stack(
           children: [
-            // --- your background image ---
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
-                imagePath,
-                fit: BoxFit.fill,
-                width: boxWidth,
-                height: boxHeight,
-              ),
-            ),
-
-            // --- title / name at top ---
+            ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.asset('assets/images/statistics/stats_box.png', fit: BoxFit.fill, width: boxW, height: boxH)),
+            Positioned(top: boxH*0.05, left: boxW*0.05, child: Text(username, style: TextStyle(fontSize: 25*scaleFactor, fontWeight: FontWeight.bold, fontFamily: 'RetroGaming'))),
             Positioned(
-              top: boxHeight * 0.05,
-              left: boxWidth * 0.05,
-              child: Text(
-                text,
-                style: TextStyle(
-                  fontSize: boxWidth * 0.075,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'RetroGaming',
-                  color: Colors.black,
-                ),
-              ),
-            ),
-
-            // --- stats in the middle ---
-            Positioned(
-              top: boxHeight * 0.2,
-              left: boxWidth * 0.05,
-              right: boxWidth * 0.05,
+              top: boxH * 0.2,
+              left: boxW * 0.05,
+              right: boxW * 0.05,
               child: RichText(
                 text: TextSpan(
                   style: TextStyle(
-                    fontSize: boxWidth * 0.055,
+                    fontSize: 20*scaleFactor,
                     fontFamily: 'RetroGaming',
                     color: Colors.black,
                   ),
                   children: [
-                    const TextSpan(
+                    TextSpan(
                       text: 'Streak: ',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
                     ),
-                    TextSpan(text: '$streakDays days\n'),
-                    const TextSpan(
+                    TextSpan(text: '${streakDays ?? 0} days\n'),
+                    TextSpan(
                       text: 'HoL best score: ',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
                     ),
-                    TextSpan(text: '$bestScore'),
+                    TextSpan(text: '${bestScore ?? 0}'),
                   ],
                 ),
               ),
             ),
-
-            // --- slider at the bottom of the info box ---
-            Positioned(
-              bottom: boxHeight * 0.05,
-              left: boxWidth * 0.05,
-              right: boxWidth * 0.05,
-              child: _buildSlider(boxWidth * 0.9),
-            ),
+            Positioned(bottom: boxH*0.05, left: boxW*0.05, right: boxW*0.05, child: _buildSlider(boxW*0.9, scaleFactor: scaleFactor) ),
           ],
         ),
       ),

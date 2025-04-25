@@ -17,17 +17,17 @@ class User {
     required this.streakCount,
   });
 
-  /// Fetch the user's stats from Appwrite
+  String get getNickname => nickname;
+  int get getHigherLowerBestScore => higherLowerBestScore;
+  int get getStreakCount => streakCount;
+
   static Future<User> fetchUser() async {
     try {
-      // Fetch the user's account
       final account = await AuthService().getAccount();
       final nickname = account.name;
 
-      // Fetch the user's higher-lower best score
       final higherLowerBestScore = await GameService().getBestScore();
 
-      // Fetch the user's streak count
       final streakCount = await StreakService().getStreakCount();
 
       return User(
@@ -40,7 +40,10 @@ class User {
     }
   }
 
-  /// Update the user's higher-lower best score
+  static Future<User> resolveUser(Future<User> futureUser) async {
+    return await futureUser;
+  }
+
   Future<void> updateHigherLowerBestScore(int newBestScore) async {
     if (newBestScore > higherLowerBestScore) {
       higherLowerBestScore = newBestScore;
@@ -48,7 +51,6 @@ class User {
     }
   }
 
-  /// Increment the user's streak count
   Future<void> incrementStreak() async {
     streakCount++;
     await _streakService.incrementStreak();

@@ -10,6 +10,7 @@ import '../../services/auth.dart';
 import '../../services/Streak.dart';
 import '../../services/appwrite.dart';
 import '../../services/GameService.dart';
+import '../../entities/user.dart';
 
 Future<List<Alcohol>> loadAlcohols() async {
   final rawData = await rootBundle.loadString('assets/infos/alcohols.txt');
@@ -42,8 +43,9 @@ class HigherOrLower extends StatefulWidget {
 
 class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateMixin {
   final AudioPlayer _audioPlayer = AudioPlayer();
-  final authService = AuthService();
-  final _gameService = GameService();
+  // final authService = AuthService();
+  //final _gameService = GameService();
+  final user = User.fetchUser();
   final Random _random = Random();
 
   List<Alcohol> allAlcohols = [];
@@ -52,6 +54,7 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
 
   bool _isMuted = false;
   bool _isGameOver = false;
+  
 
   int score = 0;
   int bestScore = 0;
@@ -65,11 +68,11 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
       _playMusic();
     }
 
-    _gameService.getBestScore().then((fetchedBestScore) {
-    setState(() {
-      bestScore = fetchedBestScore;
+    User.fetchUser().then((fetchedUser) {
+      setState(() {
+        bestScore = fetchedUser.getHigherLowerBestScore;
+      });
     });
-  });
 
     loadAlcohols().then((alcohols) {
       setState(() {
@@ -101,7 +104,9 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
     if (score >= bestScore) {
       bestScore = score;
       print('UPDATING BEST SCORE TO: $bestScore');
-      _gameService.updateBestScore(bestScore); // Update the best score in the database
+      User.fetchUser().then((fetchedUser) {
+        fetchedUser.updateHigherLowerBestScore(bestScore);
+      });
     }
     Navigator.pop(context);
   }
@@ -121,8 +126,7 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
 
   void _checkGuess(String guess) {
     bool isRightHigher = rightAlcohol.abv > leftAlcohol.abv;
-    bool isGuessCorrect =
-        (guess == "up" && isRightHigher) || (guess == "down" && !isRightHigher);
+    bool isGuessCorrect = (guess == "up" && isRightHigher) || (guess == "down" && !isRightHigher);
 
     setState(() {
       if (isGuessCorrect) {
@@ -236,7 +240,9 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
     if (score >= bestScore) {
       bestScore = score;
       print('UPDATING BEST SCORE TO: $bestScore');
-      _gameService.updateBestScore(bestScore); // Update the best score in the database
+      User.fetchUser().then((fetchedUser) {
+        fetchedUser.updateHigherLowerBestScore(bestScore);
+      });
     }
 
     return Center(
@@ -421,5 +427,4 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
       ),
     );
   }
-
 }

@@ -82,7 +82,7 @@ flutter:
     - assets/images/background/background1.png
     - assets/images/background/background2.jpg
     - assets/images/background/background3.png
-    - assets/images/background/background3.jpg
+    - assets/images/background/clouds.jpg
     - assets/images/plant/groundWithShadow.png
     - assets/images/buttons/games_button.png
     - assets/images/plant/shadow_plant.png
@@ -96,8 +96,8 @@ flutter:
     - assets/Animations/pixel_plant_idle.json
     - assets/Animations/idle_plant.webp
     - assets/higher_or_lower/higher_or_lower_back.png
-    - assets/images/background/new_background.png
-    - assets/images/background/new_background.jpg
+    - assets/images/background/ground_horizontal.png
+    - assets/images/background/ground_vertical.png
     - assets/infos/alcohols.txt
     - assets/images/sprites/
     - assets/images/sprites/beer.png

@@ -3,20 +3,16 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
-import '../Homepage.dart';
 import '/services/CustomButton.dart';
 import 'Alcohol.dart';
 import '../../services/auth.dart';
-import '../../services/Streak.dart';
-import '../../services/appwrite.dart';
 import '../../services/GameService.dart';
 
 Future<List<Alcohol>> loadAlcohols() async {
   final rawData = await rootBundle.loadString('assets/infos/alcohols.txt');
   final lines = LineSplitter.split(rawData).toList();
 
-  return lines
-      .where((line) {
+  return lines.where((line) {
     final parts = line.split(',').map((part) => part.trim()).toList();
     return parts.length == 3 &&
         parts[0].isNotEmpty &&
@@ -34,13 +30,15 @@ Future<List<Alcohol>> loadAlcohols() async {
 
 class HigherOrLower extends StatefulWidget {
   final String username;
+
   const HigherOrLower({super.key, required this.username});
 
   @override
   _HigherOrLowerState createState() => _HigherOrLowerState();
 }
 
-class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateMixin {
+class _HigherOrLowerState extends State<HigherOrLower>
+    with TickerProviderStateMixin {
   final AudioPlayer _audioPlayer = AudioPlayer();
   final authService = AuthService();
   final _gameService = GameService();
@@ -66,10 +64,10 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
     }
 
     _gameService.getBestScore().then((fetchedBestScore) {
-    setState(() {
-      bestScore = fetchedBestScore;
+      setState(() {
+        bestScore = fetchedBestScore;
+      });
     });
-  });
 
     loadAlcohols().then((alcohols) {
       setState(() {
@@ -101,7 +99,8 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
     if (score >= bestScore) {
       bestScore = score;
       print('UPDATING BEST SCORE TO: $bestScore');
-      _gameService.updateBestScore(bestScore); // Update the best score in the database
+      _gameService
+          .updateBestScore(bestScore); // Update the best score in the database
     }
     Navigator.pop(context);
   }
@@ -121,8 +120,9 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
 
   void _checkGuess(String guess) {
     bool isRightHigher = rightAlcohol.abv > leftAlcohol.abv;
-    bool isGuessCorrect =
-        (guess == "up" && isRightHigher) || (guess == "down" && !isRightHigher);
+    bool isGuessCorrect = (guess == "up" && isRightHigher) ||
+        (guess == "down" && !isRightHigher) ||
+        (rightAlcohol.abv == leftAlcohol.abv);
 
     setState(() {
       if (isGuessCorrect) {
@@ -152,9 +152,10 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final groundHeight = screenHeight * 0.5;
+    final media = MediaQuery.of(context);
+    final screenWidth = media.size.width;
+    final screenHeight = media.size.height;
+    final isPortrait = media.orientation == Orientation.portrait;
 
     if (allAlcohols.isEmpty) {
       return const Scaffold(
@@ -162,70 +163,112 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
       );
     }
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Column(
-            children: [
-
-              Expanded(
-                child: SizedBox.expand(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      _buildBackground(screenWidth, screenHeight),
-                      _buildAlcoholDisplays(screenWidth, screenHeight),
-                      _buildTopBar(),
-                      if (!_isGameOver) ...[
-                        _buildGameButton(
-                          bottom: groundHeight * 0.95,
-                          right: screenWidth * 0.05,
-                          text: "↑",
-                          onPressed: () => _checkGuess("up"),
-                        ),
-                        _buildGameButton(
-                          bottom: groundHeight * 0.75,
-                          right: screenWidth * 0.05,
-                          text: "↓",
-                          onPressed: () => _checkGuess("down"),
+    //PORTRAIT
+    if (isPortrait) {
+      return Scaffold(
+        body: Stack(
+          children: [
+            Column(
+              children: [
+                Expanded(
+                  child: SizedBox.expand(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        _buildBackground(screenWidth, screenHeight),
+                        _buildAlcoholDisplays(screenWidth * 0.8, screenHeight),
+                        _buildTopBar(),
+                        if (!_isGameOver) ...[
+                          _buildGameButton(
+                            bottom: screenHeight * 0.15,
+                            right: screenWidth * 0.3,
+                            text: "↑",
+                            onPressed: () => _checkGuess("up"),
+                          ),
+                          _buildGameButton(
+                            bottom: screenHeight * 0.15,
+                            right: screenWidth * 0.08,
+                            text: "↓",
+                            onPressed: () => _checkGuess("down"),
+                          ),
+                        ],
+                        Positioned(
+                          top: screenHeight * 0.025,
+                          child: Text(
+                            "Score: $score\nBest: $bestScore",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: screenHeight * 0.025,
+                              fontFamily: 'RetroGaming',
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ],
-                      Positioned(
-                        top: screenHeight * 0.025,
-                        child: Text(
-                          "Score: $score\nBest: $bestScore",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: screenHeight * 0.025,
-                            fontFamily: 'RetroGaming',
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-
-                      Positioned(
-                        top: screenHeight * 0.28,
-                        left: screenWidth * 0.081,
-                        child: Text(
-                          "Leaderboard",
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.012, // Responsive font size based on screen width
-                            fontFamily: 'RetroGaming',
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          if (_isGameOver) _buildGameOverBox(screenWidth, screenHeight),
-        ],
-      ),
-    );
+              ],
+            ),
+            if (_isGameOver) _buildGameOverBox(screenWidth * 2, screenHeight),
+          ],
+        ),
+      );
+    }
+
+
+    //NOT PORTRAIT
+    else {
+      return Scaffold(
+        body: Stack(
+          children: [
+            Column(
+              children: [
+                Expanded(
+                  child: SizedBox.expand(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        _buildBackground(screenWidth, screenHeight),
+                        _buildAlcoholDisplays(screenWidth * 0.8, screenHeight),
+                        _buildTopBar(),
+                        if (!_isGameOver) ...[
+                          _buildGameButton(
+                            bottom: screenHeight * 0.5,
+                            right: screenWidth * 0.05,
+                            text: "↑",
+                            onPressed: () => _checkGuess("up"),
+                          ),
+                          _buildGameButton(
+                            bottom: screenHeight * 0.4,
+                            right: screenWidth * 0.05,
+                            text: "↓",
+                            onPressed: () => _checkGuess("down"),
+                          ),
+                        ],
+                        Positioned(
+                          top: screenHeight * 0.025,
+                          child: Text(
+                            "Score: $score\nBest: $bestScore",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: screenHeight * 0.025,
+                              fontFamily: 'RetroGaming',
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (_isGameOver) _buildGameOverBox(screenWidth, screenHeight),
+          ],
+        ),
+      );
+    }
   }
 
   Widget _buildGameOverBox(double screenWidth, double screenHeight) {
@@ -236,7 +279,8 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
     if (score >= bestScore) {
       bestScore = score;
       print('UPDATING BEST SCORE TO: $bestScore');
-      _gameService.updateBestScore(bestScore); // Update the best score in the database
+      _gameService
+          .updateBestScore(bestScore); // Update the best score in the database
     }
 
     return Center(
@@ -262,7 +306,7 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
                 color: Colors.white,
               ),
             ),
-            SizedBox(height:screenHeight * 0.01),
+            SizedBox(height: screenHeight * 0.01),
             GestureDetector(
               onTap: _playAgain,
               child: MouseRegion(
@@ -279,8 +323,7 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
             ),
             SizedBox(height: screenHeight * 0.01),
             GestureDetector(
-              onTap: _goBackToHomePage
-              ,
+              onTap: _goBackToHomePage,
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: Text(
@@ -329,8 +372,6 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
   }
 
   Widget _buildAlcoholDisplays(double screenWidth, double screenHeight) {
-
-
     return Positioned(
       top: screenHeight * 0.3,
       left: screenWidth * 0.2,
@@ -350,7 +391,8 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
     final screenHeight = MediaQuery.of(context).size.height;
     return Column(
       children: [
-        Image.asset(alcohol.imagePath, width: screenWidth * 0.2, height: screenHeight * 0.35),
+        Image.asset(alcohol.imagePath,
+            width: screenWidth * 0.2, height: screenHeight * 0.35),
         const SizedBox(height: 8),
         Text(
           alcohol.name,
@@ -421,5 +463,4 @@ class _HigherOrLowerState extends State<HigherOrLower> with TickerProviderStateM
       ),
     );
   }
-
 }

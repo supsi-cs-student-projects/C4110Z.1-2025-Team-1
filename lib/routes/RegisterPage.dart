@@ -45,82 +45,75 @@ class _RegisterPageState extends State<RegisterPage> {
         email: _emailController.text.trim(),
         password: _passwordController1.text.trim(),
       );
-      Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => HomePage(username: userAccount.name)),
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(username: userAccount.name),
+        ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registration failed: $e')),
+        SnackBar(content: Text('Registration failed: \$e')),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return RawKeyboardListener(
       focusNode: FocusNode(),
       onKey: (RawKeyEvent event) {
         if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
-          _register(); // Trigger the register function when "Enter" is pressed
+          _register();
         }
       },
-      child: Scaffold(
-        key: _scaffoldKey,
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: SizedBox(
-            height: screenHeight,
-            child: Column(
-              children: [
-                SizedBox(height: screenHeight * 0.05),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // Constrain width for desktop, full width on mobile
+          final maxWidth = constraints.maxWidth > 600 ? 600.0 : constraints.maxWidth * 0.9;
+          return Scaffold(
+            key: _scaffoldKey,
+            backgroundColor: Colors.white,
+            body: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: maxWidth),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(vertical: 24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      ClipRRect(
+                      // Logo
+                      Center(
                         child: Image.asset(
                           'assets/images/AB_logo.png',
-                          width: 220,
-                          height: 200,
-                          fit: BoxFit.fitWidth,
+                          width: maxWidth * 0.5,
+                          fit: BoxFit.contain,
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
-                  child: Column(
-                    children: [
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Welcome to AB!',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'RetroGaming',
-                            color: Colors.black,
-                          ),
+                      const SizedBox(height: 24),
+                      // Titles
+                      const Text(
+                        'Welcome to AB!',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'RetroGaming',
+                          color: Colors.black,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 12),
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Create your account',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'RetroGaming',
-                            color: Colors.grey,
-                          ),
+                      const Text(
+                        'Create your account',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: 'RetroGaming',
+                          color: Colors.grey,
                         ),
+                        textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 24),
+                      // Email
                       TextFormField(
                         controller: _emailController,
                         decoration: InputDecoration(
@@ -137,13 +130,12 @@ class _RegisterPageState extends State<RegisterPage> {
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 24),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                         ),
-                        style: const TextStyle(
-                            fontFamily: 'RetroGaming', color: Colors.black),
+                        style: const TextStyle(fontFamily: 'RetroGaming', color: Colors.black),
                       ),
                       const SizedBox(height: 12),
+                      // Name
                       TextFormField(
                         controller: _nameController,
                         decoration: InputDecoration(
@@ -160,13 +152,12 @@ class _RegisterPageState extends State<RegisterPage> {
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 24),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                         ),
-                        style: const TextStyle(
-                            fontFamily: 'RetroGaming', color: Colors.black),
+                        style: const TextStyle(fontFamily: 'RetroGaming', color: Colors.black),
                       ),
                       const SizedBox(height: 12),
+                      // Password
                       TextFormField(
                         controller: _passwordController1,
                         obscureText: !_isPasswordVisible1,
@@ -184,13 +175,10 @@ class _RegisterPageState extends State<RegisterPage> {
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 24),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _isPasswordVisible1
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
+                              _isPasswordVisible1 ? Icons.visibility_outlined : Icons.visibility_off_outlined,
                               color: Colors.grey,
                             ),
                             onPressed: () {
@@ -200,10 +188,10 @@ class _RegisterPageState extends State<RegisterPage> {
                             },
                           ),
                         ),
-                        style: const TextStyle(
-                            fontFamily: 'RetroGaming', color: Colors.black),
+                        style: const TextStyle(fontFamily: 'RetroGaming', color: Colors.black),
                       ),
                       const SizedBox(height: 12),
+                      // Repeat Password
                       TextFormField(
                         controller: _passwordController2,
                         obscureText: !_isPasswordVisible2,
@@ -221,13 +209,10 @@ class _RegisterPageState extends State<RegisterPage> {
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 24),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _isPasswordVisible2
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
+                              _isPasswordVisible2 ? Icons.visibility_outlined : Icons.visibility_off_outlined,
                               color: Colors.grey,
                             ),
                             onPressed: () {
@@ -237,55 +222,35 @@ class _RegisterPageState extends State<RegisterPage> {
                             },
                           ),
                         ),
-                        style: const TextStyle(
-                            fontFamily: 'RetroGaming', color: Colors.black),
+                        style: const TextStyle(fontFamily: 'RetroGaming', color: Colors.black),
                       ),
                       const SizedBox(height: 24),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: ElevatedButton(
-                          onPressed: _register,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF02AF5C),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(0),
-                            ),
-                          ),
-                          child: const Text(
-                            'Create Account',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'RetroGaming',
-                            ),
-                          ),
+                      // Create Account Button
+                      ElevatedButton(
+                        onPressed: _register,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF02AF5C),
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
                         ),
+                        child: const Text('Create Account', style: TextStyle(color: Colors.white, fontFamily: 'RetroGaming')),
                       ),
                       const SizedBox(height: 24),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginPage()),
-                          );
-                        },
-                        child: const Text(
-                          'Already have an account?',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontFamily: 'RetroGaming',
-                          ),
+                      Center(
+                        child: TextButton(
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const LoginPage())),
+                          child: const Text("Already have an account?", style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming')),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

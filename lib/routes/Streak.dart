@@ -1,6 +1,8 @@
-import 'package:demo_todo_with_flutter/services/appwrite.dart';
+
 import 'package:flutter/material.dart';
-import 'package:demo_todo_with_flutter/services/streak.dart';
+
+
+import '../services/Streak.dart';
 
 class StreakPage extends StatefulWidget {
   const StreakPage({Key? key}) : super(key: key);

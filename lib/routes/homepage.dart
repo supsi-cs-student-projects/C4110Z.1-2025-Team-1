@@ -1,20 +1,18 @@
 import 'dart:math';
-import 'package:appwrite/appwrite.dart';
-import 'package:demo_todo_with_flutter/routes/account_page.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/services.dart' show rootBundle;
-
-import 'package:demo_todo_with_flutter/routes/Game/higher_or_lower.dart';
-import 'package:demo_todo_with_flutter/services/auth.dart';
-import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import '../entities/user.dart';
 import '../services/GameService.dart';
 import '../services/Streak.dart';
+import '../services/auth.dart';
+import 'Game/higher_or_lower.dart';
+import 'LoginPage.dart';
 import 'Streak.dart';
 import 'Learn.dart';
 import '/services/CustomButton.dart';
+import 'account_page.dart';
 
 class HomePage extends StatefulWidget {
 

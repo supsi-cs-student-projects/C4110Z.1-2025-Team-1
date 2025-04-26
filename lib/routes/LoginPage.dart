@@ -1,10 +1,9 @@
-import 'package:demo_todo_with_flutter/routes/RegisterPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:appwrite/models.dart' as models;
-
+import '../services/auth.dart';
 import 'Homepage.dart';
+import 'RegisterPage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

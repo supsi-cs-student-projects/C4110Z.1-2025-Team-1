@@ -1,6 +1,6 @@
 {
-    "name": "demo_todo_with_flutter",
-    "short_name": "demo_todo_with_flutter",
+    "name": "bloom",
+    "short_name": "bloom",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -26,13 +26,13 @@ header("Access-Control-Allow-Origin: cloud.appwrite.io");
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="demo_todo_with_flutter">
+  <meta name="apple-mobile-web-app-title" content="Bloom">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>demo_todo_with_flutter</title>
+  <title>Bloom</title>
   <link rel="manifest" href="manifest.json">
 
   <script>

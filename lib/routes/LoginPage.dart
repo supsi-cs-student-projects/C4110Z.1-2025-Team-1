@@ -19,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  bool _navigated = false; // NEW: to prevent multiple navigations
 
   @override
   void dispose() {
@@ -53,8 +54,9 @@ class _LoginPageState extends State<LoginPage> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasData) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+        } else if (snapshot.hasData && !_navigated) {
+          _navigated = true; // prevent navigating multiple times
+          Future.microtask(() {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -80,7 +82,6 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: LayoutBuilder(
         builder: (context, constraints) {
-          // Constrain width for desktop, full width on mobile
           final maxWidth = constraints.maxWidth > 600 ? 600.0 : constraints.maxWidth * 0.9;
           return Scaffold(
             key: _scaffoldKey,
@@ -96,15 +97,15 @@ class _LoginPageState extends State<LoginPage> {
                       // Logo
                       Center(
                         child: Image.asset(
-                          'assets/images/AB_logo.png',
-                          width: maxWidth * 0.5,
+                          'assets/images/logo/Bloom_logo.png',
+                          width: maxWidth,
                           fit: BoxFit.contain,
                         ),
                       ),
                       const SizedBox(height: 24),
                       // Titles
                       const Text(
-                        'Welcome back to AB!',
+                        'Welcome back to Bloom!',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -138,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                           filled: true,
                           fillColor: Colors.grey[200],
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(0),
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -161,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                           filled: true,
                           fillColor: Colors.grey[200],
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(0),
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -180,31 +181,26 @@ class _LoginPageState extends State<LoginPage> {
                         style: const TextStyle(fontFamily: 'RetroGaming', color: Colors.black),
                       ),
                       const SizedBox(height: 24),
-                      // Actions
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              // TODO: Forgot password
-                            },
-                            child: const Text(
-                              'Forgot Password?',
-                              style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming'),
+                      // Login Button (full width)
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _login,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF157907),
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(0),
                             ),
                           ),
-                          ElevatedButton(
-                            onPressed: _login,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF02AF5C),
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-                            ),
-                            child: const Text('Login', style: TextStyle(color: Colors.white, fontFamily: 'RetroGaming')),
+                          child: const Text(
+                            'Login',
+                            style: TextStyle(color: Colors.white, fontFamily: 'RetroGaming'),
                           ),
-                        ],
+                        ),
                       ),
                       const SizedBox(height: 24),
+                      // Go to Register
                       Center(
                         child: TextButton(
                           onPressed: () {

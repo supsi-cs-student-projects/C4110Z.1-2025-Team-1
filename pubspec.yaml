@@ -120,6 +120,7 @@ flutter:
     - assets/images/statistics/stats_box.png
     - assets/Animations/plant_lv1.json
     - assets/Animations/plant_lv2.json
+    - assets/images/logo/Bloom_logo.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -86,15 +86,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       // Logo
                       Center(
                         child: Image.asset(
-                          'assets/images/AB_logo.png',
-                          width: maxWidth * 0.5,
+                          'assets/images/logo/Bloom_logo.png',
+                          width: maxWidth,
                           fit: BoxFit.contain,
                         ),
                       ),
                       const SizedBox(height: 24),
                       // Titles
                       const Text(
-                        'Welcome to AB!',
+                        'Welcome to Bloom!',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -128,7 +128,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             fontSize: 16,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(0),
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -150,7 +150,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             fontSize: 16,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(0),
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -173,7 +173,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             fontSize: 16,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(0),
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -207,7 +207,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             fontSize: 16,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(0),
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -230,7 +230,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ElevatedButton(
                         onPressed: _register,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF02AF5C),
+                          backgroundColor: const Color(0xFF157907),
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
                         ),

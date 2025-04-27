@@ -22,6 +22,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _nameController = TextEditingController();
   bool _isPasswordVisible1 = false;
   bool _isPasswordVisible2 = false;
+  bool _isRegistering = false;
 
   @override
   void dispose() {
@@ -33,10 +34,18 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _register() async {
+    if (_isRegistering) return; // blocca se già in corso
+    setState(() {
+      _isRegistering = true;
+    });
+
     if (_passwordController1.text != _passwordController2.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Passwords do not match')),
       );
+      setState(() {
+        _isRegistering = false;
+      });
       return;
     }
     try {
@@ -49,13 +58,16 @@ class _RegisterPageState extends State<RegisterPage> {
         context,
         MaterialPageRoute(
           builder: (context) => const HomePage(),
-
         ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Registration failed: $e')),
       );
+    } finally {
+      setState(() {
+        _isRegistering = false;
+      });
     }
   }
 
@@ -64,13 +76,12 @@ class _RegisterPageState extends State<RegisterPage> {
     return RawKeyboardListener(
       focusNode: FocusNode(),
       onKey: (RawKeyEvent event) {
-        if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+        if (event is RawKeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
           _register();
         }
       },
       child: LayoutBuilder(
         builder: (context, constraints) {
-          // Constrain width for desktop, full width on mobile
           final maxWidth = constraints.maxWidth > 600 ? 600.0 : constraints.maxWidth * 0.9;
           return Scaffold(
             key: _scaffoldKey,
@@ -83,7 +94,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Logo
                       Center(
                         child: Image.asset(
                           'assets/images/logo/Bloom_logo.png',
@@ -92,7 +102,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      // Titles
                       const Text(
                         'Welcome to Bloom!',
                         style: TextStyle(
@@ -228,7 +237,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       const SizedBox(height: 24),
                       // Create Account Button
                       ElevatedButton(
-                        onPressed: _register,
+                        onPressed: _isRegistering ? null : _register,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF157907),
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),

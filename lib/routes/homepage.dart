@@ -445,7 +445,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: Image.asset(
                   imagePath,
                   fit: BoxFit.fill,
-                  width: screenWidth * 0.55,
+                  width: screenWidth * 0.6,
                   height: screenHeight * 0.5,
                 ),
               ),
@@ -463,11 +463,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ),
               Positioned(
-                top: screenHeight * 0.18,
+                top: screenHeight * 0.12,
                 left: screenWidth * 0.15,
                 right: screenWidth * 0.1,
                 child: SizedBox(
-                  width: screenWidth * 0.5,
+                  //width: screenWidth,
                   child: Text(
                     curiosity ?? '',
                     textAlign: TextAlign.center,

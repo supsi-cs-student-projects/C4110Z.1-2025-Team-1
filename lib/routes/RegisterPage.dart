@@ -33,6 +33,12 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
+  //dummy email generator
+  String dummyEmail(String username) {
+    return "$username@bloom.com";
+  }
+
+
   Future<void> _register() async {
     if (_isRegistering) return; // blocca se già in corso
     setState(() {
@@ -51,9 +57,10 @@ class _RegisterPageState extends State<RegisterPage> {
     try {
       final userAccount = await _authService.signUp(
         name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
+        email: dummyEmail(_nameController.text.trim()),
         password: _passwordController1.text.trim(),
       );
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -122,35 +129,14 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 24),
-                      // Email
-                      TextFormField(
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          labelText: 'Email Address',
-                          hintText: 'Enter your email...',
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          labelStyle: const TextStyle(
-                            fontFamily: 'RetroGaming',
-                            color: Colors.black,
-                            fontSize: 16,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(0),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-                        ),
-                        style: const TextStyle(fontFamily: 'RetroGaming', color: Colors.black),
-                      ),
+                      //const SizedBox(height: 24),
                       const SizedBox(height: 12),
                       // Name
                       TextFormField(
                         controller: _nameController,
                         decoration: InputDecoration(
-                          labelText: 'Name',
-                          hintText: 'Enter your name...',
+                          labelText: 'Username',
+                          hintText: 'Enter your username...',
                           filled: true,
                           fillColor: Colors.grey[200],
                           labelStyle: const TextStyle(

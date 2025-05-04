@@ -122,6 +122,9 @@ flutter:
     - assets/Animations/plant_lv2.json
     - assets/images/logo/Bloom_logo.png
     - assets/audio/kwyd/choice/right.ogg
+    - assets/images/buttons/question_button.png
+    - assets/higher_or_lower/question_box.png
+    - assets/higher_or_lower/questions.txt
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

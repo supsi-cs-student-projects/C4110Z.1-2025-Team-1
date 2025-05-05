@@ -125,6 +125,7 @@ flutter:
     - assets/images/buttons/question_button.png
     - assets/higher_or_lower/question_box.png
     - assets/higher_or_lower/questions.txt
+    - assets/higher_or_lower/higherorlower_vertical.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

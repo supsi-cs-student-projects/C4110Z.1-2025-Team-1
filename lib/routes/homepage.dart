@@ -373,12 +373,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           imagePath: 'assets/images/buttons/games_button.png',
           onPressed: onPressed,
           textAlignment: Alignment.center,
-          textPadding: EdgeInsets.only(bottom: h * 0.015),
+          //textPadding: EdgeInsets.only(bottom: h * 0.015),
           textStyle: TextStyle(
-            fontSize: 22 * scaleFactor,
-            color: Colors.white,
+            fontSize: 26 * scaleFactor,
+            color: const Color(0xFFE9E6A8),
             fontFamily: 'RetroGaming',
-            fontWeight: FontWeight.bold,
+            //fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -504,12 +504,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: Stack(
           children: [
             ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.asset('assets/images/statistics/stats_box.png', fit: BoxFit.fill, width: boxW, height: boxH)),
-            Positioned(top: boxH * 0.05, left: boxW * 0.05, child: Text(user?.nickname ?? 'Guest', style: TextStyle(fontSize: 25 * scaleFactor, fontWeight: FontWeight.bold, fontFamily: 'RetroGaming',
+            Positioned(top: boxH * 0.05, left: boxW * 0.05, child: Text(user?.nickname ?? 'Guest', style: TextStyle(fontSize: 25 * scaleFactor, fontFamily: 'RetroGaming', color: const Color(
+                0xFF1C1C1C),
                 ),
               ),
             ),
 
-            Positioned(top: boxH * 0.2, left: boxW * 0.05, right: boxW * 0.05, child: RichText(text: TextSpan(style: TextStyle(fontSize: 20*scaleFactor, fontFamily: 'RetroGaming', color: Colors.black,
+            Positioned(top: boxH * 0.2, left: boxW * 0.05, right: boxW * 0.05, child: RichText(text: TextSpan(style: TextStyle(fontSize: 20*scaleFactor, fontFamily: 'RetroGaming', color: const Color(0xFFE9E6A8),
                   ),
                   children: [TextSpan(text: 'XP: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
                   ),

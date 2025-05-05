@@ -360,7 +360,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        _buildBackground(screenWidth, screenHeight),
+                        _buildBackground(screenWidth, screenHeight, true),
                         _buildAlcoholDisplays(screenWidth * 0.8, screenHeight),
                         _buildTopBar(),
                         if (!_isGameOver && !_showQuestionBox) ...[
@@ -395,7 +395,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                         if (_showQuestionBox)
                           _buildQuestionBox(screenWidth * 2, screenHeight),
                         Positioned(
-                          top: screenHeight * 0.025,
+                          top: screenHeight * 0.038,
                           child: Text(
                             "Score: $score\nBest: $bestScore",
                             textAlign: TextAlign.center,
@@ -451,7 +451,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        _buildBackground(screenWidth, screenHeight),
+                        _buildBackground(screenWidth, screenHeight, false),
                         _buildAlcoholDisplays(screenWidth * 0.8, screenHeight),
                         _buildTopBar(),
                         if (!_isGameOver && !_showQuestionBox) ...[
@@ -486,7 +486,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                         if (_showQuestionBox)
                           _buildQuestionBox(screenWidth, screenHeight),
                         Positioned(
-                          top: screenHeight * 0.025,
+                          top: screenHeight * 0.038,
                           child: Text(
                             "Score: $score\nBest: $bestScore",
                             textAlign: TextAlign.center,
@@ -619,11 +619,11 @@ class _HigherOrLowerState extends State<HigherOrLower>
         textAlignment: Alignment.center,
         textStyle: TextStyle(
           fontSize: screenHeight * 0.03,
-          color: Colors.white,
+          color: const Color(0xFFE9E6A8),
           fontFamily: 'RetroGaming',
           fontWeight: FontWeight.bold,
         ),
-        textPadding: EdgeInsets.only(bottom: screenHeight * 0.02),
+        //textPadding: EdgeInsets.only(bottom: screenHeight * 0.02),
       ),
     );
   }
@@ -653,7 +653,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                 style: TextStyle(
                   fontSize: screenHeight * 0.018,
                   fontFamily: 'RetroGaming',
-                  color: Colors.white,
+                  color: const Color(0xFFE9E6A8),
                 ),
               ),
             ),
@@ -724,11 +724,11 @@ class _HigherOrLowerState extends State<HigherOrLower>
           textAlignment: Alignment.center,
           textStyle: TextStyle(
             fontSize: screenHeight * 0.05,
-            color: Colors.white,
+            color: const Color(0xFFE9E6A8),
             fontFamily: 'RetroGaming',
             fontWeight: FontWeight.bold,
           ),
-          textPadding: EdgeInsets.only(bottom: screenHeight * 0.03),
+          textPadding: EdgeInsets.only(bottom: screenHeight * 0.01),
         ),
       ),
     );
@@ -777,7 +777,19 @@ class _HigherOrLowerState extends State<HigherOrLower>
     );
   }
 
-  Widget _buildBackground(double screenWidth, double screenHeight) {
+  Widget _buildBackground(double screenWidth, double screenHeight, bool isPortrait) {
+
+    if (isPortrait) {
+      return Positioned.fill(
+        child: Image.asset(
+          'assets/higher_or_lower/higherorlower_vertical.png',
+          fit: BoxFit.fill,
+          width: screenWidth,
+          height: screenHeight,
+        ),
+      );
+    }
+
     return Positioned.fill(
       child: Image.asset(
         'assets/higher_or_lower/higher_or_lower_back.png',

@@ -623,7 +623,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
           fontFamily: 'RetroGaming',
           fontWeight: FontWeight.bold,
         ),
-        //textPadding: EdgeInsets.only(bottom: screenHeight * 0.02),
+        textPadding: EdgeInsets.only(bottom: screenHeight * 0.006),
       ),
     );
   }
@@ -728,7 +728,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
             fontFamily: 'RetroGaming',
             fontWeight: FontWeight.bold,
           ),
-          textPadding: EdgeInsets.only(bottom: screenHeight * 0.01),
+          textPadding: EdgeInsets.only(bottom: screenHeight * 0.02),
         ),
       ),
     );

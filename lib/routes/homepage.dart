@@ -219,7 +219,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     _buildGround(screenWidth, screenHeight, isPortrait),
                     _buildPlant(plantBottomPosition, screenWidth * 0.5),
                     _buildLogOutButton(onPressed: _logout, screenWidth: screenWidth, screenHeight: screenHeight),
-                    _buildHomeButton(text: 'GAMES', left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor * 0.7),
+                    _buildHomeButton(text: 'PLAY', left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor * 0.7),
                     _buildHomeButton(text: 'STREAK', bottom: groundHeight * 0.02, onPressed: () {
                       Navigator.push(context,
                         MaterialPageRoute(builder: (context) => const StreakPage()),
@@ -232,7 +232,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       await _loadRandomCuriosity();
                       setState(() => _isCuriositiesWidgetVisible = true);
                     }),
-                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.3, screenHeight: screenHeight * 0.5, text: 'Did you know that...', imagePath: 'assets/images/curiosities/CuriosityText.png', curiosity: _randomCuriosity, top: groundHeight * 0.4, fontSize: 10, left: screenWidth * 0.2),
+                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.3, screenHeight: screenHeight * 0.4, curiosity: _randomCuriosity, top: groundHeight * 0.4, left: screenWidth * 0.12, fontSize: 10),
                     _buildInfoRectangle(screenWidth: screenWidth * 3, screenHeight: screenHeight * 0.5, scaleFactor: scaleFactor * 0.8, top: screenHeight * 0.2, left: screenWidth * 0.2),
 
                   ],
@@ -259,7 +259,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     _buildGround(screenWidth, screenHeight, isPortrait),
                     _buildPlant(plantBottomPosition, screenHeight * 0.5),
                     _buildLogOutButton(onPressed: _logout, screenWidth: screenWidth, screenHeight: screenHeight),
-                    _buildHomeButton(text: 'GAMES', left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor),
+                    _buildHomeButton(text: 'PLAY', left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor),
                     _buildHomeButton(text: 'STREAK', bottom: groundHeight * 0.02, onPressed: () {
                       Navigator.push(context,
                         MaterialPageRoute(builder: (context) => const StreakPage()),
@@ -272,7 +272,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       await _loadRandomCuriosity();
                       setState(() => _isCuriositiesWidgetVisible = true);
                     }),
-                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.3, screenHeight: screenHeight, text: 'Did you know that...', imagePath: 'assets/images/curiosities/CuriosityText.png', curiosity: _randomCuriosity, top: groundHeight*0.1, fontSize: 20, left: screenWidth * 0.15),
+                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.3, screenHeight: screenHeight, curiosity: _randomCuriosity, top: groundHeight*0.2, left: screenWidth * 0.12, fontSize: 30),
                     !_isCuriositiesWidgetVisible?
                     _buildInfoRectangle(screenWidth: screenWidth, screenHeight: screenHeight, scaleFactor: scaleFactor, top: screenHeight * 0.1, left: screenWidth * 0.75): const SizedBox.shrink(),
                   ],
@@ -373,7 +373,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           imagePath: 'assets/images/buttons/games_button.png',
           onPressed: onPressed,
           textAlignment: Alignment.center,
-          //textPadding: EdgeInsets.only(bottom: h * 0.015),
+          textPadding: EdgeInsets.only(bottom: h * 0.006),
           textStyle: TextStyle(
             fontSize: 26 * scaleFactor,
             color: const Color(0xFFE9E6A8),
@@ -410,12 +410,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildCuriositiesWidget({
-    required String text,
-    required String imagePath,
+    required fontSize,
     required double top,
     required double screenWidth,
     required double screenHeight, required bool isVisible, String? curiosity,
-    required double fontSize,
     required double left,
   }) {
     if (!_isCuriositiesWidgetVisible) return const SizedBox.shrink();
@@ -436,47 +434,53 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
         Positioned(
           top: top,
-          left: left,
+          left: left - 7,
           child: Stack(
-            alignment: Alignment.topLeft,
+            alignment: Alignment.center,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.asset(
-                  imagePath,
+                  "assets/images/curiosities/CuriosityBox_v2.png",
                   fit: BoxFit.fill,
                   width: screenWidth * 0.6,
-                  height: screenHeight * 0.5,
+                  height: screenHeight * 0.4,
                 ),
               ),
-              Positioned(
-                top: screenHeight * 0.04,
-                left: screenWidth * 0.1,
-                child: Text(
-                  text,
-                  style: TextStyle(
-                    fontSize: fontSize,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontFamily: 'RetroGaming',
-                  ),
-                ),
-              ),
-              Positioned(
-                top: screenHeight * 0.12,
-                left: screenWidth * 0.15,
-                right: screenWidth * 0.1,
-                child: SizedBox(
-                  //width: screenWidth,
-                  child: Text(
-                    curiosity ?? '',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: fontSize,
-                      color: Colors.black,
-                      fontFamily: 'RetroGaming',
+              SizedBox(
+                width: screenWidth * 0.6,
+                height: screenHeight * 0.4,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: screenWidth * 0.12, right: screenWidth * 0.04),
+                    child: Text(
+                      'Did you know that...',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontFamily: 'RetroGaming',
+                      ),
                     ),
-                  ),
+                    ),
+                    const SizedBox(height: 10),
+                    Padding(
+
+                      padding: EdgeInsets.only(left: screenWidth * 0.12, right: screenWidth * 0.04),
+                      child: Text(
+                        curiosity ?? '',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: fontSize,
+                          color: Colors.black,
+                          fontFamily: 'RetroGaming',
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -518,7 +522,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     TextSpan(text: 'Streak: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
                     ),
                     TextSpan(text: '${user?.streakCount} days\n'),
-                    TextSpan(text: 'HoL best score: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
+                    TextSpan(text: 'Best score: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
                     ),
                     TextSpan(text: '${user?.higherLowerBestScore}'),
                   ],

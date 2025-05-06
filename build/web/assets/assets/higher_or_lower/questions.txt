@@ -1,0 +1,26 @@
+true:
+The body treats alcohol like a toxin and needs time for the liver to process it.
+Alcohol can interfere with brain development, especially during your teens and early 20s.
+One beer, one glass of wine, and one shot of liquor each count as a standard drink.
+Drinking regularly is associated with lower academic performance and decreased motivation.
+Mixing energy drinks with alcohol is not advisable because they have opposing effects on the nervous system.
+Chronic alcohol use can lead to fatty liver, alcoholic hepatitis, and eventually cirrhosis.
+Alcohol impairs the liver's ability to regulate blood sugar, which is especially risky for people with diabetes.
+Drinking after intense exercise can reduce muscle protein synthesis, slowing recovery.
+Heavy alcohol use can reduce your ability to smell and taste over time.
+Alcohol can increase appetite by affecting brain chemicals related to hunger and satiety.
+Your brain keeps developing until around age 25, and alcohol can affect long-term decision-making.
+
+false:
+Drinking coffee helps your liver metabolize alcohol faster.
+Taking a cold shower speeds up how fast you sober up.
+Alcohol acts as a stimulant that increases brain activity.
+The body eliminates most alcohol unchanged through urine.
+A small amount of alcohol improves memory and focus.
+All alcoholic drinks contain roughly the same number of calories.
+Working out after drinking helps your body get rid of alcohol faster.
+As your alcohol tolerance increases, your body becomes better at processing it safely.
+Alcohol helps improve the quality of sleep throughout the night.
+Hangovers happen because your body absorbs too many nutrients from alcohol.
+The liver processes a standard drink in about 20 minutes.
+Alcohol has no effect on the pancreas.

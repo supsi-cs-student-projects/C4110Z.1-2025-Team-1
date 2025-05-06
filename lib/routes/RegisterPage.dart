@@ -1,10 +1,10 @@
-import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:appwrite/models.dart' as models;
+import '../services/auth.dart';
 import 'Homepage.dart';
+import 'LoginPage.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -22,6 +22,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _nameController = TextEditingController();
   bool _isPasswordVisible1 = false;
   bool _isPasswordVisible2 = false;
+  bool _isRegistering = false;
 
   @override
   void dispose() {
@@ -32,29 +33,48 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
+  //dummy email generator
+  String dummyEmail(String username) {
+    return "$username@bloom.com";
+  }
+
+
   Future<void> _register() async {
+    if (_isRegistering) return; // blocca se già in corso
+    setState(() {
+      _isRegistering = true;
+    });
+
     if (_passwordController1.text != _passwordController2.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Passwords do not match')),
       );
+      setState(() {
+        _isRegistering = false;
+      });
       return;
     }
     try {
       final userAccount = await _authService.signUp(
         name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
+        email: dummyEmail(_nameController.text.trim()),
         password: _passwordController1.text.trim(),
       );
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => HomePage(username: userAccount.name),
+          builder: (context) => const HomePage(),
         ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registration failed: \$e')),
+        SnackBar(content: Text('Registration failed: $e')),
       );
+    } finally {
+      setState(() {
+        _isRegistering = false;
+      });
     }
   }
 
@@ -63,13 +83,12 @@ class _RegisterPageState extends State<RegisterPage> {
     return RawKeyboardListener(
       focusNode: FocusNode(),
       onKey: (RawKeyEvent event) {
-        if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+        if (event is RawKeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
           _register();
         }
       },
       child: LayoutBuilder(
         builder: (context, constraints) {
-          // Constrain width for desktop, full width on mobile
           final maxWidth = constraints.maxWidth > 600 ? 600.0 : constraints.maxWidth * 0.9;
           return Scaffold(
             key: _scaffoldKey,
@@ -82,18 +101,16 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Logo
                       Center(
                         child: Image.asset(
-                          'assets/images/AB_logo.png',
-                          width: maxWidth * 0.5,
+                          'assets/images/logo/Bloom_logo.png',
+                          width: maxWidth,
                           fit: BoxFit.contain,
                         ),
                       ),
                       const SizedBox(height: 24),
-                      // Titles
                       const Text(
-                        'Welcome to AB!',
+                        'Welcome to Bloom!',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -112,35 +129,14 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 24),
-                      // Email
-                      TextFormField(
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          labelText: 'Email Address',
-                          hintText: 'Enter your email...',
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          labelStyle: const TextStyle(
-                            fontFamily: 'RetroGaming',
-                            color: Colors.black,
-                            fontSize: 16,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-                        ),
-                        style: const TextStyle(fontFamily: 'RetroGaming', color: Colors.black),
-                      ),
+                      //const SizedBox(height: 24),
                       const SizedBox(height: 12),
                       // Name
                       TextFormField(
                         controller: _nameController,
                         decoration: InputDecoration(
-                          labelText: 'Name',
-                          hintText: 'Enter your name...',
+                          labelText: 'Username',
+                          hintText: 'Enter your username...',
                           filled: true,
                           fillColor: Colors.grey[200],
                           labelStyle: const TextStyle(
@@ -149,7 +145,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             fontSize: 16,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(0),
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -172,7 +168,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             fontSize: 16,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(0),
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -206,7 +202,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             fontSize: 16,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(0),
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -227,9 +223,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       const SizedBox(height: 24),
                       // Create Account Button
                       ElevatedButton(
-                        onPressed: _register,
+                        onPressed: _isRegistering ? null : _register,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF02AF5C),
+                          backgroundColor: const Color(0xFF157907),
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
                         ),

@@ -1,10 +1,9 @@
-import 'package:demo_todo_with_flutter/routes/RegisterPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:appwrite/models.dart' as models;
-
+import '../services/auth.dart';
 import 'Homepage.dart';
+import 'RegisterPage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,33 +15,54 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final AuthService _authService = AuthService();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  bool _isLoggingIn = false;
+  bool _navigated = false;
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _nameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
+  // Dummy email generator (same as in RegisterPage)
+  String dummyEmail(String username) {
+    return "$username@bloom.com";
+  }
+
   Future<void> _login() async {
+    if (_isLoggingIn) return;
+
+    setState(() {
+      _isLoggingIn = true;
+    });
+
     try {
-      models.Account userAccount = await _authService.login(
-        email: _emailController.text.trim(),
+      final userAccount = await _authService.login(
+        email: dummyEmail(_nameController.text.trim()),
         password: _passwordController.text.trim(),
       );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(username: userAccount.name),
-        ),
-      );
+
+      if (!_navigated) {
+        _navigated = true;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed: \$e')),
+        SnackBar(content: Text('Login failed: $e')),
       );
+    } finally {
+      setState(() {
+        _isLoggingIn = false;
+      });
     }
   }
 
@@ -53,12 +73,13 @@ class _LoginPageState extends State<LoginPage> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasData) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+        } else if (snapshot.hasData && !_navigated) {
+          _navigated = true;
+          Future.microtask(() {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage(username: snapshot.data!.name),
+                builder: (context) => const HomePage(),
               ),
             );
           });
@@ -74,13 +95,12 @@ class _LoginPageState extends State<LoginPage> {
     return RawKeyboardListener(
       focusNode: FocusNode(),
       onKey: (RawKeyEvent event) {
-        if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+        if (event is RawKeyDownEvent && event.logicalKey == LogicalKeyboardKey.enter) {
           _login();
         }
       },
       child: LayoutBuilder(
         builder: (context, constraints) {
-          // Constrain width for desktop, full width on mobile
           final maxWidth = constraints.maxWidth > 600 ? 600.0 : constraints.maxWidth * 0.9;
           return Scaffold(
             key: _scaffoldKey,
@@ -93,18 +113,16 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Logo
                       Center(
                         child: Image.asset(
-                          'assets/images/AB_logo.png',
-                          width: maxWidth * 0.5,
+                          'assets/images/logo/Bloom_logo.png',
+                          width: maxWidth,
                           fit: BoxFit.contain,
                         ),
                       ),
                       const SizedBox(height: 24),
-                      // Titles
                       const Text(
-                        'Welcome back to AB!',
+                        'Welcome back to Bloom!',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -115,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 12),
                       const Text(
-                        'Login to access your account below.',
+                        'Login to access your account',
                         style: TextStyle(
                           fontSize: 16,
                           fontFamily: 'RetroGaming',
@@ -124,21 +142,21 @@ class _LoginPageState extends State<LoginPage> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 24),
-                      // Email
+                      // Username
                       TextFormField(
-                        controller: _emailController,
+                        controller: _nameController,
                         decoration: InputDecoration(
-                          labelText: 'Email Address',
-                          hintText: 'Enter your email...',
+                          labelText: 'Username',
+                          hintText: 'Enter your username...',
+                          filled: true,
+                          fillColor: Colors.grey[200],
                           labelStyle: const TextStyle(
                             fontFamily: 'RetroGaming',
                             color: Colors.black,
                             fontSize: 16,
                           ),
-                          filled: true,
-                          fillColor: Colors.grey[200],
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(0),
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -153,15 +171,15 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: InputDecoration(
                           labelText: 'Password',
                           hintText: 'Enter your password...',
+                          filled: true,
+                          fillColor: Colors.grey[200],
                           labelStyle: const TextStyle(
                             fontFamily: 'RetroGaming',
                             color: Colors.black,
                             fontSize: 16,
                           ),
-                          filled: true,
-                          fillColor: Colors.grey[200],
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(0),
                             borderSide: BorderSide.none,
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -180,43 +198,26 @@ class _LoginPageState extends State<LoginPage> {
                         style: const TextStyle(fontFamily: 'RetroGaming', color: Colors.black),
                       ),
                       const SizedBox(height: 24),
-                      // Actions
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              // TODO: Forgot password
-                            },
-                            child: const Text(
-                              'Forgot Password?',
-                              style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming'),
-                            ),
-                          ),
-                          ElevatedButton(
-                            onPressed: _login,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF02AF5C),
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-                            ),
-                            child: const Text('Login', style: TextStyle(color: Colors.white, fontFamily: 'RetroGaming')),
-                          ),
-                        ],
+                      // Login Button
+                      ElevatedButton(
+                        onPressed: _isLoggingIn ? null : _login,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF157907),
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                        ),
+                        child: _isLoggingIn
+                            ? const CircularProgressIndicator(color: Colors.white)
+                            : const Text('Login', style: TextStyle(color: Colors.white, fontFamily: 'RetroGaming')),
                       ),
                       const SizedBox(height: 24),
+                      // Go to Register
                       Center(
                         child: TextButton(
-                          onPressed: () {
-                            Navigator.push(
+                          onPressed: () => Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const RegisterPage()),
-                            );
-                          },
-                          child: const Text(
-                            "Don't have an account?",
-                            style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming'),
-                          ),
+                              MaterialPageRoute(builder: (context) => const RegisterPage())),
+                          child: const Text("Don't have an account?", style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming')),
                         ),
                       ),
                     ],

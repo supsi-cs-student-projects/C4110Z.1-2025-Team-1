@@ -1,24 +1,22 @@
 import 'dart:math';
-import 'package:appwrite/appwrite.dart';
-import 'package:demo_todo_with_flutter/routes/account_page.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/services.dart' show rootBundle;
-
-import 'package:demo_todo_with_flutter/routes/Game/higher_or_lower.dart';
-import 'package:demo_todo_with_flutter/services/auth.dart';
-import 'package:demo_todo_with_flutter/routes/LoginPage.dart';
+import '../entities/user.dart';
 import '../services/GameService.dart';
 import '../services/Streak.dart';
+import '../services/auth.dart';
+import 'Game/higher_or_lower.dart';
+import 'LoginPage.dart';
 import 'Streak.dart';
 import 'Learn.dart';
 import '/services/CustomButton.dart';
+import 'account_page.dart';
 
 class HomePage extends StatefulWidget {
-  final String username;
 
-  const HomePage({super.key, required this.username});
+  const HomePage({super.key});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -37,6 +35,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   String? _randomCuriosity;
 
   // USER DATA
+  User? user;
   String? userName;
   int? streakDays;
   int? bestScore;
@@ -49,10 +48,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   };
   double _faceMood = 1.0;
 
+  late Map<int, Future<LottieComposition>> _animationsByMilestone;
+
   @override
   void initState() {
     super.initState();
-    _isMuted = true;
+    _loadUser();
+
+    _animationsByMilestone = {
+      50: AssetLottie('assets/Animations/plant_lv2.json').load(),
+      /*100: AssetLottie('assets/Animations/plant_lv3.json').load(),
+      200: AssetLottie('assets/Animations/plant_lv4.json').load(),*/
+    };
 
     _cloudAnimationController = AnimationController(
       vsync: this,
@@ -61,36 +68,72 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       upperBound: 1,
     )..repeat(reverse: false);
 
-    _plantAnimation = _loadLottieAnimation();
-    _loadUser();
-
     if (!_isMuted) {
       _playMusic();
     }
   }
 
+  Future<LottieComposition> _loadLottieAnimation(int currentXP) {
+    int? milestone = _animationsByMilestone.keys
+        .where((key) => currentXP >= key)
+        .fold<int?>(null, (prev, element) => prev == null || element > prev ? element : prev);
+
+    return milestone != null
+        ? _animationsByMilestone[milestone]!
+        : AssetLottie('assets/Animations/plant_lv1.json').load();
+  }
+
+
+
+  Widget _buildPlant(double bottomPos, double plantSize) {
+    final w = MediaQuery.of(context).size.width * 0.4;
+    final h = MediaQuery.of(context).size.height * 0.4;
+    final faceAsset = _faceMap[_faceMood]!;
+    final animation = user != null ? _loadLottieAnimation(user!.getXP()) : AssetLottie('assets/Animations/plant_lv1.json').load();
+
+    return Positioned(
+      bottom: bottomPos,
+      child: SizedBox(
+        width:  plantSize,
+        height: plantSize,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            FutureBuilder<LottieComposition>(
+              future: animation,
+              builder: (ctx, snap) {
+                if (snap.connectionState == ConnectionState.done && snap.hasData) {
+                  return Lottie(composition: snap.data!, width: plantSize, height: plantSize);
+                }
+                return const CircularProgressIndicator();
+              },
+            ),
+            Positioned.fill(child: Image.asset(faceAsset, fit: BoxFit.contain)),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+
   Future<void> _loadUser() async {
     try {
-      final account = await authService.getAccount();
-      final currentStreak = await streak.getStreakCount();
-      final currentBest = await _gameService.getBestScore();
+      user = await User.fetchUser();
       setState(() {
-        userName = account.name;
-        streakDays = currentStreak;
-        bestScore = currentBest;
+        userName = user?.nickname;
+        streakDays = user?.streakCount;
+        bestScore = user?.higherLowerBestScore;
       });
     } catch (e) {
-      print("Failed to fetch user info: \$e");
+      print("Failed to fetch user info: $e");
     }
   }
 
-  Future<LottieComposition> _loadLottieAnimation() async {
-    return await AssetLottie('assets/Animations/plant_idle.json').load();
-  }
 
   void _playMusic() async {
     try {
-      await _audioPlayer.setAsset('assets/audio/homepage_music.ogg');
+      //await _audioPlayer.setAsset('assets/audio/homepage_music.ogg');
       _audioPlayer.setLoopMode(LoopMode.one);
       _audioPlayer.play();
     } catch (e) {
@@ -117,7 +160,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => HigherOrLower(username: widget.username),
+        builder: (context) => const HigherOrLower(),
       ),
     ).then((_) {
       _loadUser();
@@ -174,7 +217,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   children: [
                     _buildBackground(screenWidth, screenHeight),
                     _buildGround(screenWidth, screenHeight, isPortrait),
-                    _buildPlant(plantBottomPosition, screenWidth * 0.4),
+                    _buildPlant(plantBottomPosition, screenWidth * 0.5),
                     _buildLogOutButton(onPressed: _logout, screenWidth: screenWidth, screenHeight: screenHeight),
                     _buildHomeButton(text: 'GAMES', left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor * 0.7),
                     _buildHomeButton(text: 'STREAK', bottom: groundHeight * 0.02, onPressed: () {
@@ -190,7 +233,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       setState(() => _isCuriositiesWidgetVisible = true);
                     }),
                     _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.3, screenHeight: screenHeight * 0.5, text: 'Did you know that...', imagePath: 'assets/images/curiosities/CuriosityText.png', curiosity: _randomCuriosity, top: groundHeight * 0.4, fontSize: 10, left: screenWidth * 0.2),
-                    _buildInfoRectangle(username: userName ?? '', streakDays: streakDays ?? 0, bestScore: bestScore ?? 0, screenWidth: screenWidth * 3, screenHeight: screenHeight * 0.5, scaleFactor: scaleFactor * 0.8, top: screenHeight * 0.2, left: screenWidth * 0.2),
+                    _buildInfoRectangle(screenWidth: screenWidth * 3, screenHeight: screenHeight * 0.5, scaleFactor: scaleFactor * 0.8, top: screenHeight * 0.2, left: screenWidth * 0.2),
 
                   ],
                 ),
@@ -214,7 +257,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   children: [
                     _buildBackground(screenWidth, screenHeight),
                     _buildGround(screenWidth, screenHeight, isPortrait),
-                    _buildPlant(plantBottomPosition, screenHeight * 0.4),
+                    _buildPlant(plantBottomPosition, screenHeight * 0.5),
                     _buildLogOutButton(onPressed: _logout, screenWidth: screenWidth, screenHeight: screenHeight),
                     _buildHomeButton(text: 'GAMES', left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor),
                     _buildHomeButton(text: 'STREAK', bottom: groundHeight * 0.02, onPressed: () {
@@ -231,7 +274,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     }),
                     _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.3, screenHeight: screenHeight, text: 'Did you know that...', imagePath: 'assets/images/curiosities/CuriosityText.png', curiosity: _randomCuriosity, top: groundHeight*0.1, fontSize: 20, left: screenWidth * 0.15),
                     !_isCuriositiesWidgetVisible?
-                    _buildInfoRectangle(username: userName ?? '', streakDays: streakDays ?? 0, bestScore: bestScore ?? 0, screenWidth: screenWidth, screenHeight: screenHeight, scaleFactor: scaleFactor, top: screenHeight * 0.1, left: screenWidth * 0.75): const SizedBox.shrink(),
+                    _buildInfoRectangle(screenWidth: screenWidth, screenHeight: screenHeight, scaleFactor: scaleFactor, top: screenHeight * 0.1, left: screenWidth * 0.75): const SizedBox.shrink(),
                   ],
                 ),
               ),
@@ -284,34 +327,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildPlant(double bottomPos, double plantSize) {
-    final w = MediaQuery.of(context).size.width * 0.4;
-    final h = MediaQuery.of(context).size.height * 0.4;
-    final faceAsset = _faceMap[_faceMood]!;
 
-    return Positioned(
-      bottom: bottomPos,
-      child: SizedBox(
-        width:  plantSize,
-        height: plantSize,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            FutureBuilder<LottieComposition>(
-              future: _plantAnimation,
-              builder: (ctx, snap) {
-                if (snap.connectionState == ConnectionState.done && snap.hasData) {
-                  return Lottie(composition: snap.data!, width: plantSize, height: plantSize);
-                }
-                return const CircularProgressIndicator();
-              },
-            ),
-            Positioned.fill(child: Image.asset(faceAsset, fit: BoxFit.contain)),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildSlider(double width, {required double scaleFactor}) {
     return SizedBox(
@@ -357,12 +373,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           imagePath: 'assets/images/buttons/games_button.png',
           onPressed: onPressed,
           textAlignment: Alignment.center,
-          textPadding: EdgeInsets.only(bottom: h * 0.015),
+          //textPadding: EdgeInsets.only(bottom: h * 0.015),
           textStyle: TextStyle(
-            fontSize: 22 * scaleFactor,
-            color: Colors.white,
+            fontSize: 26 * scaleFactor,
+            color: const Color(0xFFE9E6A8),
             fontFamily: 'RetroGaming',
-            fontWeight: FontWeight.bold,
+            //fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -429,7 +445,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: Image.asset(
                   imagePath,
                   fit: BoxFit.fill,
-                  width: screenWidth * 0.55,
+                  width: screenWidth * 0.6,
                   height: screenHeight * 0.5,
                 ),
               ),
@@ -447,11 +463,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ),
               Positioned(
-                top: screenHeight * 0.18,
+                top: screenHeight * 0.12,
                 left: screenWidth * 0.15,
                 right: screenWidth * 0.1,
                 child: SizedBox(
-                  width: screenWidth * 0.5,
+                  //width: screenWidth,
                   child: Text(
                     curiosity ?? '',
                     textAlign: TextAlign.center,
@@ -471,9 +487,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildInfoRectangle({
-    required String username,
-    required int streakDays,
-    required int bestScore,
     required double screenWidth,
     required double screenHeight,
     required double scaleFactor,
@@ -491,29 +504,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: Stack(
           children: [
             ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.asset('assets/images/statistics/stats_box.png', fit: BoxFit.fill, width: boxW, height: boxH)),
-            Positioned(top: boxH*0.05, left: boxW*0.05, child: Text(username, style: TextStyle(fontSize: 25*scaleFactor, fontWeight: FontWeight.bold, fontFamily: 'RetroGaming'))),
-            Positioned(
-              top: boxH * 0.2,
-              left: boxW * 0.05,
-              right: boxW * 0.05,
-              child: RichText(
-                text: TextSpan(
-                  style: TextStyle(
-                    fontSize: 20*scaleFactor,
-                    fontFamily: 'RetroGaming',
-                    color: Colors.black,
+            Positioned(top: boxH * 0.05, left: boxW * 0.05, child: Text(user?.nickname ?? 'Guest', style: TextStyle(fontSize: 25 * scaleFactor, fontFamily: 'RetroGaming', color: const Color(
+                0xFF1C1C1C),
+                ),
+              ),
+            ),
+
+            Positioned(top: boxH * 0.2, left: boxW * 0.05, right: boxW * 0.05, child: RichText(text: TextSpan(style: TextStyle(fontSize: 20*scaleFactor, fontFamily: 'RetroGaming', color: const Color(0xFFE9E6A8),
                   ),
-                  children: [
-                    TextSpan(
-                      text: 'Streak: ',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
+                  children: [TextSpan(text: 'XP: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
+                  ),
+                    TextSpan(text: '${user?.getXP()} points\n'),
+                    TextSpan(text: 'Streak: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
                     ),
-                    TextSpan(text: '${streakDays ?? 0} days\n'),
-                    TextSpan(
-                      text: 'HoL best score: ',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
+                    TextSpan(text: '${user?.streakCount} days\n'),
+                    TextSpan(text: 'HoL best score: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
                     ),
-                    TextSpan(text: '${bestScore ?? 0}'),
+                    TextSpan(text: '${user?.higherLowerBestScore}'),
                   ],
                 ),
               ),

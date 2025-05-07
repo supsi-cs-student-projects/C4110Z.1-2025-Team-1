@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:appwrite/models.dart' as models;
+
+import 'package:demo_todo_with_flutter/services/localeProvider.dart';
+import 'package:provider/provider.dart';
+
+// localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+
 import '../services/auth.dart';
+
 import 'Homepage.dart';
 import 'RegisterPage.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -69,6 +78,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<models.Account>(
+      
       future: _authService.getAccount(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -92,6 +102,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildLoginPage(BuildContext context) {
+    final localeProvider = Provider.of<LocaleProvider>(context);
     return RawKeyboardListener(
       focusNode: FocusNode(),
       onKey: (RawKeyEvent event) {
@@ -101,6 +112,8 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: LayoutBuilder(
         builder: (context, constraints) {
+
+          // Constrain width for desktop, full width on mobile
           final maxWidth = constraints.maxWidth > 600 ? 600.0 : constraints.maxWidth * 0.9;
           return Scaffold(
             key: _scaffoldKey,
@@ -198,17 +211,29 @@ class _LoginPageState extends State<LoginPage> {
                         style: const TextStyle(fontFamily: 'RetroGaming', color: Colors.black),
                       ),
                       const SizedBox(height: 24),
-                      // Login Button
-                      ElevatedButton(
-                        onPressed: _isLoggingIn ? null : _login,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF157907),
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-                        ),
-                        child: _isLoggingIn
-                            ? const CircularProgressIndicator(color: Colors.white)
-                            : const Text('Login', style: TextStyle(color: Colors.white, fontFamily: 'RetroGaming')),
+                      // Actions
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              // TODO: Forgot password
+                            },
+                            child: const Text(
+                              'Forgot Password?',
+                              style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming'),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: _login,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF02AF5C),
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                            ),
+                            child: Text(AppLocalizations.of(context)!.login, style: TextStyle(color: Colors.white, fontFamily: 'RetroGaming')),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 24),
                       // Go to Register
@@ -220,6 +245,24 @@ class _LoginPageState extends State<LoginPage> {
                           child: const Text("Don't have an account?", style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming')),
                         ),
                       ),
+                      const SizedBox(height: 24),
+                    // Locale Change Button
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: localeProvider.toggleLocale,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        ),
+                        child: Text(
+                          Localizations.localeOf(context).languageCode == 'en'
+                            ? 'Change to Italian'
+                            : 'Change to English',
+                          style: const TextStyle(color: Colors.white, fontFamily: 'RetroGaming'),
+                        ),
+                      ),
+                    ),
                     ],
                   ),
                 ),

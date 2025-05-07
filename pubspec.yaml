@@ -122,6 +122,16 @@ flutter:
     - assets/images/buttons/logout_button.png
     - assets/images/buttons/back_button.png
     - assets/images/statistics/stats_box.png
+    - assets/Animations/plant_lv1.json
+    - assets/Animations/plant_lv2.json
+    - assets/images/logo/Bloom_logo.png
+    - assets/audio/kwyd/choice/right.ogg
+    - assets/images/buttons/question_button.png
+    - assets/higher_or_lower/question_box.png
+    - assets/higher_or_lower/questions.txt
+    - assets/higher_or_lower/higherorlower_vertical.png
+    - assets/images/curiosities/CuriosityBox_v2.png
+    - assets/images/achievements/achv_1.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

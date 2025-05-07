@@ -1,6 +1,7 @@
 import 'package:appwrite/models.dart' as models;
 import 'package:flutter/material.dart';
-import 'package:demo_todo_with_flutter/services/auth.dart'; // Importa il servizio AuthService
+
+import '../services/auth.dart'; // Importa il servizio AuthService
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});

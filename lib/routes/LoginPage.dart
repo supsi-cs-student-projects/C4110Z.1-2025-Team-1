@@ -4,10 +4,16 @@ import 'package:flutter/services.dart';
 import 'package:demo_todo_with_flutter/services/auth.dart';
 import 'package:appwrite/models.dart' as models;
 
+import 'package:demo_todo_with_flutter/services/localeProvider.dart';
+import 'package:provider/provider.dart';
+
+// localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'Homepage.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -49,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<models.Account>(
+      
       future: _authService.getAccount(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -71,6 +78,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildLoginPage(BuildContext context) {
+    final localeProvider = Provider.of<LocaleProvider>(context);
     return RawKeyboardListener(
       focusNode: FocusNode(),
       onKey: (RawKeyEvent event) {
@@ -80,6 +88,7 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: LayoutBuilder(
         builder: (context, constraints) {
+
           // Constrain width for desktop, full width on mobile
           final maxWidth = constraints.maxWidth > 600 ? 600.0 : constraints.maxWidth * 0.9;
           return Scaffold(
@@ -128,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                       TextFormField(
                         controller: _emailController,
                         decoration: InputDecoration(
-                          labelText: 'Email Address',
+                          labelText: AppLocalizations.of(context)!.email,
                           hintText: 'Enter your email...',
                           labelStyle: const TextStyle(
                             fontFamily: 'RetroGaming',
@@ -200,7 +209,7 @@ class _LoginPageState extends State<LoginPage> {
                               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
                             ),
-                            child: const Text('Login', style: TextStyle(color: Colors.white, fontFamily: 'RetroGaming')),
+                            child: Text(AppLocalizations.of(context)!.login, style: TextStyle(color: Colors.white, fontFamily: 'RetroGaming')),
                           ),
                         ],
                       ),
@@ -219,6 +228,24 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 24),
+                    // Locale Change Button
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: localeProvider.toggleLocale,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        ),
+                        child: Text(
+                          Localizations.localeOf(context).languageCode == 'en'
+                            ? 'Change to Italian'
+                            : 'Change to English',
+                          style: const TextStyle(color: Colors.white, fontFamily: 'RetroGaming'),
+                        ),
+                      ),
+                    ),
                     ],
                   ),
                 ),

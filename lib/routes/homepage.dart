@@ -388,7 +388,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget _buildLogOutButton({required VoidCallback onPressed, required double screenWidth, required double screenHeight}) {
     return Positioned(
       top: 0.02 * screenHeight,
-      left: 0,
+      left: 0.01 * screenWidth,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(

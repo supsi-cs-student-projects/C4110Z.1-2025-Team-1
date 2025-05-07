@@ -393,7 +393,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                             onPressed: _handleQuestionButton,
                           ),
                         if (_showQuestionBox)
-                          _buildQuestionBox(screenWidth * 2, screenHeight),
+                          _buildQuestionBox(screenWidth * 3, screenHeight),
                         Positioned(
                           top: screenHeight * 0.095,
                           child: Text(
@@ -435,7 +435,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                 ),
               ],
             ),
-            if (_isGameOver) _buildGameOverBox(screenWidth * 2, screenHeight),
+            if (_isGameOver) _buildGameOverBox(screenWidth * 3, screenHeight),
           ],
         ),
       );
@@ -614,8 +614,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
 
     return Positioned(
       bottom: screenHeight / 2 - 20,
-      left: MediaQuery.of(context).size.width * 0.45,
-      right: MediaQuery.of(context).size.width * 0.45,
+      width: 120,
       child: CustomButton(
         text: text,
         imagePath: 'assets/images/buttons/question_button.png',
@@ -809,7 +808,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Positioned(
-      top: screenHeight * 0.02,
+      top: screenHeight * 0.06,
       left: 0,
       right: 0,
       child: SizedBox(

@@ -120,6 +120,8 @@ flutter:
     - assets/images/statistics/stats_box.png
     - assets/Animations/plant_lv1.json
     - assets/Animations/plant_lv2.json
+    - assets/Animations/plant_lv3.json
+    - assets/Animations/plant_lv4.json
     - assets/images/logo/Bloom_logo.png
     - assets/audio/kwyd/choice/right.ogg
     - assets/images/buttons/question_button.png

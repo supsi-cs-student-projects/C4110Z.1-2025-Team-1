@@ -232,7 +232,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       await _loadRandomCuriosity();
                       setState(() => _isCuriositiesWidgetVisible = true);
                     }),
-                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.3, screenHeight: screenHeight * 0.4, curiosity: _randomCuriosity, top: groundHeight * 0.4, left: screenWidth * 0.12, fontSize: 10),
+                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.5, screenHeight: screenHeight * 0.5, curiosity: _randomCuriosity, top: groundHeight * 0.4, left: screenWidth * 0.07, fontSize: 10),
                     _buildInfoRectangle(screenWidth: screenWidth * 3, screenHeight: screenHeight * 0.5, scaleFactor: scaleFactor * 0.8, top: screenHeight * 0.2, left: screenWidth * 0.2),
 
                   ],

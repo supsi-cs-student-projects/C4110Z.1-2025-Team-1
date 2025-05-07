@@ -366,7 +366,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                         if (!_isGameOver && !_showQuestionBox) ...[
                           _buildGameButton(
                             bottom: screenHeight * 0.15,
-                            right: screenWidth * 0.3,
+                            right: screenWidth * 0.08,
                             text: "↑",
                             onPressed: () {
                               _checkGuess("up");
@@ -376,7 +376,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                           ),
                           _buildGameButton(
                             bottom: screenHeight * 0.15,
-                            right: screenWidth * 0.08,
+                            right: screenWidth * 0.3,
                             text: "↓",
                             onPressed: () {
                               _downController.forward(from: 0.0);
@@ -393,21 +393,21 @@ class _HigherOrLowerState extends State<HigherOrLower>
                             onPressed: _handleQuestionButton,
                           ),
                         if (_showQuestionBox)
-                          _buildQuestionBox(screenWidth * 2, screenHeight),
+                          _buildQuestionBox(screenWidth * 3, screenHeight),
                         Positioned(
-                          top: screenHeight * 0.038,
+                          top: screenHeight * 0.095,
                           child: Text(
                             "Score: $score\nBest: $bestScore",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: screenHeight * 0.025,
+                              fontSize: screenHeight * 0.02,
                               fontFamily: 'RetroGaming',
                               color: Colors.white,
                             ),
                           ),
                         ),
                         Positioned(
-                          top: MediaQuery.of(context).size.height * 0.1,
+                          top: screenHeight * 0.15,
                           child: AnimatedOpacity(
                             opacity: _isDoublePoints ? 1.0 : 0.0,
                             duration: const Duration(milliseconds: 300),
@@ -417,6 +417,8 @@ class _HigherOrLowerState extends State<HigherOrLower>
                                 fontSize: 20,
                                 color: Colors.yellow,
                                 fontFamily: 'RetroGaming',
+                                //color in hex
+                                backgroundColor: Color(0xFF5460C1),
                                 shadows: [
                                   Shadow(
                                     blurRadius: 10,
@@ -433,7 +435,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                 ),
               ],
             ),
-            if (_isGameOver) _buildGameOverBox(screenWidth * 2, screenHeight),
+            if (_isGameOver) _buildGameOverBox(screenWidth * 3, screenHeight),
           ],
         ),
       );
@@ -486,7 +488,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                         if (_showQuestionBox)
                           _buildQuestionBox(screenWidth, screenHeight),
                         Positioned(
-                          top: screenHeight * 0.038,
+                          top: screenHeight * 0.133,
                           child: Text(
                             "Score: $score\nBest: $bestScore",
                             textAlign: TextAlign.center,
@@ -498,7 +500,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                           ),
                         ),
                         Positioned(
-                          top: MediaQuery.of(context).size.height * 0.1,
+                          top: screenHeight * 0.2,
                           child: AnimatedOpacity(
                             opacity: _isDoublePoints ? 1.0 : 0.0,
                             duration: const Duration(milliseconds: 300),
@@ -508,6 +510,8 @@ class _HigherOrLowerState extends State<HigherOrLower>
                                 fontSize: 20,
                                 color: Colors.yellow,
                                 fontFamily: 'RetroGaming',
+                                //color in hex
+                                backgroundColor: Color(0xFF5460C1),
                                 shadows: [
                                   Shadow(
                                     blurRadius: 10,
@@ -610,8 +614,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
 
     return Positioned(
       bottom: screenHeight / 2 - 20,
-      left: MediaQuery.of(context).size.width * 0.45,
-      right: MediaQuery.of(context).size.width * 0.45,
+      width: 120,
       child: CustomButton(
         text: text,
         imagePath: 'assets/images/buttons/question_button.png',
@@ -623,7 +626,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
           fontFamily: 'RetroGaming',
           fontWeight: FontWeight.bold,
         ),
-        //textPadding: EdgeInsets.only(bottom: screenHeight * 0.02),
+        textPadding: EdgeInsets.only(bottom: screenHeight * 0.006),
       ),
     );
   }
@@ -728,7 +731,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
             fontFamily: 'RetroGaming',
             fontWeight: FontWeight.bold,
           ),
-          textPadding: EdgeInsets.only(bottom: screenHeight * 0.01),
+          textPadding: EdgeInsets.only(bottom: screenHeight * 0.02),
         ),
       ),
     );
@@ -805,7 +808,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Positioned(
-      top: screenHeight * 0.02,
+      top: screenHeight * 0.06,
       left: 0,
       right: 0,
       child: SizedBox(

@@ -1,5 +1,7 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart' as models;
+import 'package:demo_todo_with_flutter/entities/user.dart';
+import 'package:flutter/material.dart';
 
 import '../services/appwrite.dart';
 import '../services/streak.dart';
@@ -49,4 +51,86 @@ class AuthService {
       throw Exception('Failed to update username: $e');
     }
   }
+}
+
+void _showChangeUsernameDialog(BuildContext context, User user) {
+  final TextEditingController usernameController =
+      TextEditingController(text: user.nickname);
+  final TextEditingController passwordController = TextEditingController();
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Change Username'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: usernameController,
+              decoration: const InputDecoration(
+                labelText: 'New Username',
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Password',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Chiudi il dialog senza salvare
+            },
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final newUsername = usernameController.text.trim();
+              final password = passwordController.text.trim();
+
+              if (newUsername.isNotEmpty && password.isNotEmpty) {
+                try {
+                  final authService = AuthService();
+                  await authService.updateUsername(newUsername);
+
+                  // Mostra un messaggio di successo
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Username updated successfully!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+
+                  Navigator.pop(context); // Chiudi il dialog
+                } catch (e) {
+                  // Mostra un messaggio di errore
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Failed to update username: $e'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              } else {
+                // Mostra un messaggio di errore se i campi sono vuoti
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Username and password cannot be empty!'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      );
+    },
+  );
 }

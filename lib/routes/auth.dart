@@ -1,9 +1,81 @@
+import 'package:demo_todo_with_flutter/services/appwrite.dart';
 import 'package:flutter/material.dart';
+import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart' as models;
 
 import '../services/Streak.dart';
 import '../services/auth.dart';
 import '../utilities.dart';
 import 'todos.dart';
+
+class AuthService {
+  final Account _account = Account(Appwrite.instance.client);
+
+  // Metodo per registrare un nuovo utente
+  Future<models.Account> signUp({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await _account.create(
+        userId: ID.unique(),
+        email: email,
+        password: password,
+        name: name,
+      );
+      return login(
+          email: email,
+          password: password); // Effettua il login dopo la registrazione
+    } catch (e) {
+      throw Exception('Failed to sign up: $e');
+    }
+  }
+
+  // Metodo per effettuare il login
+  Future<models.Account> login({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await _account.createEmailSession(
+        email: email,
+        password: password,
+      );
+      return _account.get(); // Restituisce i dettagli dell'account
+    } catch (e) {
+      throw Exception('Failed to login: $e');
+    }
+  }
+
+  // Metodo per ottenere i dettagli dell'account corrente
+  Future<models.Account> getAccount() async {
+    try {
+      return await _account.get();
+    } catch (e) {
+      throw Exception('Failed to fetch account: $e');
+    }
+  }
+
+  // Metodo per effettuare il logout
+  Future<void> logout() async {
+    try {
+      await _account.deleteSession(sessionId: 'current');
+    } catch (e) {
+      throw Exception('Failed to logout: $e');
+    }
+  }
+
+  // Metodo per aggiornare lo username
+  Future<void> updateUsername(String newUsername) async {
+    try {
+      await _account.updateName(
+          name: newUsername); // Metodo Appwrite per aggiornare il nome
+    } catch (e) {
+      throw Exception('Failed to update username: $e');
+    }
+  }
+}
 
 class Auth extends StatefulWidget {
   const Auth({Key? key}) : super(key: key);

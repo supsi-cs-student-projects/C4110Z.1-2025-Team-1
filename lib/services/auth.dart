@@ -40,5 +40,13 @@ class AuthService {
     return _account.get().then((value) => value.name);
   }
 
-
+  // Metodo per aggiornare lo username
+  Future<void> updateUsername(String newUsername) async {
+    try {
+      await _account.updateName(
+          name: newUsername); // Metodo Appwrite per aggiornare il nome
+    } catch (e) {
+      throw Exception('Failed to update username: $e');
+    }
+  }
 }

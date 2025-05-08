@@ -1,14 +1,13 @@
-import 'package:appwrite/models.dart' as models;
 import 'package:flutter/material.dart';
-
-import '../services/auth.dart'; // Importa il servizio AuthService
+import '../entities/user.dart';
+import '../services/auth.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final authService = AuthService(); // Istanza del servizio AuthService
+    final authService = AuthService();
 
     return Scaffold(
       appBar: AppBar(
@@ -27,13 +26,13 @@ class AccountPage extends StatelessWidget {
         ),
         backgroundColor: const Color(0xFF18a663),
       ),
-      body: FutureBuilder(
-        future: authService.getAccount(), // Recupera i dati dell'account
+      body: FutureBuilder<User>(
+        future: User.fetchUser(), // Recupera le informazioni dell'utente
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-                child:
-                    CircularProgressIndicator()); // Mostra un indicatore di caricamento
+              child: CircularProgressIndicator(),
+            );
           } else if (snapshot.hasError) {
             return Center(
               child: Text(
@@ -46,7 +45,8 @@ class AccountPage extends StatelessWidget {
               ),
             );
           } else if (snapshot.hasData) {
-            final account = snapshot.data as models.Account;
+            final user = snapshot.data!;
+
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -64,18 +64,106 @@ class AccountPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Username: ${account.name ?? "No name provided"}',
+                      'Username: ${user.nickname}',
                       style: const TextStyle(
                         fontSize: 18,
                         fontFamily: 'RetroGaming',
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Text(
-                      'Email: ${account.email}',
-                      style: const TextStyle(
-                        fontSize: 18,
+                    ElevatedButton(
+                      onPressed: () {
+                        _showChangeUsernameDialog(context, user);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF18a663),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                      ),
+                      child: const Text(
+                        'Change Username',
+                        style: TextStyle(
+                          fontFamily: 'RetroGaming',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    const Text(
+                      'Statistics',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                         fontFamily: 'RetroGaming',
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: IntrinsicWidth(
+                        child: Column(
+                          children: [
+                            // Intestazione della tabella
+                            Container(
+                              decoration: const BoxDecoration(
+                                color: Color(0xFFEFEFEF),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
+                                ),
+                              ),
+                              child: const Row(
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(12.0),
+                                      child: Text(
+                                        'Statistic',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'RetroGaming',
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 3,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(12.0),
+                                      child: Text(
+                                        'Value',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'RetroGaming',
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // Righe della tabella
+                            _buildTableRow('XP', '${user.xp}'),
+                            _buildTableRow(
+                                'Streak', '${user.streakCount} days'),
+                            _buildTableRow(
+                                'Best Score', '${user.higherLowerBestScore}'),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -95,6 +183,114 @@ class AccountPage extends StatelessWidget {
           }
         },
       ),
+    );
+  }
+
+  Widget _buildTableRow(String label, String value) {
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.grey, width: 1),
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text(
+                label,
+                style: const TextStyle(
+                  fontFamily: 'RetroGaming',
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text(
+                value,
+                style: const TextStyle(
+                  fontFamily: 'RetroGaming',
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showChangeUsernameDialog(BuildContext context, User user) {
+    final TextEditingController controller =
+        TextEditingController(text: user.nickname);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Change Username'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              labelText: 'New Username',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Chiudi il dialog senza salvare
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final newUsername = controller.text;
+
+                if (newUsername.isNotEmpty) {
+                  try {
+                    // Aggiorna il nome dell'utente tramite AuthService
+                    final authService = AuthService();
+                    await authService.updateUsername(newUsername);
+
+                    // Mostra un messaggio di successo
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Username updated successfully!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+
+                    Navigator.pop(context); // Chiudi il dialog
+                  } catch (e) {
+                    // Mostra un messaggio di errore
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Failed to update username: $e'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                } else {
+                  // Mostra un messaggio di errore se il campo è vuoto
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Username cannot be empty!'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -8,17 +8,19 @@ class StreakPage extends StatefulWidget {
 }
 
 class _StreakPageState extends State<StreakPage> with TickerProviderStateMixin {
-  // Dummy data for achievements
-  final List<_Achievement> _achievements = List.generate(
-    20,
-        (index) => _Achievement(
-      title: 'Day ${index + 1}',
-      unlocked: index < 1, // example: first unlocked
-      iconPath: index < 1
-          ? 'assets/images/achievements/achv_${index + 1}.png'
-          : null,
-    ),
-  );
+
+  final List<_Achievement> _achievements = [
+    _Achievement(title: '1 Day', unlocked: true, iconPath: 'assets/images/achievements/achv_1.png'),
+    _Achievement(title: '3 Days', unlocked: false, iconPath: null),
+    _Achievement(title: '1 Week', unlocked: false, iconPath: null),
+    _Achievement(title: '2 Weeks', unlocked: false, iconPath: null),
+    _Achievement(title: '1 Month', unlocked: false, iconPath: null),
+    _Achievement(title: '2 Months', unlocked: false, iconPath: null),
+    _Achievement(title: '3 Months', unlocked: false, iconPath: null),
+    _Achievement(title: '6 Months', unlocked: false, iconPath: null),
+    _Achievement(title: '1 Year', unlocked: false, iconPath: null),
+  ];
+
 
   // Adjust this value to change the vertical position of the title label
   final double _titleBottomOffset = 4.0;
@@ -32,9 +34,17 @@ class _StreakPageState extends State<StreakPage> with TickerProviderStateMixin {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Achievements',
-            style: TextStyle(
-                fontFamily: 'RetroGaming', color: Color(0xFFE9E6A8))),
+        leading: IconButton(
+          icon: Image.asset('assets/images/buttons/back_button.png'),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: const Text(
+          'Achievements',
+          style: TextStyle(
+            fontFamily: 'RetroGaming',
+            color: Color(0xFF000000),
+          ),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,

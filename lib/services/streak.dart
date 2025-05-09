@@ -6,8 +6,10 @@ import '../services/auth.dart';
 
 class StreakService {
   final Databases _databases = Databases(Appwrite.instance.client);
-  final String _databaseId = 'default'; // Replace with your Appwrite database ID
-  final String _collectionId = '67db391b00064570c8a1'; // Replace with your Appwrite collection ID
+  final String _databaseId =
+      'default'; // Replace with your Appwrite database ID
+  final String _collectionId =
+      '67c5e29a0030f33704a7'; // Replace with your Appwrite collection ID
   String? _userId;
 
   Future<Streak> loadStreak() async {
@@ -57,9 +59,9 @@ class StreakService {
     final now = DateTime.now();
 
     // Check if the streak can be incremented (only once per day)
-    // if (now.difference(streak.lastUpdated).inDays < 1) {
-    //   throw Exception('Streak can only be incremented once per day.');
-    // }
+     if (now.difference(streak.lastUpdated).inDays < 1) {
+       throw Exception('Streak can only be incremented once per day.');
+    }
 
     streak.increment();
 
@@ -74,6 +76,4 @@ class StreakService {
     );
     return Streak.fromJson(document.data);
   }
-
-
 }

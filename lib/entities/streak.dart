@@ -17,10 +17,10 @@ class Streak {
     void increment() {
       streakCount++;
       lastUpdated = DateTime.now();
-        // if (DateTime.now().day != lastUpdated.day) {
-        //     streakCount++;
-        //     lastUpdated = DateTime.now();
-        // }
+        if (DateTime.now().day != lastUpdated.day) {
+            streakCount++;
+             lastUpdated = DateTime.now();
+        }
     }
 
     Map<String, dynamic> toJson() {

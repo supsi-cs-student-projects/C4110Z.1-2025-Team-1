@@ -54,6 +54,11 @@ class User {
 
   /// Increment the user's streak count
   Future<void> incrementStreak() async {
+    final streak = await _streakService.loadStreak();
+    final now = DateTime.now();
+    if (now.difference(streak.lastUpdated).inDays < 1) {
+      return;
+    }
     streakCount++;
     await _streakService.incrementStreak();
   }

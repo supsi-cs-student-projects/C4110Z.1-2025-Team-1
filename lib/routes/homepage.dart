@@ -9,7 +9,7 @@ import '../services/Streak.dart';
 import '../services/auth.dart';
 import 'Game/higher_or_lower.dart';
 import 'LoginPage.dart';
-import 'Streak.dart';
+import 'StreakPage.dart';
 import 'Learn.dart';
 import '/services/CustomButton.dart';
 import 'account_page.dart';

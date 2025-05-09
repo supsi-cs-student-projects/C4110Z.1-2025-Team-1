@@ -127,6 +127,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
       setState(() {
         _isGameOver = true;
         user?.addXP(score);
+        user?.incrementStreak();
       });
     }
     setState(() {
@@ -305,6 +306,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
         _updateRound();
       } else {
         user?.addXP(score);
+        user?.incrementStreak();
         _isGameOver = true;
       }
     });
@@ -828,6 +830,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                 //add xp and go back to homepage
                 onPressed: () {
                   user?.addXP(score);
+                  user?.incrementStreak();
                   _goBackToHomePage();
                 },
                 tooltip: "Back to Home",

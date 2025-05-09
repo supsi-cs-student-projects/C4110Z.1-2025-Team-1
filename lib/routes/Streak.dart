@@ -8,17 +8,32 @@ class StreakPage extends StatefulWidget {
 }
 
 class _StreakPageState extends State<StreakPage> with TickerProviderStateMixin {
-  // Dummy data for achievements
+
   final List<_Achievement> _achievements = List.generate(
-    20,
-        (index) => _Achievement(
-      title: 'Day ${index + 1}',
-      unlocked: index < 1, // example: first unlocked
-      iconPath: index < 1
-          ? 'assets/images/achievements/achv_${index + 1}.png'
-          : null,
-    ),
+    9,
+        (index) {
+      final unlocked = index == 0;
+      return _Achievement(
+        title: [
+          '1 Day',
+          '3 Days',
+          '1 Week',
+          '2 Weeks',
+          '1 Month',
+          '2 Months',
+          '3 Months',
+          '6 Months',
+          '1 Year',
+        ][index],
+        unlocked: unlocked,
+        iconPath: unlocked
+            ? 'assets/images/achievements/achv_${index + 1}.png'
+            : null,
+      );
+    },
   );
+
+
 
   // Adjust this value to change the vertical position of the title label
   final double _titleBottomOffset = 4.0;
@@ -32,9 +47,17 @@ class _StreakPageState extends State<StreakPage> with TickerProviderStateMixin {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Achievements',
-            style: TextStyle(
-                fontFamily: 'RetroGaming', color: Color(0xFFE9E6A8))),
+        leading: IconButton(
+          icon: Image.asset('assets/images/buttons/back_button.png'),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: const Text(
+          'Achievements',
+          style: TextStyle(
+            fontFamily: 'RetroGaming',
+            color: Color(0xFF000000),
+          ),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,

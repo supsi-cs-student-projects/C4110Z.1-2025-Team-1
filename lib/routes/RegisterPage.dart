@@ -35,6 +35,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   //dummy email generator
   String dummyEmail(String username) {
+    username = username.replaceAll(" ", "").trim();
     return "$username@bloom.com";
   }
 

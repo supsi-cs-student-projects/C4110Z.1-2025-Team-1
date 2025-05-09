@@ -57,8 +57,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     _animationsByMilestone = {
       50: AssetLottie('assets/Animations/plant_lv2.json').load(),
-      /*100: AssetLottie('assets/Animations/plant_lv3.json').load(),
-      200: AssetLottie('assets/Animations/plant_lv4.json').load(),*/
+      100: AssetLottie('assets/Animations/plant_lv3.json').load(),
+      250: AssetLottie('assets/Animations/plant_lv4.json').load(),
     };
 
     _cloudAnimationController = AnimationController(
@@ -86,8 +86,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
 
   Widget _buildPlant(double bottomPos, double plantSize) {
-    final w = MediaQuery.of(context).size.width * 0.4;
-    final h = MediaQuery.of(context).size.height * 0.4;
+    final w = MediaQuery.of(context).size.width * 0.8;
+    final h = MediaQuery.of(context).size.height * 0.8;
     final faceAsset = _faceMap[_faceMood]!;
     final animation = user != null ? _loadLottieAnimation(user!.getXP()) : AssetLottie('assets/Animations/plant_lv1.json').load();
 
@@ -217,7 +217,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   children: [
                     _buildBackground(screenWidth, screenHeight),
                     _buildGround(screenWidth, screenHeight, isPortrait),
-                    _buildPlant(plantBottomPosition, screenWidth * 0.5),
+                    _buildPlant(plantBottomPosition, screenWidth * 0.6),
                     _buildLogOutButton(onPressed: _logout, screenWidth: screenWidth, screenHeight: screenHeight),
                     _buildHomeButton(text: 'PLAY', left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor * 0.7),
                     _buildHomeButton(text: 'STREAK', bottom: groundHeight * 0.02, onPressed: () {
@@ -257,7 +257,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   children: [
                     _buildBackground(screenWidth, screenHeight),
                     _buildGround(screenWidth, screenHeight, isPortrait),
-                    _buildPlant(plantBottomPosition, screenHeight * 0.5),
+                    _buildPlant(plantBottomPosition, screenHeight * 0.6),
                     _buildLogOutButton(onPressed: _logout, screenWidth: screenWidth, screenHeight: screenHeight),
                     _buildHomeButton(text: 'PLAY', left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor),
                     _buildHomeButton(text: 'STREAK', bottom: groundHeight * 0.02, onPressed: () {
@@ -366,8 +366,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       left: left,
       right: right,
       child: SizedBox(
-        width: w * 0.2,
-        height: h * 0.08,
         child: CustomButton(
           text: text,
           imagePath: 'assets/images/buttons/games_button.png',

@@ -52,15 +52,46 @@ class User {
     }
   }
 
-  /// Increment the user's streak count
+  /// Increment the user's daily streak (only once per day)
   Future<void> incrementStreak() async {
     final streak = await _streakService.loadStreak();
-    final now = DateTime.now();
-    if (now.difference(streak.lastUpdated).inDays < 1) {
+    final nowUtc = DateTime.now().toUtc();
+    final lastUpdatedUtc = streak.lastUpdated.toUtc();
+
+    // Calculate next local midnight then convert to UTC
+    final nowLocal = DateTime.now();
+    final todayMidnightLocal = DateTime(nowLocal.year, nowLocal.month, nowLocal.day);
+    final nextMidnightLocal = todayMidnightLocal.add(Duration(days: 1));
+    final nextAllowedUtc = nextMidnightLocal.toUtc();
+
+    // If still before next local day, deny increment
+    if (nowUtc.isBefore(nextAllowedUtc) && _isSameDay(nowUtc, lastUpdatedUtc)) {
+      final remaining = nextAllowedUtc.difference(nowUtc);
+      print('Streak can only be incremented once per calendar day.');
+      print(
+          'Time remaining until next day: '
+              '${remaining.inHours}h '
+              '${remaining.inMinutes % 60}m '
+              '${remaining.inSeconds % 60}s'
+      );
       return;
     }
-    streakCount++;
-    await _streakService.incrementStreak();
+
+    // If more than a day has passed since last update, reset streak
+    final daysSinceLast = nowUtc.difference(lastUpdatedUtc).inDays;
+    if (daysSinceLast > 1) {
+      await _streakService.resetStreak();
+      streakCount = 1;
+      return;
+    }
+
+    // Otherwise, normal increment
+    final updatedStreak = await _streakService.incrementStreak();
+    streakCount = updatedStreak.streakCount;
+  }
+
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
   /// Increment XP by a given amount

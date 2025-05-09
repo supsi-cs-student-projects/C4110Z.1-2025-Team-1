@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final authService = AuthService();
   final streak = StreakService();
   final _gameService = GameService();
+  final StreakService streakService = StreakService();
 
   late AnimationController _cloudAnimationController;
   late Future<LottieComposition> _plantAnimation;
@@ -275,6 +276,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.3, screenHeight: screenHeight, curiosity: _randomCuriosity, top: groundHeight*0.2, left: screenWidth * 0.12, fontSize: 30),
                     !_isCuriositiesWidgetVisible?
                     _buildInfoRectangle(screenWidth: screenWidth, screenHeight: screenHeight, scaleFactor: scaleFactor, top: screenHeight * 0.1, left: screenWidth * 0.75): const SizedBox.shrink(),
+
+                    _buildHomeButton(
+                      text: 'Reset streak',
+                      right: screenWidth * 0.08,
+                      bottom: groundHeight * 0.75,
+                      onPressed: () async {
+                        await streakService.resetStreak();
+                        await _loadUser();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Streak reset'))
+                        );
+                      },
+                      scaleFactor: scaleFactor,
+                    ),
                   ],
                 ),
               ),
@@ -283,7 +298,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       );
     }
-
 
   }
 

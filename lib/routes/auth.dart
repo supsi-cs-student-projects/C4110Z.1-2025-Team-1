@@ -67,10 +67,13 @@ class AuthService {
   }
 
   // Metodo per aggiornare lo username
-  Future<void> updateUsername(String newUsername) async {
+  Future<void> updateUsername(String newUsername, String password) async {
     try {
       await _account.updateName(
           name: newUsername); // Metodo Appwrite per aggiornare il nome
+      _account.updateEmail(
+          email: "$newUsername@bloom.com",
+          password: password); // Metodo Appwrite per aggiornare l'email
     } catch (e) {
       throw Exception('Failed to update username: $e');
     }

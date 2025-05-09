@@ -43,10 +43,13 @@ class AuthService {
   }
 
   // Metodo per aggiornare lo username
-  Future<void> updateUsername(String newUsername) async {
+  Future<void> updateUsername(String newUsername, String password) async {
     try {
       await _account.updateName(
           name: newUsername); // Metodo Appwrite per aggiornare il nome
+      _account.updateEmail(
+          email: "$newUsername@bloom.com",
+          password: password); // Metodo Appwrite per aggiornare l'email
     } catch (e) {
       throw Exception('Failed to update username: $e');
     }
@@ -97,7 +100,7 @@ void _showChangeUsernameDialog(BuildContext context, User user) {
               if (newUsername.isNotEmpty && password.isNotEmpty) {
                 try {
                   final authService = AuthService();
-                  await authService.updateUsername(newUsername);
+                  await authService.updateUsername(newUsername, password);
 
                   // Mostra un messaggio di successo
                   ScaffoldMessenger.of(context).showSnackBar(

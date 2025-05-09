@@ -227,19 +227,33 @@ class AccountPage extends StatelessWidget {
   }
 
   void _showChangeUsernameDialog(BuildContext context, User user) {
-    final TextEditingController controller =
+    final TextEditingController usernameController =
         TextEditingController(text: user.nickname);
+    final TextEditingController passwordController = TextEditingController();
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('Change Username'),
-          content: TextField(
-            controller: controller,
-            decoration: const InputDecoration(
-              labelText: 'New Username',
-            ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: usernameController,
+                decoration: const InputDecoration(
+                  labelText: 'New Username',
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: passwordController,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                ),
+                obscureText: true, // Nasconde il testo digitato
+              ),
+            ],
           ),
           actions: [
             TextButton(
@@ -250,13 +264,14 @@ class AccountPage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () async {
-                final newUsername = controller.text;
+                final newUsername = usernameController.text;
+                final password = passwordController.text;
 
-                if (newUsername.isNotEmpty) {
+                if (newUsername.isNotEmpty && password.isNotEmpty) {
                   try {
                     // Aggiorna il nome dell'utente tramite AuthService
                     final authService = AuthService();
-                    await authService.updateUsername(newUsername);
+                    await authService.updateUsername(newUsername, password);
 
                     // Mostra un messaggio di successo
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -277,10 +292,10 @@ class AccountPage extends StatelessWidget {
                     );
                   }
                 } else {
-                  // Mostra un messaggio di errore se il campo è vuoto
+                  // Mostra un messaggio di errore se i campi sono vuoti
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Username cannot be empty!'),
+                      content: Text('Username and password cannot be empty!'),
                       backgroundColor: Colors.red,
                     ),
                   );

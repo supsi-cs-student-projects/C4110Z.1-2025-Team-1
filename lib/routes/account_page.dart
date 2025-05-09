@@ -2,8 +2,25 @@ import 'package:flutter/material.dart';
 import '../entities/user.dart';
 import '../services/auth.dart';
 
-class AccountPage extends StatelessWidget {
+class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
+
+  @override
+  State<AccountPage> createState() => _AccountPageState();
+}
+
+class _AccountPageState extends State<AccountPage> {
+  late Future<User> _futureUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+  }
+
+  void _loadUser() {
+    _futureUser = User.fetchUser();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +31,7 @@ class AccountPage extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // Torna alla homepage
+            Navigator.pop(context, false);
           },
         ),
         title: const Text(
@@ -27,12 +44,10 @@ class AccountPage extends StatelessWidget {
         backgroundColor: const Color(0xFF18a663),
       ),
       body: FutureBuilder<User>(
-        future: User.fetchUser(), // Recupera le informazioni dell'utente
+        future: _futureUser,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(
               child: Text(
@@ -46,7 +61,6 @@ class AccountPage extends StatelessWidget {
             );
           } else if (snapshot.hasData) {
             final user = snapshot.data!;
-
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -114,7 +128,6 @@ class AccountPage extends StatelessWidget {
                       child: IntrinsicWidth(
                         child: Column(
                           children: [
-                            // Intestazione della tabella
                             Container(
                               decoration: const BoxDecoration(
                                 color: Color(0xFFEFEFEF),
@@ -156,12 +169,9 @@ class AccountPage extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            // Righe della tabella
                             _buildTableRow('XP', '${user.xp}'),
-                            _buildTableRow(
-                                'Streak', '${user.streakCount} days'),
-                            _buildTableRow(
-                                'Best Score', '${user.higherLowerBestScore}'),
+                            _buildTableRow('Streak', '${user.streakCount} days'),
+                            _buildTableRow('Best Score', '${user.higherLowerBestScore}'),
                           ],
                         ),
                       ),
@@ -228,7 +238,7 @@ class AccountPage extends StatelessWidget {
 
   void _showChangeUsernameDialog(BuildContext context, User user) {
     final TextEditingController usernameController =
-        TextEditingController(text: user.nickname);
+    TextEditingController(text: user.nickname);
     final TextEditingController passwordController = TextEditingController();
 
     showDialog(
@@ -248,32 +258,30 @@ class AccountPage extends StatelessWidget {
               const SizedBox(height: 10),
               TextField(
                 controller: passwordController,
+                obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'Password',
                 ),
-                obscureText: true, // Nasconde il testo digitato
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Chiudi il dialog senza salvare
+                Navigator.pop(context); // Chiudi il dialog
               },
               child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () async {
-                final newUsername = usernameController.text;
-                final password = passwordController.text;
+                final newUsername = usernameController.text.trim();
+                final password = passwordController.text.trim();
 
                 if (newUsername.isNotEmpty && password.isNotEmpty) {
                   try {
-                    // Aggiorna il nome dell'utente tramite AuthService
                     final authService = AuthService();
                     await authService.updateUsername(newUsername, password);
 
-                    // Mostra un messaggio di successo
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Username updated successfully!'),
@@ -282,8 +290,11 @@ class AccountPage extends StatelessWidget {
                     );
 
                     Navigator.pop(context); // Chiudi il dialog
+
+                    setState(() {
+                      _loadUser(); // Ricarica i dati utente
+                    });
                   } catch (e) {
-                    // Mostra un messaggio di errore
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Failed to update username: $e'),
@@ -292,10 +303,10 @@ class AccountPage extends StatelessWidget {
                     );
                   }
                 } else {
-                  // Mostra un messaggio di errore se i campi sono vuoti
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Username and password cannot be empty!'),
+                      content:
+                      Text('Username and password cannot be empty!'),
                       backgroundColor: Colors.red,
                     ),
                   );

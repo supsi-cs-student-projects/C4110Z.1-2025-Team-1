@@ -10,17 +10,15 @@ class Streak {
     factory Streak.fromJson(Map<String, dynamic> json) {
         return Streak(
             streakCount: json['streak'] ?? 0,
-            lastUpdated: DateTime.parse(json['updated_at'] ?? DateTime.now().toIso8601String()),
+            lastUpdated: DateTime.parse(
+                json['updated_at'] ?? DateTime.now().toUtc().toIso8601String()
+            ).toUtc(),
         );
     }
 
     void increment() {
-      streakCount++;
-      lastUpdated = DateTime.now();
-        // if (DateTime.now().day != lastUpdated.day) {
-        //     streakCount++;
-        //     lastUpdated = DateTime.now();
-        // }
+        streakCount++;
+        lastUpdated = DateTime.now().toUtc();
     }
 
     Map<String, dynamic> toJson() {

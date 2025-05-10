@@ -9,7 +9,7 @@ import '../services/Streak.dart';
 import '../services/auth.dart';
 import 'Game/higher_or_lower.dart';
 import 'LoginPage.dart';
-import 'Streak.dart';
+import 'StreakPage.dart';
 import 'Learn.dart';
 import '/services/CustomButton.dart';
 import 'account_page.dart';
@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final authService = AuthService();
   final streak = StreakService();
   final _gameService = GameService();
+  final StreakService streakService = StreakService();
 
   late AnimationController _cloudAnimationController;
   late Future<LottieComposition> _plantAnimation;
@@ -275,6 +276,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.3, screenHeight: screenHeight, curiosity: _randomCuriosity, top: groundHeight*0.2, left: screenWidth * 0.12, fontSize: 30),
                     !_isCuriositiesWidgetVisible?
                     _buildInfoRectangle(screenWidth: screenWidth, screenHeight: screenHeight, scaleFactor: scaleFactor, top: screenHeight * 0.1, left: screenWidth * 0.75): const SizedBox.shrink(),
+
+
+
+                    //REMOVE THE NEXT TWO BUTTONS AFTER DEBUGGING STREAK LOGIC
+                    _buildHomeButton(
+                      text: 'Reset streak',
+                      right: screenWidth * 0.04,
+                      bottom: groundHeight * 0.75,
+                      onPressed: () async {
+                        await streakService.resetStreak();
+                        await _loadUser();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Streak reset'))
+                        );
+                      },
+                      scaleFactor: scaleFactor,
+                    ),
+                    _buildHomeButton(
+                      text: 'Streak++',
+                      right: screenWidth * 0.17,
+                      bottom: groundHeight * 0.75,
+                      onPressed: () async {
+                        await user?.incrementStreakDebug();
+                        await _loadUser();
+
+                      },
+                      scaleFactor: scaleFactor,
+                    ),
+
+
+
                   ],
                 ),
               ),
@@ -283,7 +315,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       );
     }
-
 
   }
 
@@ -512,11 +543,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
 
-            Positioned(top: boxH * 0.2, left: boxW * 0.05, right: boxW * 0.05, child: RichText(text: TextSpan(style: TextStyle(fontSize: 20*scaleFactor, fontFamily: 'RetroGaming', color: const Color(0xFFE9E6A8),
+            Positioned(top: boxH * 0.2, left: boxW * 0.05, right: boxW * 0.05, child: RichText(text: TextSpan(style: TextStyle(fontSize: 20*scaleFactor, fontFamily: 'RetroGaming', color: const Color(
+                0xFF000000),
                   ),
                   children: [TextSpan(text: 'XP: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
                   ),
-                    TextSpan(text: '${user?.getXP()} points\n'),
+                    TextSpan(text: '${user?.xp} points\n'),
                     TextSpan(text: 'Streak: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
                     ),
                     TextSpan(text: '${user?.streakCount} days\n'),

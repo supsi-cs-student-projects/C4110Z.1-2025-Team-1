@@ -277,9 +277,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     !_isCuriositiesWidgetVisible?
                     _buildInfoRectangle(screenWidth: screenWidth, screenHeight: screenHeight, scaleFactor: scaleFactor, top: screenHeight * 0.1, left: screenWidth * 0.75): const SizedBox.shrink(),
 
+
+
+                    //REMOVE THE NEXT TWO BUTTONS AFTER DEBUGGING STREAK LOGIC
                     _buildHomeButton(
                       text: 'Reset streak',
-                      right: screenWidth * 0.08,
+                      right: screenWidth * 0.04,
                       bottom: groundHeight * 0.75,
                       onPressed: () async {
                         await streakService.resetStreak();
@@ -290,6 +293,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       },
                       scaleFactor: scaleFactor,
                     ),
+                    _buildHomeButton(
+                      text: 'Streak++',
+                      right: screenWidth * 0.17,
+                      bottom: groundHeight * 0.75,
+                      onPressed: () async {
+                        await user?.incrementStreakDebug();
+                        await _loadUser();
+
+                      },
+                      scaleFactor: scaleFactor,
+                    ),
+
+
+
                   ],
                 ),
               ),
@@ -526,11 +543,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
 
-            Positioned(top: boxH * 0.2, left: boxW * 0.05, right: boxW * 0.05, child: RichText(text: TextSpan(style: TextStyle(fontSize: 20*scaleFactor, fontFamily: 'RetroGaming', color: const Color(0xFFE9E6A8),
+            Positioned(top: boxH * 0.2, left: boxW * 0.05, right: boxW * 0.05, child: RichText(text: TextSpan(style: TextStyle(fontSize: 20*scaleFactor, fontFamily: 'RetroGaming', color: const Color(
+                0xFF000000),
                   ),
                   children: [TextSpan(text: 'XP: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
                   ),
-                    TextSpan(text: '${user?.getXP()} points\n'),
+                    TextSpan(text: '${user?.xp} points\n'),
                     TextSpan(text: 'Streak: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
                     ),
                     TextSpan(text: '${user?.streakCount} days\n'),

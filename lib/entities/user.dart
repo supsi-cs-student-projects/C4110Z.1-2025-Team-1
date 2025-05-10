@@ -58,7 +58,7 @@ class User {
     final nowLocal = DateTime.now();
     final lastUpdatedLocal = streak.lastUpdated.toLocal();
 
-    // Check if streak was already updated today
+    //Check if streak was already updated today
     if (_isSameDay(nowLocal, lastUpdatedLocal)) {
       print('Streak already incremented today.');
       //print time remaining until next day
@@ -71,7 +71,7 @@ class User {
       return;
     }
 
-    // Check if a day was skipped → reset streak
+    //Check if a day was skipped → reset streak
     final daysBetween = nowLocal.difference(
       DateTime(lastUpdatedLocal.year, lastUpdatedLocal.month, lastUpdatedLocal.day),
     ).inDays;
@@ -83,11 +83,19 @@ class User {
       return;
     }
 
-    // Otherwise, valid to increment
+    //valid to increment
     final updatedStreak = await _streakService.incrementStreak();
     streakCount = updatedStreak.streakCount;
     print('Streak incremented! New count: $streakCount');
   }
+
+  //REMOVE THIS AFTER DEBUGGING STREAK LOGIC
+  Future<void> incrementStreakDebug() async {
+    final updatedStreak = await _streakService.incrementStreak();
+    streakCount = updatedStreak.streakCount;
+    print('Streak incremented! New count: $streakCount');
+  }
+
 
 
   bool _isSameDay(DateTime a, DateTime b) {
@@ -97,7 +105,7 @@ class User {
   /// Increment XP by a given amount
   Future<void> addXP(int amount) async {
     xp += amount;
-    milestoneManager.checkMilestones(xp);
+    milestoneManager.checkLevels(xp);
     await _gameService.updateXP(xp);
   }
 

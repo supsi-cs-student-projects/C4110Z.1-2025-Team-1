@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed: $e')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.loginPage_loginError + ': $e')),
       );
     } finally {
       setState(() {
@@ -78,7 +78,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<models.Account>(
-      
       future: _authService.getAccount(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -134,8 +133,8 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      const Text(
-                        'Welcome back to Bloom!',
+                      Text(
+                        AppLocalizations.of(context)!.loginPage_welcome, //WELCOME BACK
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -145,8 +144,8 @@ class _LoginPageState extends State<LoginPage> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 12),
-                      const Text(
-                        'Login to access your account',
+                      Text(
+                        AppLocalizations.of(context)!.loginPage_access, //
                         style: TextStyle(
                           fontSize: 16,
                           fontFamily: 'RetroGaming',
@@ -159,8 +158,8 @@ class _LoginPageState extends State<LoginPage> {
                       TextFormField(
                         controller: _nameController,
                         decoration: InputDecoration(
-                          labelText: 'Username',
-                          hintText: 'Enter your username...',
+                          labelText: AppLocalizations.of(context)!.loginPage_username, //Username
+                          hintText: AppLocalizations.of(context)!.loginPage_usernameHint, //Enter your username...
                           filled: true,
                           fillColor: Colors.grey[200],
                           labelStyle: const TextStyle(
@@ -182,8 +181,8 @@ class _LoginPageState extends State<LoginPage> {
                         controller: _passwordController,
                         obscureText: !_isPasswordVisible,
                         decoration: InputDecoration(
-                          labelText: 'Password',
-                          hintText: 'Enter your password...',
+                          labelText: AppLocalizations.of(context)!.loginPage_password, //Password
+                          hintText: AppLocalizations.of(context)!.loginPage_passwordHint, //Enter your password...
                           filled: true,
                           fillColor: Colors.grey[200],
                           labelStyle: const TextStyle(
@@ -219,8 +218,8 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: () {
                               // TODO: Forgot password
                             },
-                            child: const Text(
-                              'Forgot Password?',
+                            child: Text(
+                              AppLocalizations.of(context)!.loginPage_forgotPassword,
                               style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming'),
                             ),
                           ),
@@ -242,7 +241,7 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => const RegisterPage())),
-                          child: const Text("Don't have an account?", style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming')),
+                          child: Text(AppLocalizations.of(context)!.loginPage_goToRegister, style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming')),
                         ),
                       ),
                       const SizedBox(height: 24),

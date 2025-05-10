@@ -1,5 +1,13 @@
 {
+    "loginPage_welcome": "Bentornato in Bloom!",
+    "loginPage_access": "Accedi per entrare nel tuo account",
+    "loginPage_username": "Nome utente",
+    "loginPage_usernameHint": "Inserisci il tuo nome utente...",
+    "loginPage_password": "Password",
+    "loginPage_passwordHint": "Inserisci la tua password...",
+    "loginPage_forgotPassword": "Hai dimenticato la password?",
+    "loginPage_goToRegister": "Non hai un account?",
+    "loginPage_loginError": "Errore di accesso",
     "email": "Indirizzo Email",
-    "login": "Accedi",
-    "password": "Password"
+    "login": "Accedi"
 }

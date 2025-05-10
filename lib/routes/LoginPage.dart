@@ -230,7 +230,7 @@ class _LoginPageState extends State<LoginPage> {
                               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
                             ),
-                            child: Text(AppLocalizations.of(context)!.login, style: TextStyle(color: Colors.white, fontFamily: 'RetroGaming')),
+                            child: Text(AppLocalizations.of(context)!.loginPage_login, style: TextStyle(color: Colors.white, fontFamily: 'RetroGaming')),
                           ),
                         ],
                       ),

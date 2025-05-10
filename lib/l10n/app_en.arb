@@ -8,6 +8,18 @@
     "loginPage_forgotPassword": "Forgot your password?",
     "loginPage_goToRegister": "Don't have an account?",
     "loginPage_loginError": "Login error",
-    "email": "Email Address",
-    "login": "Login"
+    "loginPage_login": "Login",
+
+    "registerPage_passwordNotMatching": "Passwords do not match",
+    "registerPage_error": "Registration failed",
+    "registerPage_welcome": "Welcome to Bloom!",
+    "registerPage_createAccount": "Create your account",
+    "registerPage_username": "Username",
+    "registerPage_usernameHint": "Enter your username...",
+    "registerPage_password": "Password",
+    "registerPage_passwordHint": "Enter your password...",
+    "registerPage_confirmPassword": "Confirm Password",
+    "registerPage_confirmPasswordHint": "Repeat your password...",
+    "registerPage_register": "Create account",
+    "registerPage_alreadyHaveAccount": "Already have an account?"
 }

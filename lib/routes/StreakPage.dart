@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../entities/user.dart';
 
@@ -10,8 +11,7 @@ class StreakPage extends StatefulWidget {
   _StreakPageState createState() => _StreakPageState();
 }
 
-class _StreakPageState extends State<StreakPage> with TickerProviderStateMixin {
-  //Map title : days required
+class _StreakPageState extends State<StreakPage> {
   final Map<String, int> _thresholds = {
     '1 Day': 1,
     '3 Days': 3,
@@ -26,13 +26,7 @@ class _StreakPageState extends State<StreakPage> with TickerProviderStateMixin {
     '1 Year': 365,
   };
 
-
-  final double _titleBottomOffset = 2;
-  final double _iconSize = 350.0;
-
-  String? userName;
   int? streakDays;
-  int? bestScore;
 
   @override
   void initState() {
@@ -43,43 +37,31 @@ class _StreakPageState extends State<StreakPage> with TickerProviderStateMixin {
   Future<void> _loadUser() async {
     try {
       final user = await User.fetchUser();
-      setState(() {
-        userName = user.nickname;
-        streakDays = user.streakCount;
-        bestScore = user.higherLowerBestScore;
-      });
+      setState(() => streakDays = user.streakCount);
     } catch (e) {
-      print("Failed to fetch user info: $e");
+      print("Failed to fetch user: $e");
     }
   }
 
-  /// This method returns a list of achievements based on the user's streak days.
-  List<_Achievement> get _achievements {
-    final days = streakDays ?? 0;
-    return _thresholds.entries.map((e) {
-      final unlocked = days >= e.value;
-      //better way to get paths
-      final idx = _thresholds.keys.toList().indexOf(e.key) + 1;
-      return _Achievement(
-        title: e.key,
-        unlocked: unlocked,
-        iconPath: unlocked
-            ? 'assets/Animations/achvs/achv_$idx.json'
-            : null,
-      );
-    }).toList();
-  }
+  List<_Achievement> get _achievements => _thresholds.entries.map((e) {
+    final unlocked = (streakDays ?? 0) >= e.value;
+    final idx = _thresholds.keys.toList().indexOf(e.key) + 1;
+    return _Achievement(
+      title: e.key,
+      unlocked: unlocked,
+      iconPath: unlocked ? 'assets/Animations/achvs/achv_$idx.json' : null,
+    );
+  }).toList();
 
   @override
   Widget build(BuildContext context) {
-    final media = MediaQuery.of(context).size;
-    final crossAxisCount = media.width > media.height ? 4 : 2;
+    final crossAxisCount = MediaQuery.of(context).size.width > 600 ? 4 : 2;
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: Image.asset('assets/images/buttons/back_button.png'),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           'Achievements',
@@ -94,8 +76,7 @@ class _StreakPageState extends State<StreakPage> with TickerProviderStateMixin {
       ),
       extendBodyBehindAppBar: true,
       body: Padding(
-        padding: const EdgeInsets.only(
-            top: kToolbarHeight + 16, left: 16, right: 16),
+        padding: const EdgeInsets.only(top: kToolbarHeight + 16, left: 16, right: 16),
         child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
@@ -104,58 +85,11 @@ class _StreakPageState extends State<StreakPage> with TickerProviderStateMixin {
             childAspectRatio: 1,
           ),
           itemCount: _achievements.length,
-          itemBuilder: (context, index) {
-            return _buildAchievementTile(_achievements[index]);
-          },
+          itemBuilder: (context, index) => _AchievementTile(
+            achievement: _achievements[index],
+          ),
         ),
       ),
-    );
-  }
-
-  Widget _buildAchievementTile(_Achievement achievement) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        // background box
-        Image.asset(
-          'assets/images/statistics/stats_box.png',
-          fit: BoxFit.fill,
-          width: double.infinity,
-          height: double.infinity,
-        ),
-        // icona o lucchetto
-        if (achievement.unlocked && achievement.iconPath != null)
-          Lottie.asset(
-            achievement.iconPath!,
-            width: _iconSize,
-            height: _iconSize,
-          )
-        else
-          Icon(
-            Icons.lock,
-            size: _iconSize * 0.2,
-            color: Colors.grey,
-          ),
-        // titolo con sfondo nero
-        Positioned(
-          bottom: _titleBottomOffset,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              achievement.title,
-              style: const TextStyle(
-                fontFamily: 'RetroGaming',
-                fontSize: 14,
-                color: Color(0xFFE9E6A8),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
@@ -170,4 +104,110 @@ class _Achievement {
     required this.unlocked,
     this.iconPath,
   });
+}
+
+class _AchievementTile extends StatefulWidget {
+  final _Achievement achievement;
+  final double iconSize = 350.0;
+
+  const _AchievementTile({
+    Key? key,
+    required this.achievement,
+  }) : super(key: key);
+
+  @override
+  __AchievementTileState createState() => __AchievementTileState();
+}
+
+class __AchievementTileState extends State<_AchievementTile>
+    with TickerProviderStateMixin {
+  late final AnimationController _controller;
+  bool _isVisible = false;
+  bool _isLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _handleVisibilityChanged(VisibilityInfo info) {
+    final visible = info.visibleFraction > 0.5;
+    if (visible != _isVisible) {
+      setState(() => _isVisible = visible);
+      _handleAnimationState();
+    }
+  }
+
+  void _handleAnimationState() {
+    if (_isVisible && widget.achievement.unlocked && _isLoaded) {
+      _controller
+        ..reset()
+        ..repeat();
+    } else {
+      _controller.stop();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return VisibilityDetector(
+      key: Key(widget.achievement.title),
+      onVisibilityChanged: _handleVisibilityChanged,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Image.asset(
+            'assets/images/statistics/stats_box.png',
+            fit: BoxFit.fill,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+          if (widget.achievement.unlocked && widget.achievement.iconPath != null)
+            Lottie.asset(
+              widget.achievement.iconPath!,
+              controller: _controller,
+              width: widget.iconSize,
+              height: widget.iconSize,
+              frameRate: FrameRate(30),
+              onLoaded: (composition) {
+                _controller.duration = composition.duration;
+                setState(() => _isLoaded = true);
+                _handleAnimationState();
+              },
+            )
+          else
+            Icon(
+              Icons.lock,
+              size: widget.iconSize * 0.2,
+              color: Colors.grey,
+            ),
+          Positioned(
+            bottom: 2,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                widget.achievement.title,
+                style: const TextStyle(
+                  fontFamily: 'RetroGaming',
+                  fontSize: 14,
+                  color: Color(0xFFE9E6A8),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

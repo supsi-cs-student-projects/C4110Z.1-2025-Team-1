@@ -37,8 +37,9 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  // Dummy email generator (same as in RegisterPage)
+  //dummy email generator
   String dummyEmail(String username) {
+    username = username.replaceAll(" ", "").trim();
     return "$username@bloom.com";
   }
 

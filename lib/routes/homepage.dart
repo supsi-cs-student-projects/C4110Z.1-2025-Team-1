@@ -9,7 +9,7 @@ import '../services/Streak.dart';
 import '../services/auth.dart';
 import 'Game/higher_or_lower.dart';
 import 'LoginPage.dart';
-import 'Streak.dart';
+import 'StreakPage.dart';
 import 'Learn.dart';
 import '/services/CustomButton.dart';
 import 'account_page.dart';
@@ -33,6 +33,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final authService = AuthService();
   final streak = StreakService();
   final _gameService = GameService();
+  final StreakService streakService = StreakService();
 
   late AnimationController _cloudAnimationController;
   late Future<LottieComposition> _plantAnimation;
@@ -63,8 +64,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     _animationsByMilestone = {
       50: AssetLottie('assets/Animations/plant_lv2.json').load(),
-      /*100: AssetLottie('assets/Animations/plant_lv3.json').load(),
-      200: AssetLottie('assets/Animations/plant_lv4.json').load(),*/
+      100: AssetLottie('assets/Animations/plant_lv3.json').load(),
+      250: AssetLottie('assets/Animations/plant_lv4.json').load(),
     };
 
     _cloudAnimationController = AnimationController(
@@ -92,8 +93,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
 
   Widget _buildPlant(double bottomPos, double plantSize) {
-    final w = MediaQuery.of(context).size.width * 0.4;
-    final h = MediaQuery.of(context).size.height * 0.4;
+    final w = MediaQuery.of(context).size.width * 0.8;
+    final h = MediaQuery.of(context).size.height * 0.8;
     final faceAsset = _faceMap[_faceMood]!;
     final animation = user != null ? _loadLottieAnimation(user!.getXP()) : AssetLottie('assets/Animations/plant_lv1.json').load();
 
@@ -224,7 +225,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   children: [
                     _buildBackground(screenWidth, screenHeight),
                     _buildGround(screenWidth, screenHeight, isPortrait),
-                    _buildPlant(plantBottomPosition, screenWidth * 0.5),
+                    _buildPlant(plantBottomPosition, screenWidth * 0.6),
                     _buildLogOutButton(onPressed: _logout, screenWidth: screenWidth, screenHeight: screenHeight),
                     _buildHomeButton(text: AppLocalizations.of(context)!.homePage_play, left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor * 0.7),
                     _buildHomeButton(text: AppLocalizations.of(context)!.homePage_streak, bottom: groundHeight * 0.02, onPressed: () {
@@ -264,7 +265,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   children: [
                     _buildBackground(screenWidth, screenHeight),
                     _buildGround(screenWidth, screenHeight, isPortrait),
-                    _buildPlant(plantBottomPosition, screenHeight * 0.5),
+                    _buildPlant(plantBottomPosition, screenHeight * 0.6),
                     _buildLogOutButton(onPressed: _logout, screenWidth: screenWidth, screenHeight: screenHeight),
                     _buildHomeButton(text: AppLocalizations.of(context)!.homePage_play, left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor),
                     _buildHomeButton(text: AppLocalizations.of(context)!.homePage_streak, bottom: groundHeight * 0.02, onPressed: () {
@@ -282,6 +283,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.3, screenHeight: screenHeight, curiosity: _randomCuriosity, top: groundHeight*0.2, left: screenWidth * 0.12, fontSize: 30),
                     !_isCuriositiesWidgetVisible?
                     _buildInfoRectangle(screenWidth: screenWidth, screenHeight: screenHeight, scaleFactor: scaleFactor, top: screenHeight * 0.1, left: screenWidth * 0.75): const SizedBox.shrink(),
+
+
+
+                    //REMOVE THE NEXT TWO BUTTONS AFTER DEBUGGING STREAK LOGIC
+                    _buildHomeButton(
+                      text: 'Reset streak',
+                      right: screenWidth * 0.04,
+                      bottom: groundHeight * 0.75,
+                      onPressed: () async {
+                        await streakService.resetStreak();
+                        await _loadUser();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Streak reset'))
+                        );
+                      },
+                      scaleFactor: scaleFactor,
+                    ),
+                    _buildHomeButton(
+                      text: 'Streak++',
+                      right: screenWidth * 0.17,
+                      bottom: groundHeight * 0.75,
+                      onPressed: () async {
+                        await user?.incrementStreakDebug();
+                        await _loadUser();
+
+                      },
+                      scaleFactor: scaleFactor,
+                    ),
+
+
+
                   ],
                 ),
               ),
@@ -308,7 +340,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       );
     }
-
 
   }
 
@@ -391,8 +422,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       left: left,
       right: right,
       child: SizedBox(
-        width: w * 0.2,
-        height: h * 0.08,
         child: CustomButton(
           text: text,
           imagePath: 'assets/images/buttons/games_button.png',
@@ -539,7 +568,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
 
-            Positioned(top: boxH * 0.2, left: boxW * 0.05, right: boxW * 0.05, child: RichText(text: TextSpan(style: TextStyle(fontSize: 20*scaleFactor, fontFamily: 'RetroGaming', color: const Color(0xFFE9E6A8),
+            Positioned(top: boxH * 0.2, left: boxW * 0.05, right: boxW * 0.05, child: RichText(text: TextSpan(style: TextStyle(fontSize: 20*scaleFactor, fontFamily: 'RetroGaming', color: const Color(
+                0xFF000000),
                   ),
                   children: [TextSpan(text: 'XP: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
                   ),

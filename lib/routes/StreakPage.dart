@@ -155,6 +155,38 @@ class __AchievementTileState extends State<_AchievementTile>
     }
   }
 
+  Widget _buildAnimationOrIcon() {
+    if (_isVisible && widget.achievement.unlocked && widget.achievement.iconPath != null) {
+      return FutureBuilder<LottieComposition>(
+        future: AssetLottie(widget.achievement.iconPath!).load(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+            final composition = snapshot.data!;
+            _controller.duration = composition.duration;
+            _controller.repeat();
+            return Lottie(
+              composition: composition,
+              controller: _controller,
+              width: widget.iconSize,
+              height: widget.iconSize,
+              frameRate: FrameRate(15),
+            );
+          }
+          return const CircularProgressIndicator(); // optional loader
+        },
+      );
+    } else if (!widget.achievement.unlocked) {
+      return Icon(
+        Icons.lock,
+        size: widget.iconSize * 0.2,
+        color: Colors.grey,
+      );
+    } else {
+      return const SizedBox(); // Don't load
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
@@ -169,25 +201,7 @@ class __AchievementTileState extends State<_AchievementTile>
             width: double.infinity,
             height: double.infinity,
           ),
-          if (widget.achievement.unlocked && widget.achievement.iconPath != null)
-            Lottie.asset(
-              widget.achievement.iconPath!,
-              controller: _controller,
-              width: widget.iconSize,
-              height: widget.iconSize,
-              frameRate: FrameRate(30),
-              onLoaded: (composition) {
-                _controller.duration = composition.duration;
-                setState(() => _isLoaded = true);
-                _handleAnimationState();
-              },
-            )
-          else
-            Icon(
-              Icons.lock,
-              size: widget.iconSize * 0.2,
-              color: Colors.grey,
-            ),
+          _buildAnimationOrIcon(),
           Positioned(
             bottom: 2,
             child: Container(

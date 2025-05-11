@@ -133,7 +133,18 @@ flutter:
     - assets/higher_or_lower/questions.txt
     - assets/higher_or_lower/higherorlower_vertical.png
     - assets/images/curiosities/CuriosityBox_v2.png
-    - assets/images/achievements/achv_1.png
+
+    - assets/Animations/achvs/achv_1.json
+    - assets/Animations/achvs/achv_2.json
+    - assets/Animations/achvs/achv_3.json
+    - assets/Animations/achvs/achv_4.json
+    - assets/Animations/achvs/achv_5.json
+    - assets/Animations/achvs/achv_6.json
+    - assets/Animations/achvs/achv_7.json
+    - assets/Animations/achvs/achv_8.json
+    - assets/Animations/achvs/achv_9.json
+    - assets/Animations/achvs/achv_10.json
+    - assets/Animations/achvs/achv_11.json
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

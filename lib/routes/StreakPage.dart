@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 import '../entities/user.dart';
 
@@ -16,6 +17,7 @@ class _StreakPageState extends State<StreakPage> with TickerProviderStateMixin {
     '3 Days': 3,
     '1 Week': 7,
     '2 Weeks': 14,
+    '3 Weeks': 21,
     '1 Month': 30,
     '2 Months': 60,
     '3 Months': 90,
@@ -26,7 +28,7 @@ class _StreakPageState extends State<StreakPage> with TickerProviderStateMixin {
 
 
   final double _titleBottomOffset = 2;
-  final double _iconSize = 500.0;
+  final double _iconSize = 350.0;
 
   String? userName;
   int? streakDays;
@@ -62,7 +64,7 @@ class _StreakPageState extends State<StreakPage> with TickerProviderStateMixin {
         title: e.key,
         unlocked: unlocked,
         iconPath: unlocked
-            ? 'assets/images/achievements/achv_$idx.png'
+            ? 'assets/Animations/achvs/achv_$idx.json'
             : null,
       );
     }).toList();
@@ -123,7 +125,7 @@ class _StreakPageState extends State<StreakPage> with TickerProviderStateMixin {
         ),
         // icona o lucchetto
         if (achievement.unlocked && achievement.iconPath != null)
-          Image.asset(
+          Lottie.asset(
             achievement.iconPath!,
             width: _iconSize,
             height: _iconSize,

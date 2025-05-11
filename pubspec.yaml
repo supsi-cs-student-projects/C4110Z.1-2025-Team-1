@@ -34,6 +34,7 @@ dependencies:
   appwrite: ^8.1.0
   flutter_animate: ^4.3.0
   flutter_gif: ^0.0.4
+  visibility_detector: ^0.4.0+2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -135,7 +136,19 @@ flutter:
     - assets/higher_or_lower/questions.txt
     - assets/higher_or_lower/higherorlower_vertical.png
     - assets/images/curiosities/CuriosityBox_v2.png
+
     - assets/images/achievements/achv_1.png
+    - assets/images/achievements/achv_2.png
+    - assets/images/achievements/achv_3.png
+    - assets/images/achievements/achv_4.png
+    - assets/images/achievements/achv_5.png
+    - assets/images/achievements/achv_6.png
+    - assets/images/achievements/achv_7.png
+    - assets/images/achievements/achv_8.png
+
+    - assets/Animations/achvs/achv_9.json
+    - assets/Animations/achvs/achv_10.json
+    - assets/Animations/achvs/achv_11.json
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

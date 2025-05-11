@@ -46,10 +46,19 @@ class _StreakPageState extends State<StreakPage> {
   List<_Achievement> get _achievements => _thresholds.entries.map((e) {
     final unlocked = (streakDays ?? 0) >= e.value;
     final idx = _thresholds.keys.toList().indexOf(e.key) + 1;
+
+    // First 5 use PNGs, others use Lottie
+    final iconPath = unlocked
+        ? (idx <= 5
+        ? 'assets/images/achievements/achv_$idx.png'
+        : 'assets/Animations/achvs/achv_$idx.json')
+        : null;
+
     return _Achievement(
       title: e.key,
       unlocked: unlocked,
-      iconPath: unlocked ? 'assets/Animations/achvs/achv_$idx.json' : null,
+      iconPath: iconPath,
+      isLottie: idx > 5,
     );
   }).toList();
 
@@ -98,17 +107,19 @@ class _Achievement {
   final String title;
   final bool unlocked;
   final String? iconPath;
+  final bool isLottie;
 
   _Achievement({
     required this.title,
     required this.unlocked,
     this.iconPath,
+    required this.isLottie,
   });
 }
 
 class _AchievementTile extends StatefulWidget {
   final _Achievement achievement;
-  final double iconSize = 350.0;
+  final double iconSize = 330.0;
 
   const _AchievementTile({
     Key? key,
@@ -146,7 +157,7 @@ class __AchievementTileState extends State<_AchievementTile>
   }
 
   void _handleAnimationState() {
-    if (_isVisible && widget.achievement.unlocked && _isLoaded) {
+    if (_isVisible && widget.achievement.unlocked && widget.achievement.isLottie && _isLoaded) {
       _controller
         ..reset()
         ..repeat();
@@ -156,7 +167,15 @@ class __AchievementTileState extends State<_AchievementTile>
   }
 
   Widget _buildAnimationOrIcon() {
-    if (_isVisible && widget.achievement.unlocked && widget.achievement.iconPath != null) {
+    if (!widget.achievement.unlocked) {
+      return Icon(
+        Icons.lock,
+        size: widget.iconSize * 0.2,
+        color: Colors.grey,
+      );
+    }
+
+    if (widget.achievement.isLottie && _isVisible && widget.achievement.iconPath != null) {
       return FutureBuilder<LottieComposition>(
         future: AssetLottie(widget.achievement.iconPath!).load(),
         builder: (context, snapshot) {
@@ -164,6 +183,7 @@ class __AchievementTileState extends State<_AchievementTile>
             final composition = snapshot.data!;
             _controller.duration = composition.duration;
             _controller.repeat();
+            _isLoaded = true;
             return Lottie(
               composition: composition,
               controller: _controller,
@@ -172,20 +192,19 @@ class __AchievementTileState extends State<_AchievementTile>
               frameRate: FrameRate(15),
             );
           }
-          return const CircularProgressIndicator(); // optional loader
+          return const SizedBox(); // or CircularProgressIndicator()
         },
       );
-    } else if (!widget.achievement.unlocked) {
-      return Icon(
-        Icons.lock,
-        size: widget.iconSize * 0.2,
-        color: Colors.grey,
+    } else if (!widget.achievement.isLottie && widget.achievement.iconPath != null) {
+      return Image.asset(
+        widget.achievement.iconPath!,
+        width: widget.iconSize,
+        height: widget.iconSize,
       );
-    } else {
-      return const SizedBox(); // Don't load
     }
-  }
 
+    return const SizedBox();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,0 +1,21 @@
+Beer, 5.0, assets/images/sprites/beer.png
+Vodka, 40.0, assets/images/sprites/vodka.png
+Wine, 10.0, assets/images/sprites/wine.png
+Rum, 36.0, assets/images/sprites/rum.png
+Whiskey, 40.0, assets/images/sprites/whiskey.png
+Gin, 37.5, assets/images/sprites/gin.png
+Tequila, 35.0, assets/images/sprites/tequila.png
+Champagne, 12.0, assets/images/sprites/champagne.png
+Cider, 3.4, assets/images/sprites/cider.png
+
+
+
+assets/images/sprites/beer.png
+assets/images/sprites/vodka.png
+assets/images/sprites/wine.png
+assets/images/sprites/rum.png
+assets/images/sprites/whiskey.png
+assets/images/sprites/gin.png
+assets/images/sprites/tequila.png
+assets/images/sprites/champagne.png
+assets/images/sprites/cider.png

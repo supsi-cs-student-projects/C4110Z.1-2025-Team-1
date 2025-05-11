@@ -34,5 +34,12 @@
     "homePage_personalStreak": "Streak: ",
     "homePage_bestScoreHigherLower": "Best score: ",
     "homePage_curiosityHeader": "Did you know that...",
-    "homePage_curiosityFile": "curiositiesEN.txt"
+    "homePage_curiosityFile": "curiositiesEN.txt",
+
+    "higherLower_score": "Score: ",
+    "higherLower_bestScore": "Best: ",
+    "higherLower_goToHome": "Back to home",
+    "higherLower_playAgain": "PLAY AGAIN",
+    "higherLower_returnHome": "RETURN TO HOME",
+    "higherLower_alcoholsFile": "alcoholsEN.txt"
 }

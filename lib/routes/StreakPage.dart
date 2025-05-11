@@ -49,7 +49,7 @@ class _StreakPageState extends State<StreakPage> {
 
     // First 5 use PNGs, others use Lottie
     final iconPath = unlocked
-        ? (idx <= 5
+        ? (idx <= 8
         ? 'assets/images/achievements/achv_$idx.png'
         : 'assets/Animations/achvs/achv_$idx.json')
         : null;
@@ -58,7 +58,7 @@ class _StreakPageState extends State<StreakPage> {
       title: e.key,
       unlocked: unlocked,
       iconPath: iconPath,
-      isLottie: idx > 5,
+      isLottie: idx > 8,
     );
   }).toList();
 

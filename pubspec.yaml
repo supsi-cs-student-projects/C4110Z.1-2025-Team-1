@@ -140,10 +140,10 @@ flutter:
     - assets/images/achievements/achv_3.png
     - assets/images/achievements/achv_4.png
     - assets/images/achievements/achv_5.png
+    - assets/images/achievements/achv_6.png
+    - assets/images/achievements/achv_7.png
+    - assets/images/achievements/achv_8.png
 
-    - assets/Animations/achvs/achv_6.json
-    - assets/Animations/achvs/achv_7.json
-    - assets/Animations/achvs/achv_8.json
     - assets/Animations/achvs/achv_9.json
     - assets/Animations/achvs/achv_10.json
     - assets/Animations/achvs/achv_11.json

@@ -102,7 +102,8 @@ flutter:
     - assets/higher_or_lower/higher_or_lower_back.png
     - assets/images/background/ground_horizontal.png
     - assets/images/background/ground_vertical.png
-    - assets/infos/alcohols.txt
+    - assets/infos/alcoholsEN.txt
+    - assets/infos/alcoholsIT.txt
     - assets/images/sprites/
     - assets/images/sprites/beer.png
     - assets/images/sprites/vodka.png
@@ -114,7 +115,8 @@ flutter:
     - assets/images/sprites/champagne.png
     - assets/images/sprites/cider.png
     - assets/images/curiosities/CuriosityText.png
-    - assets/infos/curiosities.txt
+    - assets/infos/curiositiesEN.txt
+    - assets/infos/curiositiesIT.txt
     - assets/higher_or_lower/game_over_box.png
     - assets/images/faces/happy_face.png
     - assets/images/faces/normal_face.png

@@ -14,6 +14,12 @@ import 'Learn.dart';
 import '/services/CustomButton.dart';
 import 'account_page.dart';
 
+import 'package:demo_todo_with_flutter/services/localeProvider.dart';
+import 'package:provider/provider.dart';
+
+// localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class HomePage extends StatefulWidget {
 
   const HomePage({super.key});
@@ -169,8 +175,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Future<void> _loadRandomCuriosity() async {
-    final String fileContent =
-    await rootBundle.loadString('assets/infos/curiosities.txt');
+    final String fileContent = await rootBundle.loadString('assets/infos/' + AppLocalizations.of(context)!.homePage_curiosityFile);
     final List<String> curiosities = fileContent
         .split('\n')
         .where((line) => line.trim().isNotEmpty)
@@ -194,6 +199,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final screenWidth = media.size.width;
     final screenHeight = media.size.height;
     final isPortrait = media.orientation == Orientation.portrait;
+
+    final localeProvider = Provider.of<LocaleProvider>(context);
 
     // scale based on orientation: base landscape width 1920, portrait height 1080
     final scaleFactor = isPortrait
@@ -220,13 +227,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     _buildGround(screenWidth, screenHeight, isPortrait),
                     _buildPlant(plantBottomPosition, screenWidth * 0.6),
                     _buildLogOutButton(onPressed: _logout, screenWidth: screenWidth, screenHeight: screenHeight),
-                    _buildHomeButton(text: 'PLAY', left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor * 0.7),
-                    _buildHomeButton(text: 'STREAK', bottom: groundHeight * 0.02, onPressed: () {
+                    _buildHomeButton(text: AppLocalizations.of(context)!.homePage_play, left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor * 0.7),
+                    _buildHomeButton(text: AppLocalizations.of(context)!.homePage_streak, bottom: groundHeight * 0.02, onPressed: () {
                       Navigator.push(context,
                         MaterialPageRoute(builder: (context) => const StreakPage()),
                       ).then((_) => _loadUser());
                     }, scaleFactor: scaleFactor * 0.7),
-                    _buildHomeButton(text: 'ACCOUNT', right: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: () {
+                    _buildHomeButton(text: AppLocalizations.of(context)!.homePage_account, right: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const AccountPage()));
                     }, scaleFactor: scaleFactor * 0.7),
                     _buildRectangle(screenWidth, screenHeight, onTap: () async {
@@ -260,13 +267,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     _buildGround(screenWidth, screenHeight, isPortrait),
                     _buildPlant(plantBottomPosition, screenHeight * 0.6),
                     _buildLogOutButton(onPressed: _logout, screenWidth: screenWidth, screenHeight: screenHeight),
-                    _buildHomeButton(text: 'PLAY', left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor),
-                    _buildHomeButton(text: 'STREAK', bottom: groundHeight * 0.02, onPressed: () {
+                    _buildHomeButton(text: AppLocalizations.of(context)!.homePage_play, left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor),
+                    _buildHomeButton(text: AppLocalizations.of(context)!.homePage_streak, bottom: groundHeight * 0.02, onPressed: () {
                       Navigator.push(context,
                         MaterialPageRoute(builder: (context) => const StreakPage()),
                       ).then((_) => _loadUser());
                     }, scaleFactor: scaleFactor),
-                    _buildHomeButton(text: 'ACCOUNT', right: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: () {
+                    _buildHomeButton(text: AppLocalizations.of(context)!.homePage_account, right: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const AccountPage()));
                     }, scaleFactor: scaleFactor),
                     _buildRectangle(screenWidth, screenHeight, onTap: () async {
@@ -311,6 +318,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ),
             ),
+            Positioned(
+            top: screenHeight * 0.05,
+            right: screenWidth * 0.05,
+            child: ElevatedButton(
+              onPressed: localeProvider.toggleLocale, // Toggle locale
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              child: Text(
+                Localizations.localeOf(context).languageCode == 'en'
+                    ? 'Change to Italian'
+                    : 'Change to English',
+                style: const TextStyle(color: Colors.white, fontFamily: 'RetroGaming'),
+              ),
+            ),
+          ),
           ],
         ),
       );
@@ -366,7 +391,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text("How's your mood today?", style: TextStyle(fontSize: 20*scaleFactor, fontFamily: 'RetroGaming')),
+          Text(AppLocalizations.of(context)!.homePage_mood, style: TextStyle(fontSize: 20*scaleFactor, fontFamily: 'RetroGaming')),
           Slider(
             activeColor: const Color(0xFFDCAB00),
             inactiveColor: const Color(0xFF8C5261),
@@ -374,7 +399,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             min: 0,
             max: 1,
             divisions: 2,
-            label: _faceMood == 0 ? 'Sad' : _faceMood == 0.5 ? 'Neutral' : 'Happy',
+            label: _faceMood == 0 ? AppLocalizations.of(context)!.homePage_sad : _faceMood == 0.5 ? AppLocalizations.of(context)!.homePage_neutral : AppLocalizations.of(context)!.homePage_happy,
             onChanged: (v) => setState(() => _faceMood = v),
           ),
         ],
@@ -485,7 +510,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     Padding(
                       padding: EdgeInsets.only(left: screenWidth * 0.12, right: screenWidth * 0.04),
                     child: Text(
-                      'Did you know that...',
+                      AppLocalizations.of(context)!.homePage_curiosityHeader,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: fontSize,
@@ -548,11 +573,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   children: [TextSpan(text: 'XP: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
                   ),
-                    TextSpan(text: '${user?.xp} points\n'),
-                    TextSpan(text: 'Streak: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
+                    TextSpan(text: '${user?.getXP()} ' + AppLocalizations.of(context)!.homePage_xpPoints + '\n'),
+                    TextSpan(text: AppLocalizations.of(context)!.homePage_personalStreak , style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
                     ),
                     TextSpan(text: '${user?.streakCount} days\n'),
-                    TextSpan(text: 'Best score: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
+                    TextSpan(text: AppLocalizations.of(context)!.homePage_bestScoreHigherLower, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
                     ),
                     TextSpan(text: '${user?.higherLowerBestScore}'),
                   ],

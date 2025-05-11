@@ -10,8 +10,14 @@ import 'Alcohol.dart';
 import '../../services/auth.dart';
 import '../../services/GameService.dart';
 
-Future<List<Alcohol>> loadAlcohols() async {
-  final rawData = await rootBundle.loadString('assets/infos/alcohols.txt');
+import 'package:demo_todo_with_flutter/services/localeProvider.dart';
+import 'package:provider/provider.dart';
+
+// localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+Future<List<Alcohol>> loadAlcohols(String file) async {
+  final rawData = await rootBundle.loadString('assets/infos/' + file);
   final lines = LineSplitter.split(rawData).toList();
 
   return lines.where((line) {
@@ -30,11 +36,15 @@ Future<List<Alcohol>> loadAlcohols() async {
   }).toList();
 }
 
+
+
 class HigherOrLower extends StatefulWidget {
   const HigherOrLower({super.key});
 
   @override
   _HigherOrLowerState createState() => _HigherOrLowerState();
+
+  
 }
 
 class _HigherOrLowerState extends State<HigherOrLower>
@@ -155,13 +165,6 @@ class _HigherOrLowerState extends State<HigherOrLower>
       });
     });
 
-    loadAlcohols().then((alcohols) {
-      setState(() {
-        allAlcohols = alcohols;
-        _initializeRound();
-      });
-    });
-
     _upController = AnimationController(
       duration: const Duration(milliseconds: 100),
       vsync: this,
@@ -218,6 +221,19 @@ class _HigherOrLowerState extends State<HigherOrLower>
         weight: 1,
       ),
     ]).animate(_downController);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Load alcohols using AppLocalizations
+    loadAlcohols(AppLocalizations.of(context)!.higherLower_alcoholsFile).then((alcohols) {
+      setState(() {
+        allAlcohols = alcohols;
+        _initializeRound();
+      });
+    });
   }
 
   Future<void> _loadUser() async {
@@ -399,7 +415,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                         Positioned(
                           top: screenHeight * 0.095,
                           child: Text(
-                            "Score: $score\nBest: $bestScore",
+                            AppLocalizations.of(context)!.higherLower_score + score.toString() + "\n" + AppLocalizations.of(context)!.higherLower_bestScore + bestScore.toString(),
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: screenHeight * 0.02,
@@ -492,7 +508,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                         Positioned(
                           top: screenHeight * 0.133,
                           child: Text(
-                            "Score: $score\nBest: $bestScore",
+                            AppLocalizations.of(context)!.higherLower_score + score.toString() + "\n" + AppLocalizations.of(context)!.higherLower_bestScore + bestScore.toString(),
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: screenHeight * 0.025,
@@ -564,7 +580,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
           children: [
             SizedBox(height: screenHeight * 0.06),
             Text(
-              "Score: $score\nBest: $bestScore",
+              AppLocalizations.of(context)!.higherLower_score + score.toString() + "\n" + AppLocalizations.of(context)!.higherLower_bestScore + bestScore.toString(),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: screenHeight * 0.02,
@@ -578,7 +594,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: Text(
-                  "PLAY AGAIN",
+                  AppLocalizations.of(context)!.higherLower_playAgain,
                   style: TextStyle(
                     fontSize: screenHeight * 0.02,
                     fontFamily: 'RetroGaming',
@@ -593,7 +609,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: Text(
-                  "RETURN TO HOME",
+                  AppLocalizations.of(context)!.higherLower_returnHome,
                   style: TextStyle(
                     fontSize: screenHeight * 0.02,
                     fontFamily: 'RetroGaming',
@@ -833,7 +849,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                   user?.incrementStreak();
                   _goBackToHomePage();
                 },
-                tooltip: "Back to Home",
+                tooltip: AppLocalizations.of(context)!.higherLower_goToHome,
               ),
             ],
           ),

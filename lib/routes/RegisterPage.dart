@@ -6,6 +6,12 @@ import '../services/auth.dart';
 import 'Homepage.dart';
 import 'LoginPage.dart';
 
+import 'package:demo_todo_with_flutter/services/localeProvider.dart';
+import 'package:provider/provider.dart';
+
+// localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -48,7 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (_passwordController1.text != _passwordController2.text) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.registerPage_passwordNotMatching)),
       );
       setState(() {
         _isRegistering = false;
@@ -70,7 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registration failed: $e')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.registerPage_error + ': $e')),
       );
     } finally {
       setState(() {
@@ -110,8 +116,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      const Text(
-                        'Welcome to Bloom!',
+                       Text(
+                        AppLocalizations.of(context)!.registerPage_welcome,
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -121,8 +127,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 12),
-                      const Text(
-                        'Create your account',
+                      Text(
+                        AppLocalizations.of(context)!.registerPage_createAccount,
                         style: TextStyle(
                           fontSize: 16,
                           fontFamily: 'RetroGaming',
@@ -136,8 +142,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       TextFormField(
                         controller: _nameController,
                         decoration: InputDecoration(
-                          labelText: 'Username',
-                          hintText: 'Enter your username...',
+                          labelText: AppLocalizations.of(context)!.registerPage_username,
+                          hintText: AppLocalizations.of(context)!.registerPage_usernameHint,
                           filled: true,
                           fillColor: Colors.grey[200],
                           labelStyle: const TextStyle(
@@ -159,8 +165,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         controller: _passwordController1,
                         obscureText: !_isPasswordVisible1,
                         decoration: InputDecoration(
-                          labelText: 'Password',
-                          hintText: 'Enter your password...',
+                          labelText: AppLocalizations.of(context)!.registerPage_password,
+                          hintText: AppLocalizations.of(context)!.registerPage_passwordHint,
                           filled: true,
                           fillColor: Colors.grey[200],
                           labelStyle: const TextStyle(
@@ -193,8 +199,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         controller: _passwordController2,
                         obscureText: !_isPasswordVisible2,
                         decoration: InputDecoration(
-                          labelText: 'Repeat Password',
-                          hintText: 'Repeat your password...',
+                          labelText: AppLocalizations.of(context)!.registerPage_confirmPassword,
+                          hintText: AppLocalizations.of(context)!.registerPage_confirmPasswordHint,
                           filled: true,
                           fillColor: Colors.grey[200],
                           labelStyle: const TextStyle(
@@ -230,7 +236,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
                         ),
-                        child: const Text('Create Account', style: TextStyle(color: Colors.white, fontFamily: 'RetroGaming')),
+                        child: Text(AppLocalizations.of(context)!.registerPage_register, style: TextStyle(color: Colors.white, fontFamily: 'RetroGaming')),
                       ),
                       const SizedBox(height: 24),
                       Center(
@@ -238,7 +244,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => const LoginPage())),
-                          child: const Text("Already have an account?", style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming')),
+                          child: Text(AppLocalizations.of(context)!.registerPage_alreadyHaveAccount, style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming')),
                         ),
                       ),
                     ],

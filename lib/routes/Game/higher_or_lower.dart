@@ -10,6 +10,12 @@ import 'Alcohol.dart';
 import '../../services/auth.dart';
 import '../../services/GameService.dart';
 
+import 'package:demo_todo_with_flutter/services/localeProvider.dart';
+import 'package:provider/provider.dart';
+
+// localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 Future<List<Alcohol>> loadAlcohols() async {
   final rawData = await rootBundle.loadString('assets/infos/alcohols.txt');
   final lines = LineSplitter.split(rawData).toList();

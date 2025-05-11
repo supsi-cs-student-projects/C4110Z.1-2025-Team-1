@@ -21,5 +21,18 @@
     "registerPage_confirmPassword": "Confirm Password",
     "registerPage_confirmPasswordHint": "Repeat your password...",
     "registerPage_register": "Create account",
-    "registerPage_alreadyHaveAccount": "Already have an account?"
+    "registerPage_alreadyHaveAccount": "Already have an account?",
+
+    "homePage_play": "PLAY",
+    "homePage_streak": "STREAK",
+    "homePage_account": "ACCOUNT",
+    "homePage_mood": "How's your mood today?",
+    "homePage_sad": "Sad",
+    "homePage_neutral": "Neutral",
+    "homePage_happy": "Happy",
+    "homePage_xpPoints": "points",
+    "homePage_personalStreak": "Streak: ",
+    "homePage_bestScoreHigherLower": "Best score: ",
+    "homePage_curiosityHeader": "Did you know that...",
+    "homePage_curiosityFile": "curiositiesEN.txt"
 }

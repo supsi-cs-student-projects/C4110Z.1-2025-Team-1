@@ -21,7 +21,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
-
   const HomePage({super.key});
 
   @override
@@ -83,25 +82,26 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Future<LottieComposition> _loadLottieAnimation(int currentXP) {
     int? milestone = _animationsByMilestone.keys
         .where((key) => currentXP >= key)
-        .fold<int?>(null, (prev, element) => prev == null || element > prev ? element : prev);
+        .fold<int?>(null,
+            (prev, element) => prev == null || element > prev ? element : prev);
 
     return milestone != null
         ? _animationsByMilestone[milestone]!
         : AssetLottie('assets/Animations/plant_lv1.json').load();
   }
 
-
-
   Widget _buildPlant(double bottomPos, double plantSize) {
     final w = MediaQuery.of(context).size.width * 0.8;
     final h = MediaQuery.of(context).size.height * 0.8;
     final faceAsset = _faceMap[_faceMood]!;
-    final animation = user != null ? _loadLottieAnimation(user!.getXP()) : AssetLottie('assets/Animations/plant_lv1.json').load();
+    final animation = user != null
+        ? _loadLottieAnimation(user!.getXP())
+        : AssetLottie('assets/Animations/plant_lv1.json').load();
 
     return Positioned(
       bottom: bottomPos,
       child: SizedBox(
-        width:  plantSize,
+        width: plantSize,
         height: plantSize,
         child: Stack(
           alignment: Alignment.center,
@@ -109,8 +109,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             FutureBuilder<LottieComposition>(
               future: animation,
               builder: (ctx, snap) {
-                if (snap.connectionState == ConnectionState.done && snap.hasData) {
-                  return Lottie(composition: snap.data!, width: plantSize, height: plantSize);
+                if (snap.connectionState == ConnectionState.done &&
+                    snap.hasData) {
+                  return Lottie(
+                      composition: snap.data!,
+                      width: plantSize,
+                      height: plantSize);
                 }
                 return const CircularProgressIndicator();
               },
@@ -121,8 +125,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
-
-
 
   Future<void> _loadUser() async {
     try {
@@ -136,7 +138,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       print("Failed to fetch user info: $e");
     }
   }
-
 
   void _playMusic() async {
     try {
@@ -175,7 +176,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Future<void> _loadRandomCuriosity() async {
-    final String fileContent = await rootBundle.loadString('assets/infos/' + AppLocalizations.of(context)!.homePage_curiosityFile);
+    final String fileContent = await rootBundle.loadString(
+        'assets/infos/' + AppLocalizations.of(context)!.homePage_curiosityFile);
     final List<String> curiosities = fileContent
         .split('\n')
         .where((line) => line.trim().isNotEmpty)
@@ -203,9 +205,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final localeProvider = Provider.of<LocaleProvider>(context);
 
     // scale based on orientation: base landscape width 1920, portrait height 1080
-    final scaleFactor = isPortrait
-        ? (screenHeight / 1080)
-        : (screenWidth / 1920);
+    final scaleFactor =
+        isPortrait ? (screenHeight / 1080) : (screenWidth / 1920);
 
     double fontSize(double base) => base * scaleFactor;
 
@@ -213,8 +214,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final plantBottomPosition = groundHeight * 0.18;
 
     //PORTRAIT
-    if(isPortrait){
-
+    if (isPortrait) {
       return Scaffold(
         body: Column(
           children: [
@@ -226,23 +226,64 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     _buildBackground(screenWidth, screenHeight),
                     _buildGround(screenWidth, screenHeight, isPortrait),
                     _buildPlant(plantBottomPosition, screenWidth * 0.6),
-                    _buildLogOutButton(onPressed: _logout, screenWidth: screenWidth, screenHeight: screenHeight),
-                    _buildHomeButton(text: AppLocalizations.of(context)!.homePage_play, left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor * 0.7),
-                    _buildHomeButton(text: AppLocalizations.of(context)!.homePage_streak, bottom: groundHeight * 0.02, onPressed: () {
-                      Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const StreakPage()),
-                      ).then((_) => _loadUser());
-                    }, scaleFactor: scaleFactor * 0.7),
-                    _buildHomeButton(text: AppLocalizations.of(context)!.homePage_account, right: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AccountPage()));
-                    }, scaleFactor: scaleFactor * 0.7),
+                    _buildLogOutButton(
+                        onPressed: _logout,
+                        screenWidth: screenWidth,
+                        screenHeight: screenHeight),
+                    _buildHomeButton(
+                        text: AppLocalizations.of(context)!.homePage_play,
+                        left: screenWidth * 0.05,
+                        bottom: groundHeight * 0.02,
+                        onPressed: _games,
+                        scaleFactor: scaleFactor * 0.7),
+                    _buildHomeButton(
+                        text: AppLocalizations.of(context)!.homePage_streak,
+                        bottom: groundHeight * 0.02,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const StreakPage()),
+                          ).then((_) => _loadUser());
+                        },
+                        scaleFactor: scaleFactor * 0.7),
+                    _buildHomeButton(
+                      text: AppLocalizations.of(context)!.homePage_account,
+                      right: screenWidth * 0.05,
+                      bottom: groundHeight * 0.02,
+                      onPressed: () async {
+                        // Naviga verso la pagina dell'account e aspetta il risultato
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AccountPage()),
+                        );
+
+                        // Se il risultato è `true`, ricarica i dati della homepage
+                        if (result == true) {
+                          _loadUser(); // Ricarica i dati dell'utente
+                        }
+                      },
+                      scaleFactor: scaleFactor * 0.7,
+                    ),
                     _buildRectangle(screenWidth, screenHeight, onTap: () async {
                       await _loadRandomCuriosity();
                       setState(() => _isCuriositiesWidgetVisible = true);
                     }),
-                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.5, screenHeight: screenHeight * 0.5, curiosity: _randomCuriosity, top: groundHeight * 0.4, left: screenWidth * 0.07, fontSize: 10),
-                    _buildInfoRectangle(screenWidth: screenWidth * 3, screenHeight: screenHeight * 0.5, scaleFactor: scaleFactor * 0.8, top: screenHeight * 0.2, left: screenWidth * 0.2),
-
+                    _buildCuriositiesWidget(
+                        isVisible: _isCuriositiesWidgetVisible,
+                        screenWidth: screenWidth * 1.5,
+                        screenHeight: screenHeight * 0.5,
+                        curiosity: _randomCuriosity,
+                        top: groundHeight * 0.4,
+                        left: screenWidth * 0.07,
+                        fontSize: 10),
+                    _buildInfoRectangle(
+                        screenWidth: screenWidth * 3,
+                        screenHeight: screenHeight * 0.5,
+                        scaleFactor: scaleFactor * 0.8,
+                        top: screenHeight * 0.2,
+                        left: screenWidth * 0.2),
                   ],
                 ),
               ),
@@ -252,9 +293,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       );
     }
 
-
     //NOT PORTRAIT
-    else{
+    else {
       return Scaffold(
         body: Column(
           children: [
@@ -266,25 +306,66 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     _buildBackground(screenWidth, screenHeight),
                     _buildGround(screenWidth, screenHeight, isPortrait),
                     _buildPlant(plantBottomPosition, screenHeight * 0.6),
-                    _buildLogOutButton(onPressed: _logout, screenWidth: screenWidth, screenHeight: screenHeight),
-                    _buildHomeButton(text: AppLocalizations.of(context)!.homePage_play, left: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: _games, scaleFactor: scaleFactor),
-                    _buildHomeButton(text: AppLocalizations.of(context)!.homePage_streak, bottom: groundHeight * 0.02, onPressed: () {
-                      Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const StreakPage()),
-                      ).then((_) => _loadUser());
-                    }, scaleFactor: scaleFactor),
-                    _buildHomeButton(text: AppLocalizations.of(context)!.homePage_account, right: screenWidth * 0.05, bottom: groundHeight * 0.02, onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AccountPage()));
-                    }, scaleFactor: scaleFactor),
+                    _buildLogOutButton(
+                        onPressed: _logout,
+                        screenWidth: screenWidth,
+                        screenHeight: screenHeight),
+                    _buildHomeButton(
+                        text: AppLocalizations.of(context)!.homePage_play,
+                        left: screenWidth * 0.05,
+                        bottom: groundHeight * 0.02,
+                        onPressed: _games,
+                        scaleFactor: scaleFactor),
+                    _buildHomeButton(
+                        text: AppLocalizations.of(context)!.homePage_streak,
+                        bottom: groundHeight * 0.02,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const StreakPage()),
+                          ).then((_) => _loadUser());
+                        },
+                        scaleFactor: scaleFactor),
+                    _buildHomeButton(
+                      text: AppLocalizations.of(context)!.homePage_account,
+                      right: screenWidth * 0.05,
+                      bottom: groundHeight * 0.02,
+                      onPressed: () async {
+                        // Naviga verso la pagina dell'account e aspetta il risultato
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AccountPage()),
+                        );
+
+                        // Se il risultato è `true`, ricarica i dati della homepage
+                        if (result == true) {
+                          _loadUser(); // Ricarica i dati dell'utente
+                        }
+                      },
+                      scaleFactor: scaleFactor,
+                    ),
                     _buildRectangle(screenWidth, screenHeight, onTap: () async {
                       await _loadRandomCuriosity();
                       setState(() => _isCuriositiesWidgetVisible = true);
                     }),
-                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.3, screenHeight: screenHeight, curiosity: _randomCuriosity, top: groundHeight*0.2, left: screenWidth * 0.12, fontSize: 30),
-                    !_isCuriositiesWidgetVisible?
-                    _buildInfoRectangle(screenWidth: screenWidth, screenHeight: screenHeight, scaleFactor: scaleFactor, top: screenHeight * 0.1, left: screenWidth * 0.75): const SizedBox.shrink(),
-
-
+                    _buildCuriositiesWidget(
+                        isVisible: _isCuriositiesWidgetVisible,
+                        screenWidth: screenWidth * 1.3,
+                        screenHeight: screenHeight,
+                        curiosity: _randomCuriosity,
+                        top: groundHeight * 0.2,
+                        left: screenWidth * 0.12,
+                        fontSize: 30),
+                    !_isCuriositiesWidgetVisible
+                        ? _buildInfoRectangle(
+                            screenWidth: screenWidth,
+                            screenHeight: screenHeight,
+                            scaleFactor: scaleFactor,
+                            top: screenHeight * 0.1,
+                            left: screenWidth * 0.75)
+                        : const SizedBox.shrink(),
 
                     //REMOVE THE NEXT TWO BUTTONS AFTER DEBUGGING STREAK LOGIC
                     _buildHomeButton(
@@ -295,8 +376,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         await streakService.resetStreak();
                         await _loadUser();
                         ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Streak reset'))
-                        );
+                            const SnackBar(content: Text('Streak reset')));
                       },
                       scaleFactor: scaleFactor,
                     ),
@@ -307,40 +387,38 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       onPressed: () async {
                         await user?.incrementStreakDebug();
                         await _loadUser();
-
                       },
                       scaleFactor: scaleFactor,
                     ),
-
-
-
                   ],
                 ),
               ),
             ),
             Positioned(
-            top: screenHeight * 0.05,
-            right: screenWidth * 0.05,
-            child: ElevatedButton(
-              onPressed: localeProvider.toggleLocale, // Toggle locale
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              child: Text(
-                Localizations.localeOf(context).languageCode == 'en'
-                    ? 'Change to Italian'
-                    : 'Change to English',
-                style: const TextStyle(color: Colors.white, fontFamily: 'RetroGaming'),
+              top: screenHeight * 0.05,
+              right: screenWidth * 0.05,
+              child: ElevatedButton(
+                onPressed: localeProvider.toggleLocale, // Toggle locale
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                child: Text(
+                  Localizations.localeOf(context).languageCode == 'en'
+                      ? 'Change to Italian'
+                      : 'Change to English',
+                  style: const TextStyle(
+                      color: Colors.white, fontFamily: 'RetroGaming'),
+                ),
               ),
             ),
-          ),
           ],
         ),
       );
     }
-
   }
 
   Widget _buildBackground(double screenWidth, double screenHeight) {
@@ -383,15 +461,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-
-
   Widget _buildSlider(double width, {required double scaleFactor}) {
     return SizedBox(
       width: width,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(AppLocalizations.of(context)!.homePage_mood, style: TextStyle(fontSize: 20*scaleFactor, fontFamily: 'RetroGaming')),
+          Text(AppLocalizations.of(context)!.homePage_mood,
+              style: TextStyle(
+                  fontSize: 20 * scaleFactor, fontFamily: 'RetroGaming')),
           Slider(
             activeColor: const Color(0xFFDCAB00),
             inactiveColor: const Color(0xFF8C5261),
@@ -399,7 +477,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             min: 0,
             max: 1,
             divisions: 2,
-            label: _faceMood == 0 ? AppLocalizations.of(context)!.homePage_sad : _faceMood == 0.5 ? AppLocalizations.of(context)!.homePage_neutral : AppLocalizations.of(context)!.homePage_happy,
+            label: _faceMood == 0
+                ? AppLocalizations.of(context)!.homePage_sad
+                : _faceMood == 0.5
+                    ? AppLocalizations.of(context)!.homePage_neutral
+                    : AppLocalizations.of(context)!.homePage_happy,
             onChanged: (v) => setState(() => _faceMood = v),
           ),
         ],
@@ -439,7 +521,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildLogOutButton({required VoidCallback onPressed, required double screenWidth, required double screenHeight}) {
+  Widget _buildLogOutButton(
+      {required VoidCallback onPressed,
+      required double screenWidth,
+      required double screenHeight}) {
     return Positioned(
       top: 0.02 * screenHeight,
       left: 0.01 * screenWidth,
@@ -447,7 +532,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           onTap: onPressed,
-          child: Image.asset('assets/images/buttons/logout_button.png', width: screenWidth * 0.1, height: screenHeight * 0.1),
+          child: Image.asset('assets/images/buttons/logout_button.png',
+              width: screenWidth * 0.1, height: screenHeight * 0.1),
         ),
       ),
     );
@@ -458,16 +544,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         top: h / 3 - 20,
         left: 10,
         child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(onTap: onTap, child: Container(width: w * 0.35, height: h * 0.5, decoration: BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.circular(10)))),
-    ));
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+              onTap: onTap,
+              child: Container(
+                  width: w * 0.35,
+                  height: h * 0.5,
+                  decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(10)))),
+        ));
   }
 
   Widget _buildCuriositiesWidget({
     required fontSize,
     required double top,
     required double screenWidth,
-    required double screenHeight, required bool isVisible, String? curiosity,
+    required double screenHeight,
+    required bool isVisible,
+    String? curiosity,
     required double left,
   }) {
     if (!_isCuriositiesWidgetVisible) return const SizedBox.shrink();
@@ -508,22 +603,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(left: screenWidth * 0.12, right: screenWidth * 0.04),
-                    child: Text(
-                      AppLocalizations.of(context)!.homePage_curiosityHeader,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: fontSize,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        fontFamily: 'RetroGaming',
+                      padding: EdgeInsets.only(
+                          left: screenWidth * 0.12, right: screenWidth * 0.04),
+                      child: Text(
+                        AppLocalizations.of(context)!.homePage_curiosityHeader,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: fontSize,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          fontFamily: 'RetroGaming',
+                        ),
                       ),
-                    ),
                     ),
                     const SizedBox(height: 10),
                     Padding(
-
-                      padding: EdgeInsets.only(left: screenWidth * 0.12, right: screenWidth * 0.04),
+                      padding: EdgeInsets.only(
+                          left: screenWidth * 0.12, right: screenWidth * 0.04),
                       child: Text(
                         curiosity ?? '',
                         textAlign: TextAlign.center,
@@ -561,30 +657,69 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         height: boxH,
         child: Stack(
           children: [
-            ClipRRect(borderRadius: BorderRadius.circular(8), child: Image.asset('assets/images/statistics/stats_box.png', fit: BoxFit.fill, width: boxW, height: boxH)),
-            Positioned(top: boxH * 0.05, left: boxW * 0.05, child: Text(user?.nickname ?? 'Guest', style: TextStyle(fontSize: 25 * scaleFactor, fontFamily: 'RetroGaming', color: const Color(
-                0xFF1C1C1C),
+            ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.asset('assets/images/statistics/stats_box.png',
+                    fit: BoxFit.fill, width: boxW, height: boxH)),
+            Positioned(
+              top: boxH * 0.05,
+              left: boxW * 0.05,
+              child: Text(
+                user?.nickname ?? 'Guest',
+                style: TextStyle(
+                  fontSize: 25 * scaleFactor,
+                  fontFamily: 'RetroGaming',
+                  color: const Color(0xFF1C1C1C),
                 ),
               ),
             ),
-
-            Positioned(top: boxH * 0.2, left: boxW * 0.05, right: boxW * 0.05, child: RichText(text: TextSpan(style: TextStyle(fontSize: 20*scaleFactor, fontFamily: 'RetroGaming', color: const Color(
-                0xFF000000),
+            Positioned(
+              top: boxH * 0.2,
+              left: boxW * 0.05,
+              right: boxW * 0.05,
+              child: RichText(
+                text: TextSpan(
+                  style: TextStyle(
+                    fontSize: 20 * scaleFactor,
+                    fontFamily: 'RetroGaming',
+                    color: const Color(0xFF000000),
                   ),
-                  children: [TextSpan(text: 'XP: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
-                  ),
-                    TextSpan(text: '${user?.getXP()} ' + AppLocalizations.of(context)!.homePage_xpPoints + '\n'),
-                    TextSpan(text: AppLocalizations.of(context)!.homePage_personalStreak , style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
+                  children: [
+                    TextSpan(
+                      text: 'XP: ',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20 * scaleFactor),
+                    ),
+                    TextSpan(
+                        text: '${user?.getXP()} ' +
+                            AppLocalizations.of(context)!.homePage_xpPoints +
+                            '\n'),
+                    TextSpan(
+                      text:
+                          AppLocalizations.of(context)!.homePage_personalStreak,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20 * scaleFactor),
                     ),
                     TextSpan(text: '${user?.streakCount} days\n'),
-                    TextSpan(text: AppLocalizations.of(context)!.homePage_bestScoreHigherLower, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20*scaleFactor),
+                    TextSpan(
+                      text: AppLocalizations.of(context)!
+                          .homePage_bestScoreHigherLower,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20 * scaleFactor),
                     ),
                     TextSpan(text: '${user?.higherLowerBestScore}'),
                   ],
                 ),
               ),
             ),
-            Positioned(bottom: boxH*0.05, left: boxW*0.05, right: boxW*0.05, child: _buildSlider(boxW*0.9, scaleFactor: scaleFactor) ),
+            Positioned(
+                bottom: boxH * 0.05,
+                left: boxW * 0.05,
+                right: boxW * 0.05,
+                child: _buildSlider(boxW * 0.9, scaleFactor: scaleFactor)),
           ],
         ),
       ),

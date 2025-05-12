@@ -215,15 +215,6 @@ class _LoginPageState extends State<LoginPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          TextButton(
-                            onPressed: () {
-                              // TODO: Forgot password
-                            },
-                            child: Text(
-                              AppLocalizations.of(context)!.loginPage_forgotPassword,
-                              style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming'),
-                            ),
-                          ),
                           ElevatedButton(
                             onPressed: _login,
                             style: ElevatedButton.styleFrom(

@@ -270,20 +270,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       await _loadRandomCuriosity();
                       setState(() => _isCuriositiesWidgetVisible = true);
                     }),
-                    _buildCuriositiesWidget(
-                        isVisible: _isCuriositiesWidgetVisible,
-                        screenWidth: screenWidth * 1.5,
-                        screenHeight: screenHeight * 0.5,
-                        curiosity: _randomCuriosity,
-                        top: groundHeight * 0.4,
-                        left: screenWidth * 0.07,
-                        fontSize: 10),
-                    _buildInfoRectangle(
-                        screenWidth: screenWidth * 3,
-                        screenHeight: screenHeight * 0.5,
-                        scaleFactor: scaleFactor * 0.8,
-                        top: screenHeight * 0.2,
-                        left: screenWidth * 0.2),
+                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.5, screenHeight: screenHeight * 0.5, curiosity: _randomCuriosity, top: groundHeight * 0.4, left: screenWidth * 0.07, fontSize: 10),
+                    _buildInfoRectangle(screenWidth: screenWidth * 3, screenHeight: screenHeight * 0.5, scaleFactor: scaleFactor * 0.8, top: screenHeight * 0.2, left: screenWidth * 0.2),
+
+                    //INTERNATIONALIZATION
+                    _buildHomeButton(
+                      text: 'en/it',
+                      right: screenWidth * 0.05,
+                      bottom: groundHeight * 1.82,
+                      onPressed: localeProvider.toggleLocale,
+                      scaleFactor: scaleFactor,
+                    ),
                   ],
                 ),
               ),
@@ -350,25 +347,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       await _loadRandomCuriosity();
                       setState(() => _isCuriositiesWidgetVisible = true);
                     }),
-                    _buildCuriositiesWidget(
-                        isVisible: _isCuriositiesWidgetVisible,
-                        screenWidth: screenWidth * 1.3,
-                        screenHeight: screenHeight,
-                        curiosity: _randomCuriosity,
-                        top: groundHeight * 0.2,
-                        left: screenWidth * 0.12,
-                        fontSize: 30),
-                    !_isCuriositiesWidgetVisible
-                        ? _buildInfoRectangle(
-                            screenWidth: screenWidth,
-                            screenHeight: screenHeight,
-                            scaleFactor: scaleFactor,
-                            top: screenHeight * 0.1,
-                            left: screenWidth * 0.75)
-                        : const SizedBox.shrink(),
+                    _buildCuriositiesWidget(isVisible: _isCuriositiesWidgetVisible, screenWidth: screenWidth * 1.3, screenHeight: screenHeight, curiosity: _randomCuriosity, top: groundHeight*0.2, left: screenWidth * 0.12, fontSize: 30),
+                    !_isCuriositiesWidgetVisible?
+                    _buildInfoRectangle(screenWidth: screenWidth, screenHeight: screenHeight, scaleFactor: scaleFactor, top: screenHeight * 0.1, left: screenWidth * 0.75): const SizedBox.shrink(),
+
+                    //INTERNATIONALIZATION
+                    _buildHomeButton(
+                      text: 'en/it',
+                      right: screenWidth * 0.05,
+                      bottom: groundHeight * 1.82,
+                      onPressed: localeProvider.toggleLocale,
+                      scaleFactor: scaleFactor,
+                    ),
+
 
                     //REMOVE THE NEXT TWO BUTTONS AFTER DEBUGGING STREAK LOGIC
-                    _buildHomeButton(
+                    /*_buildHomeButton(
                       text: 'Reset streak',
                       right: screenWidth * 0.04,
                       bottom: groundHeight * 0.75,
@@ -389,32 +383,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         await _loadUser();
                       },
                       scaleFactor: scaleFactor,
-                    ),
+
+                    ),*/
+
+
+
                   ],
                 ),
               ),
             ),
-            Positioned(
-              top: screenHeight * 0.05,
-              right: screenWidth * 0.05,
-              child: ElevatedButton(
-                onPressed: localeProvider.toggleLocale, // Toggle locale
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-                child: Text(
-                  Localizations.localeOf(context).languageCode == 'en'
-                      ? 'Change to Italian'
-                      : 'Change to English',
-                  style: const TextStyle(
-                      color: Colors.white, fontFamily: 'RetroGaming'),
-                ),
-              ),
-            ),
+
           ],
         ),
       );
@@ -527,7 +505,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       required double screenHeight}) {
     return Positioned(
       top: 0.02 * screenHeight,
-      left: 0.01 * screenWidth,
+      left: 0.027 * screenWidth,
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
@@ -726,3 +704,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 }
+
+
+/*class PortraitHome extends StatelessWidget {
+  const PortraitHome({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+
+  }
+}
+
+
+class LandscapeHome extends StatelessWidget {
+  const LandscapeHome({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+
+  }
+}*/
+

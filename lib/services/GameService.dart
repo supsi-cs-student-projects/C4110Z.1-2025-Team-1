@@ -9,7 +9,6 @@ class GameService {
   final String _collectionId = '6809339a0024c90db465';
   String? _userId;
 
-
   Future<int> getBestScore() async {
     try {
       models.Account account = await AuthService().getAccount();
@@ -122,7 +121,26 @@ class GameService {
     }
   }
 
+  Future<void> resetStats() async {
+    try {
+      // Recupera l'account dell'utente per ottenere l'ID
+      models.Account account = await AuthService().getAccount();
+      _userId = account.$id;
 
+      // Aggiorna il documento dell'utente con i valori resettati
+      await _databases.updateDocument(
+        databaseId: _databaseId,
+        collectionId: _collectionId,
+        documentId: _userId!,
+        data: {
+          'xp': 0,
+          'higherLower': 0,
+        },
+      );
+    } catch (e) {
+      throw Exception('Failed to reset stats: $e');
+    }
+  }
 
   Future<void> _initializeUserDocument() async {
     await _databases.createDocument(
@@ -136,8 +154,4 @@ class GameService {
       },
     );
   }
-
-
-
-
 }

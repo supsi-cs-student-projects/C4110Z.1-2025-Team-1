@@ -43,5 +43,9 @@
     "higherLower_goToHome": "Back to home",
     "higherLower_playAgain": "PLAY AGAIN",
     "higherLower_returnHome": "RETURN TO HOME",
-    "higherLower_alcoholsFile": "alcoholsEN.txt"
+    "higherLower_alcoholsFile": "alcoholsEN.txt",
+    "higherLower_questionsFile": "questionsEN.txt",
+    "higherLower_2xPoints": "2X POINTS!",
+    "higherLower_false": "FALSE",
+    "higherLower_true": "TRUE"
 }

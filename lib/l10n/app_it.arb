@@ -42,5 +42,9 @@
     "higherLower_goToHome": "Torna alla home",
     "higherLower_playAgain": "GIOCA ANCORA",
     "higherLower_returnHome": "TORNA ALLA HOME",
-    "higherLower_alcoholsFile": "alcoholsIT.txt"
+    "higherLower_alcoholsFile": "alcoholsIT.txt",
+    "higherLower_questionsFile": "questionsIT.txt",
+    "higherLower_2xPoints": "2X PUNTI!",
+    "higherLower_false": "FALSO",
+    "higherLower_true": "VERO"
 }

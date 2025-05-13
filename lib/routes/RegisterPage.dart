@@ -87,6 +87,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final localeProvider = Provider.of<LocaleProvider>(context);
     return RawKeyboardListener(
       focusNode: FocusNode(),
       onKey: (RawKeyEvent event) {
@@ -245,6 +246,22 @@ class _RegisterPageState extends State<RegisterPage> {
                               context,
                               MaterialPageRoute(builder: (context) => const LoginPage())),
                           child: Text(AppLocalizations.of(context)!.registerPage_alreadyHaveAccount, style: TextStyle(color: Colors.blue, fontFamily: 'RetroGaming')),
+                        ),
+                      ),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: localeProvider.toggleLocale,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                          child: Text(
+                            Localizations.localeOf(context).languageCode == 'en'
+                                ? 'Change to Italian'
+                                : 'Change to English',
+                            style: const TextStyle(color: Colors.white, fontFamily: 'RetroGaming'),
+                          ),
                         ),
                       ),
                     ],

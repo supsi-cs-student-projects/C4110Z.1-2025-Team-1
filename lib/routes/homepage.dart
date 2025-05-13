@@ -206,7 +206,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     // scale based on orientation: base landscape width 1920, portrait height 1080
     final scaleFactor =
-        isPortrait ? (screenHeight / 1080) : (screenWidth / 1920);
+    isPortrait ? (screenHeight / 1080) : (screenWidth / 1920);
 
     double fontSize(double base) => base * scaleFactor;
 
@@ -259,7 +259,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               builder: (context) => const AccountPage()),
                         );
 
-                        // Se il risultato è `true`, ricarica i dati della homepage
+                        // Se il risultato è true, ricarica i dati della homepage
                         if (result == true) {
                           _loadUser(); // Ricarica i dati dell'utente
                         }
@@ -336,7 +336,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               builder: (context) => const AccountPage()),
                         );
 
-                        // Se il risultato è `true`, ricarica i dati della homepage
+                        // Se il risultato è true, ricarica i dati della homepage
                         if (result == true) {
                           _loadUser(); // Ricarica i dati dell'utente
                         }
@@ -458,8 +458,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             label: _faceMood == 0
                 ? AppLocalizations.of(context)!.homePage_sad
                 : _faceMood == 0.5
-                    ? AppLocalizations.of(context)!.homePage_neutral
-                    : AppLocalizations.of(context)!.homePage_happy,
+                ? AppLocalizations.of(context)!.homePage_neutral
+                : AppLocalizations.of(context)!.homePage_happy,
             onChanged: (v) => setState(() => _faceMood = v),
           ),
         ],
@@ -501,8 +501,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget _buildLogOutButton(
       {required VoidCallback onPressed,
-      required double screenWidth,
-      required double screenHeight}) {
+        required double screenWidth,
+        required double screenHeight}) {
     return Positioned(
       top: 0.02 * screenHeight,
       left: 0.027 * screenWidth,
@@ -675,7 +675,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             '\n'),
                     TextSpan(
                       text:
-                          AppLocalizations.of(context)!.homePage_personalStreak,
+                      AppLocalizations.of(context)!.homePage_personalStreak,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20 * scaleFactor),
@@ -724,4 +724,3 @@ class LandscapeHome extends StatelessWidget {
 
   }
 }*/
-

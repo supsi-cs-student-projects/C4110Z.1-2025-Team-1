@@ -79,9 +79,8 @@ class _HigherOrLowerState extends State<HigherOrLower>
   late Animation<Offset> _upAnimation;
   late Animation<Offset> _downAnimation;
 
-  Future<void> _loadQuestions() async {
-    final rawData =
-        await rootBundle.loadString('assets/higher_or_lower/questions.txt');
+  Future<void> _loadQuestions(String file) async {
+    final rawData = await rootBundle.loadString('assets/higher_or_lower/' + file);
     final lines = LineSplitter.split(rawData).toList();
 
     String currentCategory = '';
@@ -151,7 +150,6 @@ class _HigherOrLowerState extends State<HigherOrLower>
     _loadUser();
 
     super.initState();
-    _loadQuestions();
     _startQuestionTimer();
     _isMuted = true;
 
@@ -232,6 +230,13 @@ class _HigherOrLowerState extends State<HigherOrLower>
       setState(() {
         allAlcohols = alcohols;
         _initializeRound();
+      });
+    });
+
+    _loadQuestions(AppLocalizations.of(context)!.higherLower_questionsFile).then((_) {
+      setState(() {
+        _selectedQuestion = null;
+        _correctAnswer = null;
       });
     });
   }
@@ -429,8 +434,8 @@ class _HigherOrLowerState extends State<HigherOrLower>
                           child: AnimatedOpacity(
                             opacity: _isDoublePoints ? 1.0 : 0.0,
                             duration: const Duration(milliseconds: 300),
-                            child: const Text(
-                              '2X POINTS!',
+                            child: Text(
+                              AppLocalizations.of(context)!.higherLower_2xPoints,
                               style: TextStyle(
                                 fontSize: 20,
                                 color: Colors.yellow,
@@ -522,9 +527,9 @@ class _HigherOrLowerState extends State<HigherOrLower>
                           child: AnimatedOpacity(
                             opacity: _isDoublePoints ? 1.0 : 0.0,
                             duration: const Duration(milliseconds: 300),
-                            child: const Text(
-                              '2X POINTS!',
-                              style: TextStyle(
+                            child: Text(
+                              AppLocalizations.of(context)!.higherLower_2xPoints,
+                              style: const TextStyle(
                                 fontSize: 20,
                                 color: Colors.yellow,
                                 fontFamily: 'RetroGaming',
@@ -686,7 +691,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                   child: MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: Text(
-                      "FALSE",
+                      AppLocalizations.of(context)!.higherLower_false,
                       style: TextStyle(
                         fontSize: screenHeight * 0.02,
                         fontFamily: 'RetroGaming',
@@ -700,7 +705,7 @@ class _HigherOrLowerState extends State<HigherOrLower>
                   child: MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: Text(
-                      "TRUE",
+                      AppLocalizations.of(context)!.higherLower_true,
                       style: TextStyle(
                         fontSize: screenHeight * 0.02,
                         fontFamily: 'RetroGaming',

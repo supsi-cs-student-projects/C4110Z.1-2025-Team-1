@@ -132,7 +132,8 @@ flutter:
     - assets/audio/kwyd/choice/right.ogg
     - assets/images/buttons/question_button.png
     - assets/higher_or_lower/question_box.png
-    - assets/higher_or_lower/questions.txt
+    - assets/higher_or_lower/questionsIT.txt
+    - assets/higher_or_lower/questionsEN.txt
     - assets/higher_or_lower/higherorlower_vertical.png
     - assets/images/curiosities/CuriosityBox_v2.png
     - assets/images/achievements/achv_1.png

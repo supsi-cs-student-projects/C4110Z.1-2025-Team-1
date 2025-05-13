@@ -1,0 +1,26 @@
+true:
+Il corpo tratta l’alcol come una sostanza tossica e necessita di tempo affinché il fegato lo smaltisca.
+L’alcol può interferire con lo sviluppo cerebrale, soprattutto durante l’adolescenza e i primi vent’anni.
+Una birra, un bicchiere di vino e un colpo di liquore corrispondono ciascuno a una bevanda standard.
+Bere regolarmente è associato a un rendimento accademico inferiore e a una diminuzione della motivazione.
+Non è consigliabile mescolare bevande energetiche con alcol, poiché hanno effetti opposti sul sistema nervoso.
+L’uso cronico di alcol può portare a fegato grasso, epatite alcolica e infine cirrosi.
+L’alcol compromette la capacità del fegato di regolare la glicemia, rischioso soprattutto per le persone con diabete.
+Bere dopo un esercizio intenso può ridurre la sintesi delle proteine muscolari, rallentando il recupero.
+Un consumo eccessivo di alcol può ridurre nel tempo la capacità di sentire odori e sapori.
+L’alcol può aumentare l’appetito influenzando i neurotrasmettitori legati alla fame e alla sazietà.
+Il cervello continua a svilupparsi fino all’età di circa 25 anni, e l’alcol può influenzare il processo decisionale a lungo termine.
+
+false:
+Il caffè aiuta il fegato a metabolizzare l’alcol più velocemente.
+Fare una doccia fredda accelera il processo di smaltimento dell’alcol.
+L’alcol agisce come uno stimolante che aumenta l’attività cerebrale.
+Il corpo elimina la maggior parte dell’alcol immodificato attraverso l’urina.
+Una piccola quantità di alcol migliora la memoria e la concentrazione.
+Tutte le bevande alcoliche contengono più o meno lo stesso numero di calorie.
+Allenarsi dopo aver bevuto aiuta il corpo a smaltire l’alcol più rapidamente.
+Man mano che aumenta la tolleranza all’alcol, il corpo diventa più efficiente nel processarlo in modo sicuro.
+L’alcol migliora la qualità del sonno durante tutta la notte.
+I postumi di una sbornia sono causati dall’assorbimento eccessivo di nutrienti dall’alcol.
+Il fegato processa una bevanda standard in circa 20 minuti.
+L’alcol non ha alcun effetto sul pancreas.

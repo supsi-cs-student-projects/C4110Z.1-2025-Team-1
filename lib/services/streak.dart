@@ -43,14 +43,15 @@ class StreakService {
 
   Future<Streak> initializeStreak() async {
     await _ensureUserId();
-    final nowUtc = DateTime.now().toUtc();
+    //yesterday's date
+    final yesterday = DateTime.now().subtract(Duration(days: 1)).toUtc();
     final document = await _databases.createDocument(
       databaseId: _databaseId,
       collectionId: _collectionId,
       documentId: _userId!,
       data: {
         'streak': 0,
-        'updated_at': nowUtc.toIso8601String(),
+        'updated_at': yesterday.toIso8601String(),
       },
     );
     return Streak.fromJson(document.data);
@@ -75,10 +76,28 @@ class StreakService {
   }
 
   Future<Streak> incrementStreak() async {
-    // loadStreak will ensure _userId and fetch current
+    // Load the current streak
     final streak = await loadStreak();
+
+    // Get the current UTC date and the last updated date
+    final nowUtc = DateTime.now().toUtc();
+    final lastUpdatedDate = DateTime(
+      streak.lastUpdated.year,
+      streak.lastUpdated.month,
+      streak.lastUpdated.day,
+    );
+    final currentDate = DateTime(nowUtc.year, nowUtc.month, nowUtc.day);
+
+    // Check if the streak was already incremented today
+    if (lastUpdatedDate == currentDate) {
+      throw Exception('Streak already incremented today.');
+    }
+
+    // If the streak is fresh (e.g., streakCount is 0), initialize it
+    // Increment the streak
     streak.increment();
 
+    // Update the streak in the database
     final document = await _databases.updateDocument(
       databaseId: _databaseId,
       collectionId: _collectionId,
@@ -88,6 +107,7 @@ class StreakService {
         'updated_at': streak.lastUpdated.toIso8601String(),
       },
     );
+
     return Streak.fromJson(document.data);
   }
 }

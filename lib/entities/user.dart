@@ -53,40 +53,13 @@ class User {
   }
 
   /// Increment the user's daily streak (only once per day)
+
   Future<void> incrementStreak() async {
-    final streak = await _streakService.loadStreak();
-    final nowLocal = DateTime.now();
-    final lastUpdatedLocal = streak.lastUpdated.toLocal();
-
-    //Check if streak was already updated today
-    if (_isSameDay(nowLocal, lastUpdatedLocal)) {
-      print('Streak already incremented today.');
-      //print time remaining until next day
-      final timeRemaining = DateTime(
-        lastUpdatedLocal.year,
-        lastUpdatedLocal.month,
-        lastUpdatedLocal.day + 1,
-      ).difference(nowLocal);
-      print('Time remaining until next increment: ${timeRemaining.inHours} hours, ${timeRemaining.inMinutes % 60} minutes');
-      return;
+    try {
+      await _streakService.incrementStreak();
+    } catch (e) {
+      print('Failed to increment streak: $e');
     }
-
-    //Check if a day was skipped → reset streak
-    final daysBetween = nowLocal.difference(
-      DateTime(lastUpdatedLocal.year, lastUpdatedLocal.month, lastUpdatedLocal.day),
-    ).inDays;
-
-    if (daysBetween > 1) {
-      print('Missed a day — streak reset.');
-      await _streakService.resetStreak();
-      streakCount = 1;
-      return;
-    }
-
-    //valid to increment
-    final updatedStreak = await _streakService.incrementStreak();
-    streakCount = updatedStreak.streakCount;
-    print('Streak incremented! New count: $streakCount');
   }
 
   //REMOVE THIS AFTER DEBUGGING STREAK LOGIC
@@ -95,8 +68,6 @@ class User {
     streakCount = updatedStreak.streakCount;
     print('Streak incremented! New count: $streakCount');
   }
-
-
 
   bool _isSameDay(DateTime a, DateTime b) {
     return a.year == b.year && a.month == b.month && a.day == b.day;

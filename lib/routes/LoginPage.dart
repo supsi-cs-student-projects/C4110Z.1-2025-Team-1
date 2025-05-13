@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:appwrite/models.dart' as models;
@@ -41,6 +43,57 @@ class _LoginPageState extends State<LoginPage> {
   String dummyEmail(String username) {
     username = username.replaceAll(" ", "").trim();
     return "$username@bloom.com";
+  }
+
+  String generateGuestName() {
+    const adjectives = ['Swift', 'Happy', 'Brave', 'Mighty', 'Gentle', 'Fuzzy', 'Witty'];
+    const animals = ['Tiger', 'Penguin', 'Panda', 'Fox', 'Koala', 'Wolf', 'Dolphin'];
+
+    final random = Random.secure();
+    final adjective = adjectives[random.nextInt(adjectives.length)];
+    final animal = animals[random.nextInt(animals.length)];
+    final number = random.nextInt(10000);
+
+    return '$adjective$animal$number'; // e.g., HappyFox8372
+  }
+
+
+  //Enter as guest (it can be done better by adding a parameter to login method)
+  Future<void> _enterAsGuest() async {
+    if (_isLoggingIn) return;
+
+    setState(() {
+      _isLoggingIn = true;
+    });
+    //name generator with guest and random number
+    String guestName = generateGuestName();
+
+    try {
+      final userAccount = await _authService.signUp(
+        name: guestName,
+        email: dummyEmail(guestName.trim()),
+        password: guestName.trim(),
+      );
+
+      if (!_navigated) {
+        _navigated = true;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.loginPage_loginError + ': $e')),
+      );
+    } finally {
+      setState(() {
+        _isLoggingIn = false;
+      });
+    }
+
   }
 
   Future<void> _login() async {
@@ -215,10 +268,24 @@ class _LoginPageState extends State<LoginPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+
+                          //ENTER AS GUEST BUTTON
+                          ElevatedButton(
+                            onPressed: _enterAsGuest,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF157907),
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                            ),
+                            child: Text(AppLocalizations.of(context)!.loginPage_enterAsGuest, style: TextStyle(color: Colors.white, fontFamily: 'RetroGaming')),
+                          ),
+
+
+
                           ElevatedButton(
                             onPressed: _login,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF02AF5C),
+                              backgroundColor: const Color(0xFF157907),
                               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
                             ),
@@ -258,6 +325,8 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
+
+
             ),
           );
         },

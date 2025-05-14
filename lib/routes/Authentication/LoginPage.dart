@@ -11,9 +11,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
-import '../services/auth.dart';
+import '../../services/auth.dart';
 
-import 'Homepage.dart';
+import '../Homepage.dart';
 import 'RegisterPage.dart';
 
 class LoginPage extends StatefulWidget {

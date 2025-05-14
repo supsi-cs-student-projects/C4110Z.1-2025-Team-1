@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 
 import '../services/auth.dart'; // Importa il servizio AuthService
 
+// localization
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
 
@@ -41,9 +44,9 @@ class _AccountPageState extends State<AccountPage> {
                 true); // Passa `true` per indicare che i dati sono stati aggiornati
           },
         ),
-        title: const Text(
-          'Account',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context)!.accountPage_account,
+          style: const TextStyle(
             fontFamily: 'RetroGaming',
             fontWeight: FontWeight.bold,
           ),
@@ -77,9 +80,9 @@ class _AccountPageState extends State<AccountPage> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Account Information',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.accountPage_accountInfo,
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'RetroGaming',
@@ -87,34 +90,34 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Username: ${account.name ?? "No name provided"}',
+                      '${AppLocalizations.of(context)!.accountPage_username}: ${account.name ?? "No name found"}',
                       style: const TextStyle(
                         fontSize: 18,
                         fontFamily: 'RetroGaming',
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const SizedBox(height: 10),
                     Table(
                       border: TableBorder.all(color: Colors.black),
                       children: [
-                        const TableRow(
+                        TableRow(
                           children: [
                             Padding(
-                              padding: EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                'Statistic',
-                                style: TextStyle(
+                                AppLocalizations.of(context)!
+                                    .accountPage_statistics,
+                                style: const TextStyle(
                                   fontFamily: 'RetroGaming',
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                'Value',
-                                style: TextStyle(
+                                AppLocalizations.of(context)!.accountPage_value,
+                                style: const TextStyle(
                                   fontFamily: 'RetroGaming',
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -126,7 +129,7 @@ class _AccountPageState extends State<AccountPage> {
                           children: [
                             const Padding(
                               padding: EdgeInsets.all(8.0),
-                              child: Text('XP'),
+                              child: Text("XP"),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -137,7 +140,7 @@ class _AccountPageState extends State<AccountPage> {
                                       ConnectionState.waiting) {
                                     return const CircularProgressIndicator();
                                   } else if (snapshot.hasError) {
-                                    return Text('Error');
+                                    return const Text('Error');
                                   } else {
                                     return Text('${snapshot.data ?? 0}');
                                   }
@@ -148,9 +151,10 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                         TableRow(
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text('Streak'),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(AppLocalizations.of(context)!
+                                  .accountPage_streak),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -161,7 +165,7 @@ class _AccountPageState extends State<AccountPage> {
                                       ConnectionState.waiting) {
                                     return const CircularProgressIndicator();
                                   } else if (snapshot.hasError) {
-                                    return Text('Error');
+                                    return const Text('Error');
                                   } else {
                                     return Text('${snapshot.data ?? 0} days');
                                   }
@@ -172,9 +176,10 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                         TableRow(
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text('Best Score'),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(AppLocalizations.of(context)!
+                                  .accountPage_bestScore),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -185,7 +190,7 @@ class _AccountPageState extends State<AccountPage> {
                                       ConnectionState.waiting) {
                                     return const CircularProgressIndicator();
                                   } else if (snapshot.hasError) {
-                                    return Text('Error');
+                                    return const Text('Error');
                                   } else {
                                     return Text('${snapshot.data ?? 0}');
                                   }
@@ -209,16 +214,18 @@ class _AccountPageState extends State<AccountPage> {
 
                           // Mostra un messaggio di successo
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text(
-                                    'Stats and streak reset successfully!')),
+                            SnackBar(
+                              content: Text(AppLocalizations.of(context)!
+                                  .accountPage_resetStatisticsSuccess),
+                            ),
                           );
                         } catch (e) {
                           // Mostra un messaggio di errore
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text(
-                                    'Failed to reset stats or streak: $e')),
+                              content: Text(AppLocalizations.of(context)!
+                                  .accountPage_resetStatisticsError),
+                            ),
                           );
                         }
                       },
@@ -226,9 +233,10 @@ class _AccountPageState extends State<AccountPage> {
                         backgroundColor:
                             const Color(0xFF18a663), // Colore del pulsante
                       ),
-                      child: const Text(
-                        'Reset Stats and Streak',
-                        style: TextStyle(
+                      child: Text(
+                        AppLocalizations.of(context)!
+                            .accountPage_resetStatistics,
+                        style: const TextStyle(
                           fontFamily: 'RetroGaming',
                           fontWeight: FontWeight.bold,
                         ),

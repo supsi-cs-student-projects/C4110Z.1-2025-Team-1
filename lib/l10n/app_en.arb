@@ -47,5 +47,16 @@
     "higherLower_questionsFile": "questionsEN.txt",
     "higherLower_2xPoints": "2X POINTS!",
     "higherLower_false": "FALSE",
-    "higherLower_true": "TRUE"
+    "higherLower_true": "TRUE",
+
+    "accountPage_account": "Account",
+    "accountPage_accountInfo": "Account information",
+    "accountPage_username": "Username",
+    "accountPage_statistics": "Statistics",
+    "accountPage_value": "Value",
+    "accountPage_streak": "Streak",
+    "accountPage_bestScore": "Best score",
+    "accountPage_resetStatistics": "Reset statistics",
+    "accountPage_resetStatisticsSuccess" : "Statistics reset successfully",
+    "accountPage_resetStatisticsError" : "Statistics reset error"
 }

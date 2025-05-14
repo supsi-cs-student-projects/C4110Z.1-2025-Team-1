@@ -3,23 +3,23 @@
 https://lucabte.github.io/
 
 ## 📑 Index
-- [🌱 Introduction](#introduction)
-- [🎮 Description](#description)
-- [🛠️ Tools and Technologies](#tools-and-technologies)
-- [📦 Third‑party code/resources](#third-party-coderesources)
-- [📁 Outline of the file structure and dependencies](#outline-of-the-file-structure-and-dependencies)
-- [🛢️ Setting up online services and database](#setting-up-online-services-and-database)
-- [🚀 Build, Deploy, and Run](#build-deploy-and-run)
-- [📖 User Manual](#user-manual)
+- [🌱 Introduction](#-introduction)
+- [🎮 Description](#-description)
+- [🛠️ Tools and Technologies](#-tools-and-technologies)
+- [📦 Third‑party code/resources](#-third-party-coderesources)
+- [📁 Outline of the file structure and dependencies](#-outline-of-the-file-structure-and-dependencies)
+- [🛢️ Setting up online services and database](#-setting-up-online-services-and-database)
+- [🚀 Build, Deploy, and Run](#-build-deploy-and-run)
+- [📖 User Manual](#-user-manual)
 
 ## 🌱 **Introduction**
 Bloom is an international project developed by a team of students from SUPSI-DTI in Lugano (CH) and managed by students from Penn State University (USA).\
-The goal of the project is to give a gamified solution for SDG 3.5, which is about reducing the harmful use of alcohol.
+The goal of the project is to give a gamified solution addressing SDG 3.5, which focuses on reducing the harmful use of alcohol.
 
 ## 🎮 **Description**
 Bloom is a webapp developed with Flutter, so it can be used on all devices.\
 **Key features:** Gamification, Progression Tracking, Education, Visual Progress.\
-It has 4 main pages: homepage, game page, streak page and account page. (A detailed description of each page can be found in the [user manual section](#user-manual)).\
+It features four main pages: Home, Game, Streak Account. (A detailed description of each page can be found in the [user manual section](#-user-manual)).\
 ![](screenshot-home.png)
 ![](screenshot-hol.png)
 ![](screenshot-streak.png)
@@ -32,10 +32,10 @@ It has 4 main pages: homepage, game page, streak page and account page. (A detai
 - **Lottie**: The animations used in the app are created using Lottie, a library for rendering animations in real-time.
 
 ## 📦 **Third-party code/resources**
-The project doesn't use directly any third-party code. It relies only on Flutter's libraries. However, it was created starting from the project: https://github.com/appwrite/demo-todo-with-flutter. \
-All the assets used in the app, that means all the visual part, is entirely designed by our team.
+The project does not directly use any third-party code. It relies only on Flutter's libraries. However, it was created starting from the project: https://github.com/appwrite/demo-todo-with-flutter. \
+All visual assets used in the app were entirely designed by our team.
 ## 📁 **Outline of the file structure and dependencies**
-As said before the project uses Flutter framework. All the required libraries and dependecies are listed in the [pubspec](pubspec.yaml) file.\
+As said before the project uses Flutter framework. All the required libraries and dependencies are listed in the [pubspec](pubspec.yaml) file.\
 All the code is in the *lib* directory. This is its structure:
 ```
 .
@@ -74,16 +74,16 @@ All the code is in the *lib* directory. This is its structure:
 **services** contains the code that manages the logic of various app behaviors.\
 The app uses Appwrite for storing all the data.
 ## 🛢️ **Setting up online services and database**
-In order to connect an external personal databes to this project the [constans](/lib/constants.dart) file needs to be changed with the updated Appwrite database settings.\
-Collections used in the project are the following:
+In order to connect an external personal database to this project the [constants](/lib/constants.dart) file needs to be changed with the updated Appwrite database settings.\
+The following Appwrite collections are used in the project:
 - games
-   - higherLower (Integer)
-   - xp (Integer)
-   - milestones (Integer[])
+  - higherLower (Integer)
+  - xp (Integer)
+  - milestones (Integer[])
 - streak
-   - streak (Integer)
-   - updated_at (Datetime)
-  
+  - streak (Integer)
+  - updated_at (Datetime)
+
 
 ### 🚀 Build, Deploy, and Run
 
@@ -119,20 +119,19 @@ Before starting, ensure you have the following installed on your system:
 
 #### Configure Appwrite
 3. Set up the Appwrite backend:
-  - Start the Appwrite server by following the [Appwrite installation guide](https://appwrite.io/docs/installation).
-  - Create a new project in the Appwrite console with the ID `demo-todos`.
-  - Add Flutter platforms (Android/iOS) with the following IDs:
-    - Android: `io.appwrite.demo_todo_with_flutter`
-    - iOS: `io.appwrite.demoTodoWithFlutter`
-  - Deploy the required collections using the Appwrite CLI:
-    ```shell
-    appwrite deploy collections
-    ```
+- Start the Appwrite server by following the [Appwrite installation guide](https://appwrite.io/docs/installation).
+- Create a new project in the Appwrite console with the ID `demo-todos`.
+- Add Flutter platforms (Android/iOS) with the following IDs:
+  - Android: `io.appwrite.demo_todo_with_flutter`
+  - iOS: `io.appwrite.demoTodoWithFlutter`
+- Deploy the required collections using the Appwrite CLI:
+  ```shell
+  appwrite deploy collections
+  ```
 
 4. Configure the project:
-  - Copy the file `lib/constants.dart.example` to `lib/constants.dart`.
-  - Update the file with your Appwrite endpoint and project ID.
-
+- Copy the file `lib/constants.dart.example` to `lib/constants.dart`.
+- Update the file with your Appwrite endpoint and project ID.
 
 #### Running the App
 5. Run the app on your local machine:
@@ -147,7 +146,7 @@ The app has 4 main pages:
 - Home page:\
   This is the main page and has plenty of things, let's break them down:
   - The plant: it is the main character of the app. It grows with your XP points, and it changes according to your mood.
-  - The CuriosiTree: it is a wise tree that gives you curious facts about alcohol. You can make it talks by clicking on it.\
+  - The CuriosiTree: it is a wise tree that gives you curious facts about alcohol. You can make it talk by clicking on it.\
   - The stats box: it shows your current statistics, which are:
     - Your XP points, collected by playing the game.
     - Your current streak, which is the number of consecutive days you have logged in the app and played at least one game. Progressing in days will unlock new special medals (shown in the 'Streak' page).
@@ -168,7 +167,17 @@ The app has 4 main pages:
 - Streak page:\
   This page shows all the medals you have unlocked.\
   You can unlock a medal by playing the game for a certain number of days in a row.\
-  The medals are:
-  1 day - 3 days - 1 week - 2 weeks - 3 weeks - 1 month - 2 months - 3 months - 6 months - 9 months - 1 year.
+  Medals are:
+  - 1 day
+  - 3 days
+  - 1 week
+  - 2 weeks
+  - 3 weeks
+  - 1 month
+  - 2 months
+  - 3 months
+  - 6 months
+  - 9 months
+  - 1 year
 - Account page:\
-  This page shows your current statistics and allows you to reset them.\
+  This page shows your current statistics and allows you to reset them.

@@ -133,6 +133,7 @@ Before starting, ensure you have the following installed on your system:
   - Copy the file `lib/constants.dart.example` to `lib/constants.dart`.
   - Update the file with your Appwrite endpoint and project ID.
 
+
 #### Running the App
 5. Run the app on your local machine:
    ```shell

@@ -8,9 +8,8 @@ import '../services/GameService.dart';
 import '../services/Streak.dart';
 import '../services/auth.dart';
 import 'Game/higher_or_lower.dart';
-import 'LoginPage.dart';
+import 'Authentication/LoginPage.dart';
 import 'StreakPage.dart';
-import 'Learn.dart';
 import '/services/CustomButton.dart';
 import 'account_page.dart';
 
@@ -329,16 +328,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       right: screenWidth * 0.05,
                       bottom: groundHeight * 0.02,
                       onPressed: () async {
-                        // Naviga verso la pagina dell'account e aspetta il risultato
                         final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const AccountPage()),
                         );
 
-                        // Se il risultato è true, ricarica i dati della homepage
+
                         if (result == true) {
-                          _loadUser(); // Ricarica i dati dell'utente
+                          _loadUser();
                         }
                       },
                       scaleFactor: scaleFactor,
@@ -361,20 +359,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
 
 
-                    //REMOVE THE NEXT TWO BUTTONS AFTER DEBUGGING STREAK LOGIC
+                    //ADD THIS BUTTONS TO INCREMENT STREAK
                     /*_buildHomeButton(
-                      text: 'Reset streak',
-                      right: screenWidth * 0.04,
-                      bottom: groundHeight * 0.75,
-                      onPressed: () async {
-                        await streakService.resetStreak();
-                        await _loadUser();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Streak reset')));
-                      },
-                      scaleFactor: scaleFactor,
-                    ),
-                    _buildHomeButton(
                       text: 'Streak++',
                       right: screenWidth * 0.17,
                       bottom: groundHeight * 0.75,
@@ -396,6 +382,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ],
         ),
       );
+
     }
   }
 
@@ -704,23 +691,3 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 }
-
-
-/*class PortraitHome extends StatelessWidget {
-  const PortraitHome({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-
-  }
-}
-
-
-class LandscapeHome extends StatelessWidget {
-  const LandscapeHome({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-
-  }
-}*/

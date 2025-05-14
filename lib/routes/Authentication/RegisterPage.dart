@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:appwrite/models.dart' as models;
-import '../services/auth.dart';
-import 'Homepage.dart';
+import '../../services/auth.dart';
+import '../Homepage.dart';
 import 'LoginPage.dart';
 
 import 'package:demo_todo_with_flutter/services/localeProvider.dart';

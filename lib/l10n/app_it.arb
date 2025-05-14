@@ -46,5 +46,16 @@
     "higherLower_questionsFile": "questionsIT.txt",
     "higherLower_2xPoints": "2X PUNTI!",
     "higherLower_false": "FALSO",
-    "higherLower_true": "VERO"
+    "higherLower_true": "VERO",
+
+    "accountPage_account": "Profilo",
+    "accountPage_accountInfo": "Informazioni profilo",
+    "accountPage_username": "Nome Utente",
+    "accountPage_statistics": "Statistiche",
+    "accountPage_value": "Valore",
+    "accountPage_streak": "Serie",
+    "accountPage_bestScore": "Miglior punteggio",
+    "accountPage_resetStatistics": "Azzera statistiche",
+    "accountPage_resetStatisticsSuccess" : "Azzeramento delle statistiche avvenuto con successo",
+    "accountPage_resetStatisticsError" : "Errore nell'azzeramento delle statistiche"    
 }

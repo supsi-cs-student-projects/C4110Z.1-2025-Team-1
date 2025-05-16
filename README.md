@@ -102,7 +102,6 @@ Before starting, ensure you have the following installed on your system:
 - [Appwrite](https://appwrite.io/docs/installation) (backend server)
   - Install Appwrite locally or on a cloud provider by following the [Appwrite installation guide](https://appwrite.io/docs/installation).
 - [Git](https://git-scm.com/) (for version control)
-- [Node.js](https://nodejs.org/) and npm (for managing Appwrite CLI)
 
 #### Download the Project
 1. Clone the repository from GitHub:
